@@ -1,0 +1,11 @@
+Membránrendszerek vizualizációja és szimulálása
+
+A membránrendszer vagy más néven P-rendszer olyan biológiailag inspirált számítási modell, amely képes a biokémiai folyamatok törvényszerűségeinek modellezesére.
+A rendszer több belső térből, úgynevezett régióból áll, amelyek hierarchikus membránstruktúrát alkotnak. Ez lehetővé teszi a sejten belüli és a sejtek közötti információáramlás formális modellezését.
+
+Az egyes régiókban különböző nyersanyagok fordulhatnak elő, amelyek egymással reakcióba léphetnek. A reakció következtében ezek a nyersanyagok átalakulhatnak, régiók között átvándorolhatnak, illetve membránok is feloldódhatnak. Ezeket a reakciókat evolúciós szabályoknak hívjuk.
+A felépítésükből adódóan a membránrendszerek nagy mértékű párhuzamosításra is alkalmasak. A membránrendszer számítása közben kialakuló állapotát egy konfigurációja írja le, amelyet minden membrán esetén objektumokból álló multihalmaz reprezentál.
+A számítás eredményét többféleképpen is definiálhatjuk, alapértelmezetten egy kitüntett membránban a megállaskor jelen lévő objektumok mennyiségét jelenti. 
+
+Szakdolgozatom célja egy olyan szoftver elkészítése, amely képes különböző típusú membránrendszerek grafikus megjelenítésére, betöltésére és exportálására, illetve egy megadott szabályrendszer mentén történő számításaik szimulálására.
+A felhasználónak lehetősége van a membránstruktúra vizuális megkonstruálására, illetve egy megadott formátum segítségével szabályok rögzítésére.A számítás végrahajtásánál támogatott a lépésenkénti futtatás.
