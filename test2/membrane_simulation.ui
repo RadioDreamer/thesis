@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>Show Output</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionLoad_Base_Model"/>
+    <addaction name="actionLoad_Symport_Antiport"/>
+    <addaction name="actionSave_Model"/>
+    <addaction name="actionImport_Structure"/>
+   </widget>
+   <widget class="QMenu" name="menuRun">
+    <property name="title">
+     <string>Run</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionRun_One_Computation"/>
+    <addaction name="actionRun_Full_Simulation"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuRun"/>
+  </widget>
+  <action name="actionLoad_Base_Model">
+   <property name="text">
+    <string>Load Base Model</string>
+   </property>
+  </action>
+  <action name="actionLoad_Symport_Antiport">
+   <property name="text">
+    <string>Load Symport/Antiport</string>
+   </property>
+  </action>
+  <action name="actionSave_Model">
+   <property name="text">
+    <string>Save Model</string>
+   </property>
+  </action>
+  <action name="actionRun_One_Computation">
+   <property name="text">
+    <string>Run One Computation</string>
+   </property>
+  </action>
+  <action name="actionRun_Full_Simulation">
+   <property name="text">
+    <string>Run Full Simulation</string>
+   </property>
+  </action>
+  <action name="actionImport_Structure">
+   <property name="text">
+    <string>Import Structure</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
