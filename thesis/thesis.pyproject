@@ -1,3 +1,3 @@
 {
-    "files": ["main.py"]
+    "files": ["model/MultiSet.py","model/__pycache__/test_stuff.py","model/Rule.py","model/Region.py","test/UnitTests.py","model/MembraneStructure.py","main.py","model/MembraneSystem.py"]
 }
