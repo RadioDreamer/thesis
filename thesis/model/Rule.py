@@ -33,6 +33,12 @@ class BaseModelRule(Rule):
     def weight(self):
         return len(self.left_side)
 
+    def has_in_object(self):
+        for (obj, direction), _ in self.right_side:
+            if direction == Direction.IN:
+                return True
+        return False
+
 
 class DissolvingRule(BaseModelRule):
     def __init__(self, left_side, right_side):

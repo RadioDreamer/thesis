@@ -1,5 +1,5 @@
 import sys
-import pytest
+# import pytest
 
 sys.path.append("/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model")
 from MultiSet import (
@@ -27,7 +27,11 @@ from Rule import (
     InvalidTypeException
 )
 
+from MembraneSystem import Environment
+
 from BaseModel import BaseModel
+
+from SymportAntiport import SymportAntiport
 
 
 def test_multiset():
@@ -154,6 +158,81 @@ def test_rule():
     assert rule9.imported_obj is None
 
 
+def test_environment():
+    env = Environment(objects={'a': 2, 'b': 1})
+    assert len(env) == 3
+    assert env.infinite_obj is None
+
+    env = Environment(objects={'a': 2, 'b': 1}, infinite_obj=['c', 'd'])
+    assert len(env.infinite_obj) == 2
+    assert env.has_subset(MultiSet({'c': 100, 'a': 1}))
+    assert not env.has_subset(MultiSet({'c': 100, 'a': 3}))
+
+    env = Environment(objects={'a': 2, 'b': 1}, infinite_obj=['a', 'c', 'd'])
+    assert len(env) == 1
+
+    env += MultiSet({'a': 10, 'b': 3, 'g': 2})
+    assert len(env) == 6
+    assert env.multiplicity('b') == 4
+
+    env -= MultiSet({'c': 2, 'a': 10000, 'g': 1, 'b': 2})
+    assert env.objects == {'b': 2, 'g': 1}
+
+    with pytest.raises(InvalidOperationException) as _:
+        env -= MultiSet({'c': 2, 'a': 10000, 'g': 2, 'b': 2})
+
+
+def test_symport():
+    n = Node()
+    n.add_child(Node())
+    n.children[0].add_child(Node())
+    ms = MembraneStructure(n)
+
+    o_id = n.id
+    m_id = n.children[0].id
+    i_id = n.children[0].children[0].id
+
+    rule_o1 = SymportRule(TransportationRuleType.SYMPORT_OUT,
+                          exported_obj={'b': 1})
+    rule_o2 = SymportRule(TransportationRuleType.SYMPORT_IN,
+                          imported_obj={'b': 1, 'a': 1})
+
+    rule_m1 = SymportRule(TransportationRuleType.SYMPORT_IN,
+                          imported_obj={'a': 2})
+    rule_m2 = SymportRule(TransportationRuleType.ANTIPORT,
+                          exported_obj={'c': 1}, imported_obj={'b': 1})
+
+    rule_i = SymportRule(TransportationRuleType.SYMPORT_IN,
+                         imported_obj={'a': 2})
+
+    region_o = Region(o_id, None, objects={'b': 1}, rules=[rule_o1, rule_o2])
+    #region_o = Region(o_id, None, objects={'a': 8}, rules=[rule_o1, rule_o2])
+    region_m = Region(m_id, o_id, objects={'c': 1}, rules=[rule_m1, rule_m2])
+    region_i = Region(i_id, m_id, objects={}, rules=[rule_i])
+    regions = {o_id: region_o, m_id: region_m, i_id: region_i}
+    sym_model = SymportAntiport(tree=ms, regions=regions,
+                                out_id=i_id, infinite_obj=['a'])
+
+    assert sym_model.output_id == i_id
+
+    # sym_model.apply(rule_o1, region_o)
+    # print(sym_model)
+    # sym_model.environment -= MultiSet({'a': 1, 'b': 1})
+    # print(sym_model.environment)
+
+    # print(sym_model)
+    # sym_model.simulate_step()
+    # print(sym_model)
+    # sym_model.simulate_step()
+    # print(sym_model)
+    # assert sym_model.any_rule_applicable()
+
+    print(sym_model.simulate_computation())
+
+
+test_symport()
+
+
 def test_base_model():
     n = Node()
     ms = MembraneStructure(n)
@@ -200,7 +279,8 @@ def test_base_model():
     ms1 = MembraneStructure(n1)
 
     rule_a = BaseModelRule({'a': 1},
-                           {('b', Direction.HERE): 1, ('a', Direction.HERE): 1})
+                           {('b', Direction.HERE): 1,
+                            ('a', Direction.HERE): 1})
     rule_b = DissolvingRule({'a': 1},
                             {('b', Direction.HERE): 1})
     rule_c = BaseModelRule({'c': 1},
@@ -209,12 +289,13 @@ def test_base_model():
     inner_objects = {'a': 1, 'c': 1}
 
     strong_rule = BaseModelRule({'c': 2}, {('c', Direction.HERE): 1})
-    weak_rule = DissolvingRule({'c': 2}, {})
+    weak_rule = DissolvingRule({'c': 1}, {})
     rule_d = PriorityRule(strong_rule, weak_rule)
 
     rule_e = BaseModelRule({'b': 1}, {('d', Direction.HERE): 1})
     rule_f = BaseModelRule({'d': 1},
-                           {('d', Direction.HERE): 1, ('e', Direction.HERE): 1})
+                           {('d', Direction.HERE): 1,
+                            ('e', Direction.HERE): 1})
 
     middle_rules = [rule_d, rule_e, rule_f]
 
@@ -233,11 +314,30 @@ def test_base_model():
                inner_id: region_inner}
 
     model = BaseModel(tree=ms1, regions=regions)
-    print("SIMULATE")
-    print(model.regions)    
-    model.simulate_step()
-    print(model.regions)
+    while model.any_rule_applicable():
+        print(model.regions)
+        model.simulate_step()
+    print("RESULT", model.environment)
 
+
+def test_dissolve():
+    root = Node()
+    root.add_child(Node())
+    ms = MembraneStructure(root)
+
+    strong_rule = BaseModelRule({'c': 2}, {('c', Direction.HERE): 1})
+    weak_rule = DissolvingRule({'c': 1}, {})
+    prio_rule = PriorityRule(strong_rule, weak_rule)
+
+    region_inner = Region(root.children[0].id, root.id, {'c': 4, 'd': 1},
+                          [prio_rule])
+    region_outer = Region(root.id, None, None, [prio_rule])
+    regions = {root.id: region_outer, root.children[0].id: region_inner}
+    model = BaseModel(tree=ms, regions=regions)
+
+    assert model.any_rule_applicable()
+    model.simulate_step()
     model.simulate_step()
     print(model.regions)
-test_base_model()
+    assert model.is_applicable(prio_rule, region_inner)
+    model.simulate_step()

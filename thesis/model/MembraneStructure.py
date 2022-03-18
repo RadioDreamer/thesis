@@ -1,6 +1,6 @@
 # This Python file uses the following encoding: utf-8
 
-class Node():
+class Node:
     uid = 0
 
     def __str__(self):
@@ -47,13 +47,16 @@ class MembraneStructure:
             for i in range(iter_count):
                 self.preorder(root.children[i], fn, cond)
 
-    def get_num_of_children(self, node):
+    @staticmethod
+    def get_num_of_children(node):
         return node.num_of_children()
 
-    def get_parent(self, node):
+    @staticmethod
+    def get_parent(node):
         return node.parent
 
-    def get_all_children(self, node):
+    @staticmethod
+    def get_all_children(node):
         if node.is_leaf():
             return None
         else:

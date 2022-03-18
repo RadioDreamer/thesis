@@ -42,6 +42,9 @@ class MultiSet:
         else:
             self.objects = {}
 
+    def __repr__(self):
+        return self.objects.__repr__()
+
     def __getitem__(self, key):
         return self.objects[key]
 
@@ -77,7 +80,7 @@ class MultiSet:
 
     def __iadd__(self, multiset):
         for obj, mul in multiset:
-            if self[obj]:
+            if obj in self:
                 self[obj] += mul
             else:
                 self[obj] = mul
@@ -92,10 +95,15 @@ class MultiSet:
                 tmp[obj] = mul
         return tmp
 
+    def __delitem__(self, key):
+        del self.objects[key]
+
     def __isub__(self, multiset):
         if self.has_subset(multiset):
             for obj, mul in multiset.items():
                 self[obj] -= mul
+                if self[obj] == 0:
+                    del self[obj]
             return self
         else:
             raise InvalidOperationException
@@ -103,8 +111,11 @@ class MultiSet:
     def __sub__(self, multiset):
         tmp = MultiSet(self.objects)
         if self.has_subset(multiset):
-            for obj, mul in multiset.items():
+            for obj, mul in multiset:
                 tmp[obj] -= mul
+                if tmp[obj] == 0:
+                    del tmp[obj]
+            return tmp
         else:
             raise InvalidOperationException
 

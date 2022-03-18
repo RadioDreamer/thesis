@@ -1,3 +1,3 @@
 {
-    "files": ["model/MultiSet.py","model/__pycache__/test_stuff.py","model/Rule.py","model/Region.py","test/UnitTests.py","model/MembraneStructure.py","main.py","model/MembraneSystem.py"]
+    "files": ["model/MultiSet.py","model/MembraneSystem.py","test/UnitTests.py","model/Rule.py","model/MembraneStructure.py","main.py","model/Region.py","model/BaseModel.py","model/__pycache__/test_stuff.py","model/SymportAntiport.py"]
 }
