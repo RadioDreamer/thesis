@@ -1,5 +1,5 @@
 import sys
-# import pytest
+import pytest
 
 sys.path.append("/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model")
 from MultiSet import (
@@ -182,7 +182,60 @@ def test_environment():
         env -= MultiSet({'c': 2, 'a': 10000, 'g': 2, 'b': 2})
 
 
-def test_symport():
+def test_dissolve():
+    n = Node()
+    n.add_child(Node())
+    n.children[0].add_child(Node())
+    ms = MembraneStructure(n)
+
+    dis_rule = DissolvingRule(left_side={}, right_side={})
+    region_0 = Region(n.id)
+    region_1 = Region(n.children[0].id, rules=[dis_rule],
+                      objects={'z': 2})
+    region_2 = Region(n.children[0].children[0].id,
+                      objects={'a': 2, 'b': 3})
+    regions = {n.id: region_0, n[0].id: region_1, n[0][0].id: region_2}
+    model = BaseModel(tree=ms, regions=regions)
+    model.dissolve_region(region_1)
+    assert region_0.objects.objects == {'z': 2}
+    assert len(regions) == 2
+    assert model.get_parent_region(region_2).id == n.id
+    assert model.get_child(region_0) == region_2
+
+
+def test_dissolve_multiple_children():
+    n = Node()
+    n.add_child(Node())
+    n.children[0].add_child(Node())
+    n.children[0].add_child(Node())
+    n.children[0].add_child(Node())
+    ms = MembraneStructure(n)
+
+    dis_rule = DissolvingRule(left_side={}, right_side={})
+    region_0 = Region(n.id)
+    region_1 = Region(n.children[0].id, rules=[dis_rule])
+    region_2 = Region(n.children[0].children[0].id,
+                      objects={'a': 2, 'b': 3})
+    region_3 = Region(n[0][1].id, objects={'d': 2, 'e': 1})
+
+    rule_inner = BaseModelRule(left_side={'d': 2}, right_side={'f': 2})
+    region_4 = Region(n[0][2].id, rules=[rule_inner])
+
+    regions = {n.id: region_0, n[0].id: region_1, n[0][0].id: region_2,
+               n[0][1].id: region_3, n[0][2].id: region_4}
+    model = BaseModel(tree=ms, regions=regions)
+    model.dissolve_region(region_1)
+
+    assert model.get_num_of_children(region_0) == 3
+    assert region_0.objects == {}
+    assert region_2.objects == {'a': 2, 'b': 3}
+    assert region_3.objects == {'d': 2, 'e': 1}
+    assert model.get_parent_region(region_2).id == n.id
+    assert model.get_parent_region(region_3).id == n.id
+    assert model.get_parent_region(region_4).id == n.id
+
+
+def test_symport_with_example():
     n = Node()
     n.add_child(Node())
     n.children[0].add_child(Node())
@@ -205,42 +258,27 @@ def test_symport():
     rule_i = SymportRule(TransportationRuleType.SYMPORT_IN,
                          imported_obj={'a': 2})
 
-    region_o = Region(o_id, None, objects={'b': 1}, rules=[rule_o1, rule_o2])
-    #region_o = Region(o_id, None, objects={'a': 8}, rules=[rule_o1, rule_o2])
-    region_m = Region(m_id, o_id, objects={'c': 1}, rules=[rule_m1, rule_m2])
-    region_i = Region(i_id, m_id, objects={}, rules=[rule_i])
+    region_o = Region(o_id, objects={'b': 1}, rules=[rule_o1, rule_o2])
+    # region_o = Region(o_id, objects={'a': 8}, rules=[rule_o1, rule_o2])
+    region_m = Region(m_id, objects={'c': 1}, rules=[rule_m1, rule_m2])
+    region_i = Region(i_id, objects={}, rules=[rule_i])
     regions = {o_id: region_o, m_id: region_m, i_id: region_i}
     sym_model = SymportAntiport(tree=ms, regions=regions,
                                 out_id=i_id, infinite_obj=['a'])
 
     assert sym_model.output_id == i_id
 
-    # sym_model.apply(rule_o1, region_o)
-    # print(sym_model)
-    # sym_model.environment -= MultiSet({'a': 1, 'b': 1})
-    # print(sym_model.environment)
-
-    # print(sym_model)
-    # sym_model.simulate_step()
-    # print(sym_model)
-    # sym_model.simulate_step()
-    # print(sym_model)
-    # assert sym_model.any_rule_applicable()
-
     print(sym_model.simulate_computation())
 
 
-test_symport()
-
-
-def test_base_model():
+def test_base_model_with_example():
     n = Node()
     ms = MembraneStructure(n)
 
     rule_0 = BaseModelRule({'a': 1, 'b': 1}, {('c', Direction.HERE): 2})
     rule_00 = BaseModelRule({'a': 1}, {('d', Direction.OUT): 2})
     obj_0 = {'a': 2, 'b': 1}
-    region_0 = Region(n.id, None, objects=obj_0, rules=[rule_0, rule_00])
+    region_0 = Region(n.id, objects=obj_0, rules=[rule_0, rule_00])
 
     regions = {0: region_0}
     model = BaseModel(tree=ms, regions=regions)
@@ -303,13 +341,13 @@ def test_base_model():
     middle_id = n1.children[0].id
     inner_id = n1.children[0].children[0].id
 
-    region_inner = Region(inner_id, middle_id,
+    region_inner = Region(inner_id,
                           objects=inner_objects, rules=inner_rules
                           )
-    region_middle = Region(middle_id, outer_id, None, middle_rules)
+    region_middle = Region(middle_id, None, middle_rules)
 
     outer_rule = [BaseModelRule({'e': 1}, {('e', Direction.OUT): 1})]
-    region_outer = Region(outer_id, None, None, outer_rule)
+    region_outer = Region(outer_id, objects=None, rules=outer_rule)
     regions = {outer_id: region_outer, middle_id: region_middle,
                inner_id: region_inner}
 
@@ -319,25 +357,24 @@ def test_base_model():
         model.simulate_step()
     print("RESULT", model.environment)
 
-
-def test_dissolve():
-    root = Node()
-    root.add_child(Node())
-    ms = MembraneStructure(root)
-
-    strong_rule = BaseModelRule({'c': 2}, {('c', Direction.HERE): 1})
-    weak_rule = DissolvingRule({'c': 1}, {})
-    prio_rule = PriorityRule(strong_rule, weak_rule)
-
-    region_inner = Region(root.children[0].id, root.id, {'c': 4, 'd': 1},
-                          [prio_rule])
-    region_outer = Region(root.id, None, None, [prio_rule])
-    regions = {root.id: region_outer, root.children[0].id: region_inner}
-    model = BaseModel(tree=ms, regions=regions)
-
-    assert model.any_rule_applicable()
-    model.simulate_step()
-    model.simulate_step()
-    print(model.regions)
-    assert model.is_applicable(prio_rule, region_inner)
-    model.simulate_step()
+# def test_dissolve():
+#     root = Node()
+#     root.add_child(Node())
+#     ms = MembraneStructure(root)
+#
+#     strong_rule = BaseModelRule({'c': 2}, {('c', Direction.HERE): 1})
+#     weak_rule = DissolvingRule({'c': 1}, {})
+#     prio_rule = PriorityRule(strong_rule, weak_rule)
+#
+#     region_inner = Region(root.children[0].id, root.id, {'c': 4, 'd': 1},
+#                           [prio_rule])
+#     region_outer = Region(root.id, None, None, [prio_rule])
+#     regions = {root.id: region_outer, root.children[0].id: region_inner}
+#     model = BaseModel(tree=ms, regions=regions)
+#
+#     assert model.any_rule_applicable()
+#     model.simulate_step()
+#     model.simulate_step()
+#     print(model.regions)
+#     assert model.is_applicable(prio_rule, region_inner)
+#     model.simulate_step()
