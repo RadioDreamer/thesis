@@ -24,8 +24,53 @@ class Rule(metaclass=abc.ABCMeta):
     def weight(self):
         pass
 
+    @abc.abstractmethod
+    def __str__(self):
+        pass
+
+#    @abc.abstractmethod
+#    @classmethod
+#    def string_to_rule(cls, str_rule):
+#        pass
+
 
 class BaseModelRule(Rule):
+    def __str__(self):
+        result = ""
+        for k, v in self.left_side:
+            result += k * v
+        result += ' ->'
+        in_objects = " IN: "
+        out_objects = " OUT: "
+        here_objects = " HERE: "
+        for (obj, direction), v in self.right_side:
+            if direction == Direction.HERE:
+                here_objects += obj * v
+            if direction == Direction.IN:
+                in_objects += obj * v
+            if direction == Direction.OUT:
+                out_objects += obj * v
+
+        right_side = in_objects + out_objects + here_objects
+        result += right_side
+        return result
+
+# Majd ehhez is visszatérünk
+#    def __repr__(self):
+#        left_side = []
+#        for k, v in self.left_side:
+#            left_side.extend([k for _ in range(v)])
+
+#        right_side = []
+#        for (obj, direction), v in self.right_side:
+#            if direction == Direction.HERE:
+#                right_side.extend([f'{obj}_here' for _ in range(v)])
+#            if direction == Direction.IN:
+#                right_side.extend([f'{obj}_in' for _ in range(v)])
+#            if direction == Direction.OUT:
+#                right_side.extend([f'{obj}_out' for _ in range(v)])
+#        return f'{left_side} -> {right_side}'
+
     def __init__(self, left_side, right_side):
         self.left_side = MultiSet(left_side)
         self.right_side = MultiSet(right_side)
@@ -41,11 +86,16 @@ class BaseModelRule(Rule):
 
 
 class DissolvingRule(BaseModelRule):
+    def __str__(self):
+        return super().__str__() + " DISSOLVE"
+
     def __init__(self, left_side, right_side):
         super().__init__(left_side, right_side)
 
 
 class PriorityRule():
+    def __str__(self):
+        return f'({self.strong_rule.__str__()}) > ({self.weak_rule.__str__()})'
     avail_classes = ['BaseModelRule', 'DissolvingRule']
 
     def __init__(self, strong_rule, weak_rule):
@@ -64,6 +114,14 @@ class SymportRule(Rule):
         self.rule_type = rule_type
         self.imported_obj = MultiSet(imported_obj) if imported_obj else None
         self.exported_obj = MultiSet(exported_obj) if exported_obj else None
+
+    def __str__(self):
+        if self.rule_type == TransportationRuleType.ANTIPORT:
+            return f'IN: {self.imported_obj} OUT: {self.exported_obj}'
+        if self.rule_type == TransportationRuleType.SYMPORT_IN:
+            return f'IN: {self.imported_obj}'
+        if self.rule_type == TransportationRuleType.SYMPORT_OUT:
+            return f'OUT: {self.exported_obj}'
 
     def weight(self):
         if self.rule_type == TransportationRuleType.ANTIPORT:

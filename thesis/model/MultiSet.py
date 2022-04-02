@@ -42,6 +42,10 @@ class MultiSet:
         else:
             self.objects = {}
 
+    def __str__(self):
+        iter = [k for k, v in self.items() for i in range(v)]
+        return ''.join(iter)
+
     def __repr__(self):
         return self.objects.__repr__()
 
@@ -51,6 +55,9 @@ class MultiSet:
     def __setitem__(self, key, new_value):
         assert new_value >= 0
         self.objects[key] = new_value
+
+    def __eq__(self, other):
+        return self.objects.__eq__(other)
 
     def __len__(self):
         return sum(self.objects.values())
@@ -144,3 +151,13 @@ class MultiSet:
             return self[obj]
         else:
             raise ObjectNotFoundException
+
+    @classmethod
+    def string_to_multiset(cls, str_multiset, sep_values=[' ']):
+        result = MultiSet()
+        for c in str_multiset:
+            if c in sep_values:
+                continue
+            else:
+                result.add_object(c)
+        return result

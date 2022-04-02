@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 6.0.2, 2022-03-17T23:16:23. -->
+<!-- Written by QtCreator 7.0.0, 2022-03-31T17:36:39. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -94,7 +94,7 @@
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{c67f30fb-3f16-4aa8-ab82-ac97d936fb6a}</value>
    <value type="qlonglong" key="ProjectExplorer.Target.ActiveBuildConfiguration">-1</value>
    <value type="qlonglong" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
-   <value type="qlonglong" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
+   <value type="qlonglong" key="ProjectExplorer.Target.ActiveRunConfiguration">8</value>
    <value type="qlonglong" key="ProjectExplorer.Target.BuildConfigurationCount">0</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.DeployConfiguration.0">
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
@@ -258,6 +258,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model/SymportAntiport.py</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model/SymportAntiport.py</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model/SymportAntiport.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{ff42a8e5-7766-4989-9384-4866ce504c88}</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model/SymportAntiport.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
@@ -265,7 +266,25 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model</value>
    </valuemap>
-   <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">8</value>
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.8">
+    <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
+    <valuelist type="QVariantList" key="CustomOutputParsers"/>
+    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
+    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/MainWindow.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/MainWindow.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/MainWindow.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{ff42a8e5-7766-4989-9384-4866ce504c88}</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/MainWindow.py</value>
+    <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view</value>
+   </valuemap>
+   <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">9</value>
   </valuemap>
  </data>
  <data>

@@ -1,7 +1,8 @@
 import sys
 import pytest
 
-sys.path.append("/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model")
+# sys.path.append("/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model")
+sys.path.append("../model")
 from MultiSet import (
     MultiSet,
     ObjectNotFoundException,
@@ -27,7 +28,7 @@ from Rule import (
     InvalidTypeException
 )
 
-from MembraneSystem import Environment
+from MembraneSystem import Environment, MembraneSystem
 
 from BaseModel import BaseModel
 
@@ -83,6 +84,17 @@ def test_multiset():
     m4['a'] = 5
     assert m4.multiplicity('a') == 5
 
+    s = 'aaaaba'
+    m5 = MultiSet.string_to_multiset(s)
+    assert len(m5) == 6
+    assert m5.multiplicity('a') == 5
+    assert m5.multiplicity('b') == 1
+
+    s2 = 'c;d;ccc;e'
+    m6 = MultiSet.string_to_multiset(s2, sep_values=[';'])
+    assert len(m6) == 6
+    assert m6.multiplicity('c') == 4
+
 
 def test_membrane_structure():
     n = Node()
@@ -126,14 +138,18 @@ def test_rule():
     assert len(rule1.right_side) == 1
 
     ls = {'a': 1, 'c': 2}
-    rs = {'a': 3}
+    rs = {('a', Direction.HERE): 3}
     rule2 = DissolvingRule(ls, rs)
     assert isinstance(rule2, BaseModelRule)
 
     ls = {'b': 2, 'd': 1}
-    rs = {'d': 2}
+    rs = {('d', Direction.HERE): 2}
+
     rule3 = BaseModelRule(ls, rs)
+
     rule4 = PriorityRule(rule1, rule3)
+
+    print(rule4)
     assert isinstance(rule4, PriorityRule)
     assert isinstance(rule3, BaseModelRule)
 
@@ -230,9 +246,40 @@ def test_dissolve_multiple_children():
     assert region_0.objects == {}
     assert region_2.objects == {'a': 2, 'b': 3}
     assert region_3.objects == {'d': 2, 'e': 1}
+    assert region_4.rules == [rule_inner]
     assert model.get_parent_region(region_2).id == n.id
     assert model.get_parent_region(region_3).id == n.id
     assert model.get_parent_region(region_4).id == n.id
+
+
+def test_valid_parentheses():
+    s1 = "{[()]}"
+    s2 = "{[()]}{]{}}"
+    s3 = "{aa[b(cc)a]}"
+    assert MembraneSystem.is_valid_parentheses(s1)
+    assert not MembraneSystem.is_valid_parentheses(s2)
+    assert MembraneSystem.is_valid_parentheses(s3)
+
+
+def test_parent_child_dissolve():
+    n = Node()
+    n.add_child(Node())
+    n[0].add_child(Node())
+    ms = MembraneStructure(n)
+
+    dis_rule = DissolvingRule(left_side={}, right_side={})
+    region_0 = Region(n.id)
+    region_1 = Region(n.children[0].id, rules=[dis_rule],
+                      objects={'z': 2})
+    region_2 = Region(n.children[0].children[0].id,
+                      objects={'a': 2, 'b': 3}, rules=[dis_rule])
+    regions = {n.id: region_0, n[0].id: region_1, n[0][0].id: region_2}
+    model = BaseModel(tree=ms, regions=regions)
+    # model.dissolve_region(region_1)
+    # model.dissolve_region(region_2)
+    model.simulate_step()
+    assert region_0.objects.objects == {'z': 2, 'a': 2, 'b': 3}
+    assert len(regions) == 1
 
 
 def test_symport_with_example():
@@ -257,7 +304,6 @@ def test_symport_with_example():
 
     rule_i = SymportRule(TransportationRuleType.SYMPORT_IN,
                          imported_obj={'a': 2})
-
     region_o = Region(o_id, objects={'b': 1}, rules=[rule_o1, rule_o2])
     # region_o = Region(o_id, objects={'a': 8}, rules=[rule_o1, rule_o2])
     region_m = Region(m_id, objects={'c': 1}, rules=[rule_m1, rule_m2])
@@ -267,7 +313,6 @@ def test_symport_with_example():
                                 out_id=i_id, infinite_obj=['a'])
 
     assert sym_model.output_id == i_id
-
     print(sym_model.simulate_computation())
 
 
@@ -277,6 +322,9 @@ def test_base_model_with_example():
 
     rule_0 = BaseModelRule({'a': 1, 'b': 1}, {('c', Direction.HERE): 2})
     rule_00 = BaseModelRule({'a': 1}, {('d', Direction.OUT): 2})
+
+    print(rule_0)
+    print(rule_00)
     obj_0 = {'a': 2, 'b': 1}
     region_0 = Region(n.id, objects=obj_0, rules=[rule_0, rule_00])
 
@@ -355,26 +403,25 @@ def test_base_model_with_example():
     while model.any_rule_applicable():
         print(model.regions)
         model.simulate_step()
-    print("RESULT", model.environment)
+    print(model.get_result())
 
-# def test_dissolve():
-#     root = Node()
-#     root.add_child(Node())
-#     ms = MembraneStructure(root)
-#
-#     strong_rule = BaseModelRule({'c': 2}, {('c', Direction.HERE): 1})
-#     weak_rule = DissolvingRule({'c': 1}, {})
-#     prio_rule = PriorityRule(strong_rule, weak_rule)
-#
-#     region_inner = Region(root.children[0].id, root.id, {'c': 4, 'd': 1},
-#                           [prio_rule])
-#     region_outer = Region(root.id, None, None, [prio_rule])
-#     regions = {root.id: region_outer, root.children[0].id: region_inner}
-#     model = BaseModel(tree=ms, regions=regions)
-#
-#     assert model.any_rule_applicable()
-#     model.simulate_step()
-#     model.simulate_step()
-#     print(model.regions)
-#     assert model.is_applicable(prio_rule, region_inner)
-#     model.simulate_step()
+
+def test_create_from_str():
+    s = "[aa[b   b][ c]]"
+    model = BaseModel.create_from_str(s)
+    assert model.get_num_of_children(model.regions[model.get_root_id()]) == 2
+
+    s = "[aa[b   b]a[ c]]"
+    model = BaseModel.create_from_str(s)
+    assert len(model.regions[model.get_root_id()].objects) == 3
+
+
+def test_is_valid_rule():
+    s1 = "aaa -> IN: bb OUT: a HERE:"
+    assert BaseModel.is_valid_rule(s1)
+
+    s2 = "aaa -> IN: bb OUT: a HERE:"
+    assert BaseModel.is_valid_rule(s2)
+
+    s3 = "aaa -># IN: bb OUT: a HERE:"
+    assert not BaseModel.is_valid_rule(s3)

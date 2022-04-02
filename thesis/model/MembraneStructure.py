@@ -3,6 +3,11 @@
 class Node:
     uid = 0
 
+    def __getitem__(self, item):
+        assert isinstance(item, int)
+        assert item < len(self.children)
+        return self.children[item]
+
     def __str__(self):
         return f"Node: {self.id=}"
 
