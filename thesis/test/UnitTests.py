@@ -1,3 +1,4 @@
+import re
 import sys
 import pytest
 
@@ -330,7 +331,6 @@ def test_base_model_with_example():
 
     regions = {0: region_0}
     model = BaseModel(tree=ms, regions=regions)
-    assert model.is_dissolving is False
     assert model.any_rule_applicable() is True
 
     model.apply(rule_0, region_0)
@@ -408,15 +408,15 @@ def test_base_model_with_example():
 
 def test_create_from_str():
     s = "[aa[b   b][ c]]"
-    model = BaseModel.create_from_str(s)
+    model = BaseModel.create_model_from_str(s)
     assert model.get_num_of_children(model.regions[model.get_root_id()]) == 2
 
     s = "[aa[b   b]a[ c]]"
-    model = BaseModel.create_from_str(s)
+    model = BaseModel.create_model_from_str(s)
     assert len(model.regions[model.get_root_id()].objects) == 3
 
 
-def test_is_valid_rule():
+def test_is_valid_rule_base():
     s1 = "aaa -> IN: bb OUT: a HERE:"
     assert BaseModel.is_valid_rule(s1)
 
@@ -424,4 +424,69 @@ def test_is_valid_rule():
     assert BaseModel.is_valid_rule(s2)
 
     s3 = "aaa -># IN: bb OUT: a HERE:"
+    assert BaseModel.is_valid_rule(s3)
+
+    s3 = "aaa #-> IN: bb OUT: a HERE:"
     assert not BaseModel.is_valid_rule(s3)
+
+    s3 = "aaa #-> IN: bb OUT: a HERE:>aaa #-> IN: bb OUT: a HERE:"
+    assert not BaseModel.is_valid_rule(s3)
+
+
+def test_is_valid_rule_symport():
+    s1 = "IN: aaaa"
+    assert SymportAntiport.is_valid_rule(s1)
+
+    s2 = "OUT:bb"
+    assert SymportAntiport.is_valid_rule(s2)
+
+    s2 = "OUT: xxxx  "
+    assert SymportAntiport.is_valid_rule(s2)
+
+    s3 = "IN: ddd OUT:aaa"
+    assert SymportAntiport.is_valid_rule(s3)
+
+    s4 = "OUT:a IN:b"
+    assert SymportAntiport.is_valid_rule(s4)
+
+    s5 = "IN:a IN:b"
+    assert not SymportAntiport.is_valid_rule(s5)
+
+    s5 = "OUT:abb OUT:b"
+    assert not SymportAntiport.is_valid_rule(s5)
+
+
+def test_parse_rule():
+    s1 = "aaa -> IN: bb OUT: a HERE:"
+    rule1 = BaseModel.parse_rule(s1)
+    assert rule1.left_side == {'a': 3}
+    assert rule1.right_side == {('b', Direction.IN): 2, ('a', Direction.OUT): 1}
+
+    s2 = "aaa a-> IN:a bb OUT:c a HERE:dd"
+    rule2 = BaseModel.parse_rule(s2)
+    assert rule2.left_side == {'a': 4}
+    assert rule2.right_side == {('a', Direction.IN): 1, ('b', Direction.IN): 2,
+                                ('a', Direction.OUT): 1,
+                                ('d', Direction.HERE): 2,
+                                ('c', Direction.OUT): 1, }
+
+    s3 = "a-># IN:abb OUT:ca HERE:dd"
+    rule3 = BaseModel.parse_rule(s3)
+    assert isinstance(rule3, DissolvingRule)
+
+    s4 = "a-># IN:abb OUT:ca HERE:dd > b -> IN: OUT:c HERE:"
+    rule4 = BaseModel.parse_rule(s4)
+    assert isinstance(rule4, PriorityRule)
+    assert isinstance(rule4.strong_rule, DissolvingRule)
+    assert rule4.weak_rule.left_side == {'b': 1}
+    assert rule4.weak_rule.right_side == {('c', Direction.OUT): 1}
+
+    s5 = "aaae -> IN: a OUT:HERE:"
+    rule5 = BaseModel.parse_rule(s5)
+    assert rule5.left_side == {'a':3, 'e':1}
+    assert rule5.right_side == {('a', Direction.IN): 1}
+
+    s6 = "a  b c -> IN: b b b OUT:aaHERE: aa aa"
+    rule6 = BaseModel.parse_rule(s6)
+    assert rule6.left_side == {'a': 1, 'b': 1, 'c': 1}
+    assert rule6.right_side == {('b', Direction.IN): 3, ('a', Direction.OUT): 2, ('a', Direction.HERE): 4}
