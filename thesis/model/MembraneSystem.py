@@ -28,6 +28,12 @@ class Environment(MultiSet):
                 return False
         return True
 
+    def __add__(self, multiset):
+        raise InvalidOperationException
+
+    def __sub__(self, multiset):
+        raise InvalidOperationException
+
     def __iadd__(self, multiset):
         for obj, mul in multiset:
             if obj in self.infinite_obj:
@@ -58,15 +64,13 @@ class MembraneSignal(QObject):
     sim_step_over = Signal(int)
     region_dissolved = Signal(int)
     obj_changed = Signal(int, str)
-    rules_changed = Signal(int, list)
+    rules_changed = Signal(int, str)
 
 
 class MembraneSystem(QObject):
-    def __init__(self, is_dissolving=False, is_priority=False,
+    def __init__(self,
                  tree=None,
                  regions=None, infinite_obj=None):
-        self.is_dissolving = is_dissolving
-        self.is_priority = is_priority
         self.tree = tree
         self.environment = Environment(infinite_obj=infinite_obj)
         self.step_counter = 0
@@ -95,9 +99,33 @@ class MembraneSystem(QObject):
     def get_result(self):
         pass
 
+    @classmethod
+    def is_valid_parentheses(cls, m_str):
+        open_paren = set(['(', '{', '['])
+        close_paren = set([')', '}', ']'])
+        stack = []
+        pairs = {'}': '{', ')': '(', ']': '['}
+
+        for c in m_str:
+            if c in close_paren:
+                if not stack:
+                    return False
+                elif pairs[c] != stack.pop():
+                    return False
+                else:
+                    continue
+            if c not in open_paren.union(close_paren):
+                continue
+            if c in open_paren:
+                stack.append(c)
+        if not stack:
+            return True
+        else:
+            return False
+
     # @abc.abstractmethod
     @classmethod
-    def create_from_str(cls, m_str):
+    def create_model_from_str(cls, m_str):
         pass
 
     def get_rule_string(self, region_id):
@@ -108,31 +136,11 @@ class MembraneSystem(QObject):
         pass
 
     @classmethod
-    def is_valid_parentheses(cls, m_str):
-        open_paren = set(['(', '{', '['])
-        close_paren = set([')', '}', ']'])
-        stack = []
-        pairs = {'}': '{', ')': '(', ']': '['}
-
-        for c in m_str:
-            if c not in open_paren.union(close_paren):
-                continue
-            if c in open_paren:
-                stack.append(c)
-            if c in close_paren:
-                if not stack:
-                    return False
-                elif pairs[c] != stack.pop():
-                    return False
-                else:
-                    continue
-        if not stack:
-            return True
-        else:
-            return False
+    def string_to_rules(cls):
+        pass
 
     @classmethod
-    def string_to_rules(cls):
+    def parse_rule(cls):
         pass
 
     @property
@@ -142,9 +150,6 @@ class MembraneSystem(QObject):
     @regions.setter
     def regions(self, value):
         self._regions = value
-
-    def add_rule(self, region, rule):
-        self.regions[region.id].rules.append(rule)
 
     def select_and_apply_rules(self, region):
         indices = list(range(len(region.rules)))

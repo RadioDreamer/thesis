@@ -3,9 +3,11 @@ from enum import Enum
 
 sys.path.append("../model")
 from PySide6.QtWidgets import (
-QMainWindow, QApplication, QGraphicsView, QGraphicsScene, QGraphicsTextItem, QGraphicsProxyWidget, QLabel,
-QWidget, QGraphicsItem, QGraphicsWidget, QGraphicsRectItem, QGraphicsSimpleTextItem, QPushButton, QVBoxLayout, QStatusBar, QDialog,
-QLineEdit, QDialogButtonBox, QPlainTextEdit, QMessageBox
+    QMainWindow, QApplication, QGraphicsView, QGraphicsScene, QGraphicsTextItem,
+    QGraphicsProxyWidget, QLabel,
+    QWidget, QGraphicsItem, QGraphicsWidget, QGraphicsRectItem,
+    QGraphicsSimpleTextItem, QPushButton, QVBoxLayout, QStatusBar, QDialog,
+    QLineEdit, QDialogButtonBox, QPlainTextEdit, QMessageBox
 )
 
 from PySide6.QtGui import QPen, QBrush, QColor, QResizeEvent, QPainter, QAction
@@ -25,7 +27,8 @@ class ModelType(Enum):
 
 
 class MembraneRuleAndObjectEditDialog(QDialog):
-    def __init__(self, region_objects, valid_fn=None,type=None, rules=None, parent=None):
+    def __init__(self, region_objects, valid_fn=None, type=None, rules=None,
+                 parent=None):
         super().__init__(parent)
         self.setWindowTitle("Régió szerkesztése")
         self.valid_fn = valid_fn
@@ -58,17 +61,20 @@ class MembraneRuleAndObjectEditDialog(QDialog):
             super().accept()
 
         rule_list = self.rule_edit_list.toPlainText().split('\n')
+        print(rule_list)
         cond = True
-        for rule in rule_list:
-            if not self.valid_fn(rule):
-                cond = False
-                break
+        if rule_list != [""]:
+            for rule in rule_list:
+                if not self.valid_fn(rule):
+                    cond = False
+                    break
 
         if not cond:
             msg_box = QMessageBox()
             msg_box.setText("Nem megfelelő!")
             msg_box.exec()
         else:
+            self.rules = self.rule_edit_list.toPlainText()
             super().accept()
 
 
@@ -107,6 +113,7 @@ class MembraneStructureDialog(QDialog):
     def get_text(self):
         return self.text
 
+
 class MyText(QGraphicsRectItem):
     def __init__(self, id, rect, obj, rules, simulator=None, parent=None):
         super().__init__(rect, parent)
@@ -116,11 +123,19 @@ class MyText(QGraphicsRectItem):
         self.rule_text = QGraphicsSimpleTextItem(rules, self)
         text_rect = QRectF(self.obj_text.boundingRect())
         rule_rect = QRectF(self.rule_text.boundingRect())
-        self.obj_text.setPos((rect.width() - text_rect.width())/2, 0)
-        self.rule_text.setPos((rect.width() - rule_rect.width())/2, text_rect.height())
+        self.obj_text.setPos((rect.width() - text_rect.width()) / 2, 0)
+        self.rule_text.setPos((rect.width() - rule_rect.width()) / 2,
+                              text_rect.height())
 
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setPen(QPen(QBrush(QColor('blue')), 3))
+
+    def center_text(self):
+        text_rect = QRectF(self.obj_text.boundingRect())
+        rule_rect = QRectF(self.rule_text.boundingRect())
+        self.obj_text.setPos((self.rect().width() - text_rect.width()) / 2, 0)
+        self.rule_text.setPos((self.rect().width() - rule_rect.width()) / 2,
+                              text_rect.height())
 
     def mouseDoubleClickEvent(self, event):
         # Itt lehet majd editelni az objektumokat és a szabályokat
@@ -128,16 +143,22 @@ class MyText(QGraphicsRectItem):
         rule_string = self.simulator.model.get_rule_string(self.id)
 
         valid_fn = self.simulator.model.__class__.is_valid_rule
-        dialog = MembraneRuleAndObjectEditDialog(str(objects), valid_fn=valid_fn, rules=rule_string, type=self.simulator.type)
+        dialog = MembraneRuleAndObjectEditDialog(str(objects),
+                                                 valid_fn=valid_fn,
+                                                 rules=rule_string,
+                                                 type=self.simulator.type)
         dialog.exec()
 
         rule_result = dialog.get_rules()
+        print("RESULT", rule_result)
         if not rule_result == rule_string:
             self.simulator.update_region_rules(self.id, rule_result)
 
         obj_result = MyText.sort_word(dialog.object_edit.text())
         if obj_result != MyText.sort_word(self.obj_text.text()):
             self.simulator.update_region_objects(self.id, obj_result)
+
+        self.center_text()
 
     @classmethod
     def sort_word(cls, string):
@@ -167,11 +188,11 @@ class MembraneSimulator(QWidget):
 
     def set_model(self, type, string):
         if type == ModelType.BASE:
-            self.model = BaseModel.create_from_str(string)
+            self.model = BaseModel.create_model_from_str(string)
             self.type = ModelType.BASE
         elif type == ModelType.SYMPORT:
             self.type = ModelType.SYMPORT
-            self.model = SymportAntiport.create_from_str(string)
+            self.model = SymportAntiport.create_model_from_str(string)
         self.model.signal.sim_over.connect(self.simulation_over)
         self.model.signal.obj_changed.connect(self.update_obj_view)
         self.model.signal.rules_changed.connect(self.update_rule_view)
@@ -181,12 +202,15 @@ class MembraneSimulator(QWidget):
         self.regions[id].obj_text.setText(string)
 
     def update_rule_view(self, id, string):
+        print("UPDATE", string)
         self.regions[id].rule_text.setText(string)
 
     def draw_model(self):
         self.scene.clear()
         self.skin_id = self.model.get_root_id()
-        self.regions[self.skin_id] = MyText(self.skin_id, QRectF(0, 0, SKIN_X, SKIN_Y), str(self.model.regions[self.skin_id].objects),'a->c', simulator=self)
+        self.regions[self.skin_id] = MyText(self.skin_id,
+                                            QRectF(0, 0, SKIN_X, SKIN_Y), str(
+                self.model.regions[self.skin_id].objects), "", simulator=self)
         self.scene.addItem(self.regions[self.skin_id])
         self.view.show()
 
@@ -209,7 +233,7 @@ class MembraneSimulator(QWidget):
 
     def update_region_rules(self, id, new_rules: str):
         new_rule_list = self.model.__class__.string_to_rules(new_rules)
-        self.model.regions[id].objects = new_rule_list
+        self.model.regions[id].rules = new_rule_list
 
     def simulate_step(self):
         self.model.simulate_step()
@@ -242,7 +266,8 @@ class MainWindow(QMainWindow):
         # Struktúra megadásához menü
         create_menu = menu.addMenu("Membránstruktúra megadása")
         create_base_action = QAction("Alapmodell megadása", self)
-        create_symport_action = QAction("Szimport/Antiport modell megadása", self)
+        create_symport_action = QAction("Szimport/Antiport modell megadása",
+                                        self)
         create_menu.addActions([create_base_action, create_symport_action])
 
         create_base_action.triggered.connect(self.create_base_dialog)
@@ -256,8 +281,10 @@ class MainWindow(QMainWindow):
         run_sim.triggered.connect(self.membranes.simulate_computation)
 
         self.setStatusBar(QStatusBar(self))
-        self.statusBar().addPermanentWidget(QPushButton("Teljes szimuláció indítása"))
-        self.statusBar().addPermanentWidget(QPushButton("Szimuláció lépés indítása"))
+        self.statusBar().addPermanentWidget(
+            QPushButton("Teljes szimuláció indítása"))
+        self.statusBar().addPermanentWidget(
+            QPushButton("Szimuláció lépés indítása"))
         self.statusBar().addPermanentWidget(QLabel("Lépések száma: 0"))
         self.statusBar().hide()
 
@@ -266,13 +293,13 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         layout.addWidget(self.button)
 
-#        region = MyText(0, QRectF(0, 0, 100, 100), "Hello World")
-#        child_region = MyText(1, QRectF(0, 0, 50, 50), "Child", region)
-#        child_region2 = MyText(2, QRectF(0, 0, 30, 30), "Child2", region)
+        #        region = MyText(0, QRectF(0, 0, 100, 100), "Hello World")
+        #        child_region = MyText(1, QRectF(0, 0, 50, 50), "Child", region)
+        #        child_region2 = MyText(2, QRectF(0, 0, 30, 30), "Child2", region)
 
-#        self.membranes.regions[0] = region
-#        self.membranes.regions[1] = child_region
-#        self.membranes.regions[2] = child_region2
+        #        self.membranes.regions[0] = region
+        #        self.membranes.regions[1] = child_region
+        #        self.membranes.regions[2] = child_region2
 
         layout.addWidget(self.membranes.view)
         # self.membranes.show_scene()
@@ -285,17 +312,18 @@ class MainWindow(QMainWindow):
             self.membranes.show_membranes()
 
     def create_base_dialog(self):
-        dialog = MembraneStructureDialog(self, MembraneSimulator.is_valid_string)
+        dialog = MembraneStructureDialog(self,
+                                         MembraneSimulator.is_valid_string)
         dialog.exec()
         self.membranes.set_model(ModelType.BASE, dialog.get_text())
         self.statusBar().show()
+
 
 if __name__ == "__main__":
     app = QApplication([])
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
-
 
 # import sys
 # import random
@@ -356,4 +384,3 @@ if __name__ == "__main__":
 #     window = MainWindow()
 #     window.show()
 #     sys.exit(app.exec())
-

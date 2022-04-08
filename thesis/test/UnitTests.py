@@ -150,7 +150,6 @@ def test_rule():
 
     rule4 = PriorityRule(rule1, rule3)
 
-    print(rule4)
     assert isinstance(rule4, PriorityRule)
     assert isinstance(rule3, BaseModelRule)
 
@@ -426,11 +425,13 @@ def test_is_valid_rule_base():
     s3 = "aaa -># IN: bb OUT: a HERE:"
     assert BaseModel.is_valid_rule(s3)
 
-    s3 = "aaa #-> IN: bb OUT: a HERE:"
-    assert not BaseModel.is_valid_rule(s3)
+    s4 = "aaa #-> IN: bb OUT: a HERE:"
+    assert not BaseModel.is_valid_rule(s4)
 
-    s3 = "aaa #-> IN: bb OUT: a HERE:>aaa #-> IN: bb OUT: a HERE:"
-    assert not BaseModel.is_valid_rule(s3)
+    s5 = "aaa #-> IN: bb OUT: a HERE:>aaa #-> IN: bb OUT: a HERE:"
+    assert not BaseModel.is_valid_rule(s5)
+
+    s6 = 'a'
 
 
 def test_is_valid_rule_symport():
@@ -473,6 +474,12 @@ def test_parse_rule():
     s3 = "a-># IN:abb OUT:ca HERE:dd"
     rule3 = BaseModel.parse_rule(s3)
     assert isinstance(rule3, DissolvingRule)
+    assert rule3.left_side == {'a': 1}
+    assert rule3.right_side == {('c', Direction.OUT): 1,
+                                ('a', Direction.OUT): 1,
+                                ('a', Direction.IN): 1,
+                                ('b', Direction.IN): 2,
+                                ('d', Direction.HERE): 2}
 
     s4 = "a-># IN:abb OUT:ca HERE:dd > b -> IN: OUT:c HERE:"
     rule4 = BaseModel.parse_rule(s4)
@@ -480,13 +487,50 @@ def test_parse_rule():
     assert isinstance(rule4.strong_rule, DissolvingRule)
     assert rule4.weak_rule.left_side == {'b': 1}
     assert rule4.weak_rule.right_side == {('c', Direction.OUT): 1}
+    assert rule4.strong_rule.left_side == {'a': 1}
+    assert rule4.strong_rule.right_side == {('c', Direction.OUT): 1,
+                                ('a', Direction.OUT): 1,
+                                ('a', Direction.IN): 1,
+                                ('b', Direction.IN): 2,
+                                ('d', Direction.HERE): 2}
 
     s5 = "aaae -> IN: a OUT:HERE:"
     rule5 = BaseModel.parse_rule(s5)
-    assert rule5.left_side == {'a':3, 'e':1}
+    assert rule5.left_side == {'a': 3, 'e': 1}
     assert rule5.right_side == {('a', Direction.IN): 1}
 
     s6 = "a  b c -> IN: b b b OUT:aaHERE: aa aa"
     rule6 = BaseModel.parse_rule(s6)
     assert rule6.left_side == {'a': 1, 'b': 1, 'c': 1}
-    assert rule6.right_side == {('b', Direction.IN): 3, ('a', Direction.OUT): 2, ('a', Direction.HERE): 4}
+    assert rule6.right_side == {('b', Direction.IN): 3, ('a', Direction.OUT): 2,
+                                ('a', Direction.HERE): 4}
+
+
+def test_symport_parse():
+    s1 = '     IN:aaaOUT:       b'
+    rule1 = SymportAntiport.parse_rule(s1)
+    assert rule1.imported_obj == {'a': 3}
+    assert rule1.exported_obj == {'b': 1}
+    assert rule1.rule_type == TransportationRuleType.ANTIPORT
+
+    s2 = 'OUT:c cc cIN:aa a'
+    rule2 = SymportAntiport.parse_rule(s2)
+    assert rule2.exported_obj == {'c': 4}
+    assert rule2.imported_obj == {'a': 3}
+    assert rule2.rule_type == TransportationRuleType.ANTIPORT
+
+    s3 = '   IN: aaa'
+    rule3 = SymportAntiport.parse_rule(s3)
+    assert rule3.imported_obj == {'a': 3}
+    assert rule3.exported_obj is None
+    assert rule3.rule_type == TransportationRuleType.SYMPORT_IN
+
+    s4 = '   OUT: cdcd'
+    rule4 = SymportAntiport.parse_rule(s4)
+    print(rule4)
+    assert rule4.exported_obj == {'c': 2, 'd': 2}
+    assert rule4.imported_obj is None
+    assert rule4.rule_type == TransportationRuleType.SYMPORT_OUT
+# s6 = "a-># IN:abb OUT:ca HERE:dd"
+# rule6 = BaseModel.parse_rule(s6)
+# print(rule6)

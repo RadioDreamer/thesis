@@ -1,5 +1,3 @@
-# This Python file uses the following encoding: utf-8
-
 class ObjectNotFoundException(Exception):
     pass
 
@@ -43,8 +41,8 @@ class MultiSet:
             self.objects = {}
 
     def __str__(self):
-        iter = [k for k, v in self.items() for i in range(v)]
-        return ''.join(iter)
+        iter_obj = [k for k, v in self.items() for i in range(v)]
+        return ''.join(iter_obj)
 
     def __repr__(self):
         return self.objects.__repr__()

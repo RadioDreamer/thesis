@@ -12,7 +12,7 @@ class Node:
         return f"Node: {self.id=}"
 
     def __repr__(self):
-        return f"Node: {self.id=}"
+        return self.__str__()
 
     def __init__(self, parent=None):
         self.id = Node.uid
@@ -20,8 +20,11 @@ class Node:
         self.parent = parent
         self.children = []
 
-    def add_child(self, node):
-        self.children.append(node)
+    def add_child(self, node=None):
+        if node is None:
+            self.children.append(Node())
+        else:
+            self.children.append(node)
         node.parent = self
 
     def is_leaf(self):
@@ -77,5 +80,6 @@ class MembraneStructure:
         parent.children.remove(node)
         return parent
 
-    def add_node(self, node):
+    @staticmethod
+    def add_node(node):
         node.add_child(Node())
