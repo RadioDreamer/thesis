@@ -15,6 +15,9 @@ from Region import Region
 
 
 class BaseModel(MembraneSystem):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     def apply(self, rule, region):
         if isinstance(rule, PriorityRule):
             if self.is_applicable(rule.strong_rule, region):
@@ -94,8 +97,8 @@ class BaseModel(MembraneSystem):
             else:
                 indices.remove(idx)
 
-    @classmethod
-    def create_model_from_str(cls, m_str):
+    @staticmethod
+    def create_model_from_str(m_str):
         if not MembraneSystem.is_valid_parentheses(m_str):
             raise InvalidArgumentException
 
@@ -125,7 +128,9 @@ class BaseModel(MembraneSystem):
             else:
                 raise InvalidArgumentException
         structure = MembraneStructure(root_node)
-        return BaseModel(tree=structure, regions=regions)
+
+        result = BaseModel(tree=structure, regions=regions)
+        return result
 
     @classmethod
     def is_valid_rule(cls, rule_str):

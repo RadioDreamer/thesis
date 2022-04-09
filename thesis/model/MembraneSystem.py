@@ -12,7 +12,7 @@ class InvalidArgumentException(Exception):
 class Environment(MultiSet):
     def __init__(self, objects=None, infinite_obj=None):
         super().__init__(objects)
-        self.infinite_obj: List = infinite_obj
+        self.infinite_obj = set(infinite_obj) if infinite_obj else None
         if infinite_obj is not None:
             delete = [obj for obj in self.objects if obj in infinite_obj]
             for obj in delete:
@@ -22,7 +22,7 @@ class Environment(MultiSet):
         for obj, mul in multiset:
             if obj in self and self[obj] >= mul:
                 pass
-            elif obj in self.infinite_obj:
+            elif self.infinite_obj and obj in self.infinite_obj:
                 pass
             else:
                 return False

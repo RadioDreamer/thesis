@@ -99,8 +99,11 @@ class SymportAntiport(MembraneSystem):
         root_node = None
         current_node = None
 
+        output_id = None
         closing_brackets = [']', '}', ')']
         opening_brackets = ['[', '{', '(']
+
+        infite_obj = []
         regions = {}
         for c in m_str:
             if c == ' ':
@@ -118,12 +121,17 @@ class SymportAntiport(MembraneSystem):
             elif c in closing_brackets:
                 current_node = current_node.parent
             elif re.match('[a-z]', c):
-                regions[current_node.id].objects.add_object(c)
+                if root_node is None:
+                    infite_obj.append(c)
+                else:
+                    regions[current_node.id].objects.add_object(c)
+            elif c == '#':
+                output_id = current_node.id
             else:
                 raise InvalidArgumentException
 
         structure = MembraneStructure(root_node)
-        return SymportAntiport(tree=structure, regions=regions)
+        return SymportAntiport(tree=structure, regions=regions, out_id=output_id, infinite_obj=infite_obj)
 
     @classmethod
     def is_valid_rule(cls, rule_str):
