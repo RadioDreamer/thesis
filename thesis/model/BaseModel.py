@@ -60,7 +60,7 @@ class BaseModel(MembraneSystem):
 
     def simulate_step(self):
         if not self.any_rule_applicable():
-            self.signal.sim_over.emit()
+            self.signal.sim_over.emit(self.get_result())
             return
         for region in self.regions.values():
             self.select_and_apply_rules(region)
@@ -78,6 +78,7 @@ class BaseModel(MembraneSystem):
         self.signal.sim_step_over.emit(self.step_counter)
 
     def get_result(self):
+        print("GOOD")
         return self.environment.objects
 
     def dissolve_region(self, region):

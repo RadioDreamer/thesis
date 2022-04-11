@@ -60,7 +60,7 @@ class Environment(MultiSet):
 
 
 class MembraneSignal(QObject):
-    sim_over = Signal()
+    sim_over = Signal(dict)
     sim_step_over = Signal(int)
     region_dissolved = Signal(int)
     obj_changed = Signal(int, str)
@@ -202,7 +202,7 @@ class MembraneSystem(QObject):
     def simulate_computation(self):
         while self.any_rule_applicable():
             self.simulate_step()
-        self.signal.sim_over.emit()
+        self.signal.sim_over.emit(self.get_result())
         return self.get_result()
 
 # class MembraneSystem(metaclass=abc.ABCMeta):

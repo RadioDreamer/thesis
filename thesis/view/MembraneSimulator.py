@@ -37,9 +37,11 @@ class MembraneSimulator(QWidget):
     #    def is_valid_rule(cls, rule_str):
     #        return MembraneSystem.is_valid_rule(rule_str)
 
-    def simulation_over(self):
+    def simulation_over(self, result):
+        print("ENV", self.model.environment.objects)
+        print("RESULT", result)
         msg_box = QMessageBox()
-        msg_box.setText("Simulation Over!")
+        msg_box.setText(f"Simulation Over!\nResult:{result}")
         msg_box.exec()
 
     def set_model(self, type, string):
