@@ -35,7 +35,7 @@ class MultiSet:
         Parameters
         ----------
         init_objects : dict, optional
-            The dictionary containing the objects for
+            the dictionary containing the objects for
             the initial state of the multiset
         """
 
@@ -295,7 +295,7 @@ class MultiSet:
 
     def __isub__(self, multiset):
         """
-        A function used to subtract a multiset to `self`
+        A function used to subtract a multiset from `self`
 
         The subtraction operation has a condition such that the multiset we
         want to subtract has to be a subset of the other multiset. If the

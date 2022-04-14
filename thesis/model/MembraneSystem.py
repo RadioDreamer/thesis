@@ -6,11 +6,43 @@ from PySide6.QtCore import QObject, Signal
 
 
 class InvalidArgumentException(Exception):
+    """
+    A class to signal an exception regarding incorrect arguments given to a
+    function
+    """
     pass
 
 
 class Environment(MultiSet):
+    """
+    A class for representing the environment of the membrane system
+
+    It can have special objects, which are of infinite multiplicity, thus always
+    available for evolution
+
+    Attributes
+    ----------
+    infite_obj : list
+        the list containing the objects with infinite multiplicity
+    objects : dict
+        a dict containing the objects as keys and their multiplicity as values
+    """
+
     def __init__(self, objects=None, infinite_obj=None):
+        """
+        A function used for initializing the environment
+
+        Parameters
+        ----------
+
+        objects : dict, optional
+            the dictionary containing the objects for the initial state of the
+            environment (default is None)
+        infinite_obj : list, optional
+            the list containing the objects with infinite
+            multiplicity (default is None)
+        """
+
         super().__init__(objects)
         self.infinite_obj = set(infinite_obj) if infinite_obj else None
         if infinite_obj is not None:
@@ -19,6 +51,25 @@ class Environment(MultiSet):
                 del self[obj]
 
     def has_subset(self, multiset):
+        """
+        A function used to determine whether a multiset is a subset of the
+        environment
+
+        The method of checking this condition is almost the same as with the
+        base class `MultiSet`, but here we need to take into consideration that
+        the environment can have objects with infinite multiplicity
+
+        Parameters
+        ----------
+        multiset : MultiSet
+            the multiset we want to check whether if it is a multiset
+
+        Returns
+        -------
+        bool
+            True if it is a multiset, False otherwise
+        """
+
         for obj, mul in multiset:
             if obj in self and self[obj] >= mul:
                 pass
@@ -29,12 +80,63 @@ class Environment(MultiSet):
         return True
 
     def __add__(self, multiset):
+        """
+        A function used to add a multiset to the environment
+
+        This function is invalid for `Environment` instances, so it is
+        purposefully left unimplemented
+
+        Parameters
+        ----------
+        multiset : MultiSet
+            the multiset we add to `self`
+
+        Raises
+        -------
+        InvalidOperationException
+            every time one calls the function
+        """
+
         raise InvalidOperationException
 
     def __sub__(self, multiset):
+        """
+        A function used to subtract a multiset from the environment
+
+        This function is invalid for `Environment` instances, so it is
+        purposefully left unimplemented
+
+        Parameters
+        ----------
+        multiset : MultiSet
+         -------
+        InvalidOperationException
+            every time one calls the function
+        """
+
         raise InvalidOperationException
 
     def __iadd__(self, multiset):
+        """
+        A function used to add a multiset to the environment
+
+        Adding as an operation with a multiset means that the shared
+        objects' multiplicity adds up and the ones that are only present in
+        of the multisets are simply added to the resulting multiset with
+        their starting multiplicity. If the multiset has an object of which the
+        environment has infinite multiplicity of it simply stays that way.
+
+        Parameters
+        ----------
+        multiset : MultiSet
+            the multiset we want to add to `self`
+
+        Returns
+        -------
+        Environment
+            the `self` object we added `multiset` to
+        """
+
         for obj, mul in multiset:
             if obj in self.infinite_obj:
                 pass
@@ -46,6 +148,29 @@ class Environment(MultiSet):
         return self
 
     def __isub__(self, multiset):
+        """
+        A function used to subtract a multiset from the environment
+
+        The subtraction operation has a condition such that the multiset we
+        want to subtract has to be a subset of the environment. If the
+        condition is met, then subtraction simply involves the subtraction of
+        the multiplicities of the objects in the parameter `multiset` from
+        the corresponding objects multiplicity the environment in the case of it
+        being in the `objects` multiset. If however, the objects is in the
+        `infinite_obj` list, then no subtraction is not necessary, since the
+        multiplicity of the given object is infinite in the environment.
+
+        Parameters
+        ----------
+        multiset : MultiSet
+            the multiset we want to subtract from `self`
+
+        Returns
+        -------
+        MultiSet
+            the `self` object we subtracted `multiset` from
+        """
+
         if self.has_subset(multiset):
             for obj, mul in multiset:
                 if obj in self.infinite_obj:
@@ -204,133 +329,3 @@ class MembraneSystem(QObject):
             self.simulate_step()
         self.signal.sim_over.emit(self.get_result())
         return self.get_result()
-
-# class MembraneSystem(metaclass=abc.ABCMeta):
-#     def __init__(self, is_dissolving=False, is_priority=False, tree=None,
-#                  regions=None, infinite_obj=None):
-#         self.is_dissolving = is_dissolving
-#         self.is_priority = is_priority
-#         self.tree = tree
-#         self.environment = Environment(infinite_obj=infinite_obj)
-#
-#         # { region_id : region_obj }
-#         self.regions: Dict = regions
-#
-#     @abc.abstractmethod
-#     def apply(self, rule, region):
-#         pass
-#
-#     @abc.abstractmethod
-#     def is_applicable(self, rule, region):
-#         pass
-#
-#     @abc.abstractmethod
-#     def simulate_step(self):
-#         pass
-#
-#     @abc.abstractmethod
-#     def get_result(self):
-#         pass
-#
-#     @classmethod
-#     @abc.abstractmethod
-#     def create_from_str(cls, m_str):
-#         pass
-#
-#     @classmethod
-#     def is_valid_parentheses(cls, m_str):
-#         open_paren = set(['(', '{', '['])
-#         close_paren = set([')', '}', ']'])
-#         stack = []
-#         pairs = {'}': '{', ')': '(', ']': '['}
-#
-#         for c in m_str:
-#             if c not in open_paren.union(close_paren):
-#                 continue
-#             if c in open_paren:
-#                 stack.append(c)
-#             if c in close_paren:
-#                 if not stack:
-#                     return False
-#                 elif pairs[c] != stack.pop():
-#                     return False
-#                 else:
-#                     continue
-#         if not stack:
-#             return True
-#         else:
-#             return False
-#
-#     @property
-#     def regions(self):
-#         return self._regions
-#
-#     @regions.setter
-#     def regions(self, value):
-#         self._regions = value
-#
-#     def add_rule(self, region, rule):
-#         self.regions[region.id].rules.append(rule)
-#
-#     def select_and_apply_rules(self, region):
-#         indices = list(range(len(region.rules)))
-#         while indices:
-#             idx = random.choice(indices)
-#             if self.is_applicable(region.rules[idx], region):
-#                 self.apply(region.rules[idx], region)
-#             else:
-#                 indices.remove(idx)
-#
-#     # def select_and_apply_rules(self, region):
-#     #     condition = True
-#     #     while condition:
-#     #         can_apply = False
-#     #         # This needs to be non-deterministic
-#     #         for rule in random.shuffle(region.rules):
-#     #             if self.is_applicable(rule, region):
-#     #                 can_apply = True
-#     #                 self.apply(rule, region)
-#     #         condition = can_apply
-#
-#     def get_parent_region(self, region):
-#         region_id = region.id
-#         self.tree.preorder(self.tree.skin, self.tree.get_parent,
-#                            lambda x: x.id == region_id)
-#         result_node = self.tree.result
-#         return self.regions[result_node.id]
-#
-#     def get_all_children(self, region):
-#         region_id = region.id
-#         self.tree.preorder(self.tree.skin, self.tree.get_all_children,
-#                            lambda x: x.id == region_id)
-#         result_list = self.tree.result
-#         return [self.regions[i.id] for i in result_list]
-#
-#     def get_num_of_children(self, region):
-#         region_id = region.id
-#         self.tree.preorder(self.tree.skin, self.tree.get_num_of_children,
-#                            lambda x: x.id == region_id)
-#         return self.tree.result
-#
-#     def get_child(self, region):
-#         region_id = region.id
-#         self.tree.preorder(self.tree.skin, self.tree.get_all_children,
-#                            lambda x: x.id == region_id)
-#         result_list = self.tree.result
-#         return None if result_list is None else self.regions[
-#             random.choice(result_list).id]
-#
-#     def get_root_id(self):
-#         return self.tree.get_root_id()
-#
-#     def any_rule_applicable(self):
-#         for region in self.regions.values():
-#             for rule in region.rules:
-#                 if self.is_applicable(rule, region):
-#                     return True
-#         return False
-#
-#     def simulate_computation(self):
-#         while self.any_rule_applicable():
-#             self.simulate_step()
-#         return self.get_result()
