@@ -136,3 +136,6 @@ class Region(QObject):
         """
         rule_str = [str(r) for r in self._rules]
         return '\n'.join(rule_str)
+
+    def add_rule(self, rule):
+        self.rules().append(rule)

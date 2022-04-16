@@ -30,6 +30,8 @@ class BaseModel(MembraneSystem):
         the dictionary containing the region objects keyed by their identifier
     signal : MembraneSignal
         the objects for containing all the available signals
+    structure_str : str, optional
+        the string used to create the membrane system (default is None)
     """
 
     def __init__(self, **kwargs):
@@ -244,8 +246,17 @@ class BaseModel(MembraneSystem):
                 raise InvalidArgumentException
         structure = MembraneStructure(root_node)
 
-        result = BaseModel(tree=structure, regions=regions)
+        result = BaseModel(tree=structure, regions=regions, structure_str=m_str)
         return result
+
+#    @staticmethod
+#    def load_from_json_dict(cls, json_dict):
+#        structure = json_dict["structure"]
+#        model = cls.create_model_from_str(structure)
+#        for id, rule in json_dict["rules"].items():
+#            parsed_rule = cls.parse_rule(rule)
+#            model[id].add_rule(parsed_rule)
+#        return model
 
     @classmethod
     def is_valid_rule(cls, rule_str):

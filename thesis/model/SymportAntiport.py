@@ -32,13 +32,15 @@ class SymportAntiport(MembraneSystem):
         the dictionary containing the region objects keyed by their identifier
     signal : MembraneSignal
         the objects for containing all the available signals
+    structure_str : str, optional
+        the string used to create the membrane system (default is None)
     out_id : int
         the special region's identifier which contains the result of the
         computation
     """
 
     def __init__(self, tree=None,
-                 regions=None, infinite_obj=None, out_id=None):
+                 regions=None, infinite_obj=None, structure_str=None, out_id=None):
         """
         A function used to initalize a symport/antiport system
 
@@ -55,7 +57,7 @@ class SymportAntiport(MembraneSystem):
         """
 
         MembraneSystem.__init__(self, tree=tree, regions=regions,
-                                infinite_obj=infinite_obj)
+                                infinite_obj=infinite_obj, structure_str=structure_str)
         assert out_id is not None
         self.output_id = out_id
 
@@ -251,7 +253,7 @@ class SymportAntiport(MembraneSystem):
                 raise InvalidArgumentException
 
         structure = MembraneStructure(root_node)
-        return SymportAntiport(tree=structure, regions=regions, out_id=output_id, infinite_obj=infite_obj)
+        return SymportAntiport(tree=structure, regions=regions, out_id=output_id, infinite_obj=infite_obj, structure_str=m_str)
 
     @classmethod
     def is_valid_rule(cls, rule_str):
@@ -314,7 +316,7 @@ class SymportAntiport(MembraneSystem):
         Rule
             the rule that the string corresponds to
         """
-        
+
         exp_obj = None
         imp_obj = None
         rule_str = rule_str.replace(" ", "")

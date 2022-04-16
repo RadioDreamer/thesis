@@ -1,4 +1,5 @@
 import random
+import json
 from typing import Dict, List
 from MultiSet import MultiSet
 from MultiSet import InvalidOperationException
@@ -229,22 +230,28 @@ class MembraneSystem(QObject):
 
     def __init__(self,
                  tree=None,
-                 regions=None, infinite_obj=None):
+                 regions=None, infinite_obj=None, structure_str=None):
         """
         A function to initialize the membrane system
 
         Parameters
         ----------
-        tree : MembraneStructure
-            the tree structure of the regions in the membrane system
-        regions : dict
-            the dictionary containing the regions keyed by their identifier
-        infinite_obj : list
-            the list of objects in the environment with infinite multiplicity
+        tree : MembraneStructure, optional
+            the tree structure of the regions in the membrane system (default is None)
+        regions : dict, optional
+            the dictionary containing the regions keyed by their identifier (default is None)
+        infinite_obj : list, optional
+            the list of objects in the environment with infinite multiplicity (default is None)
+        signal : MembraneSignal
+            the objects for containing all the available signals
+        structure_str : str, optional
+            the string used to create the membrane system (default is None)
         """
+
         self.tree = tree
         self.environment = Environment(infinite_obj=infinite_obj)
         self.step_counter = 0
+        self.structure_str = structure_str
 
         # { region_id : region_obj }
         self.regions: Dict = regions
@@ -596,3 +603,31 @@ class MembraneSystem(QObject):
             self.simulate_step()
         self.signal.sim_over.emit(self.get_result())
         return self.get_result()
+
+    @classmethod
+    def load_from_json_dict(cls, json_dict):
+        structure = json_dict["structure"]
+        model = cls.create_model_from_str(structure)
+        for id, rule in json_dict["rules"].items():
+            parsed_rule = cls.parse_rule(rule)
+            model[id].add_rule(parsed_rule)
+        return model
+
+    def create_json_dict(self):
+        result = {}
+        result["type"] = self.__class__.__name__
+        result["structure"] = self.structure_str
+        result["rules"] = {}
+        for r in self.regions.values():
+            for rule in r.rules:
+                result["rules"][r.id] = str(rule)
+        return result
+
+    def save(self, path):
+        json_dict = self.create_json_dict()
+        with open(path, 'w') as save_file:
+            json.dump(json_dict, save_file)
+
+    @classmethod
+    def load(cls, json_dict):
+        return cls.load_from_json_dict(json_dict)

@@ -3,10 +3,14 @@ import sys
 
 sys.path.append("../model")
 from PySide6.QtWidgets import (
-    QMainWindow, QApplication, QGraphicsView, QGraphicsScene, QLabel,
-    QWidget, QGraphicsItem, QGraphicsRectItem,
-    QGraphicsSimpleTextItem, QPushButton, QVBoxLayout, QStatusBar, QDialog,
-    QLineEdit, QDialogButtonBox, QMessageBox
+    QMainWindow,
+    QApplication,
+    QLabel,
+    QWidget,
+    QPushButton,
+    QVBoxLayout,
+    QStatusBar,
+    QFileDialog
 )
 
 from PySide6.QtGui import QResizeEvent, QAction
@@ -26,7 +30,9 @@ class MainWindow(QMainWindow):
         menu = self.menuBar()
 
         save_action = QAction("Mentés", self)
+        save_action.setShortcut("Ctrl+S")
         load_action = QAction("Betöltés", self)
+        load_action.setShortcut("Ctrl+O")
 
         # Fájl menü
         file_menu = menu.addMenu("Fájl")
@@ -37,6 +43,8 @@ class MainWindow(QMainWindow):
         create_base_action = QAction("Alapmodell megadása", self)
         create_symport_action = QAction("Szimport/Antiport modell megadása",
                                         self)
+        save_action.triggered.connect(self.save_file_dialog)
+        load_action.triggered.connect(self.load_file_dialog)
         create_menu.addActions([create_base_action, create_symport_action])
 
         create_base_action.triggered.connect(self.create_base_dialog)
@@ -63,16 +71,7 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         layout.addWidget(self.button)
 
-        #        region = MyText(0, QRectF(0, 0, 100, 100), "Hello World")
-        #        child_region = MyText(1, QRectF(0, 0, 50, 50), "Child", region)
-        #        child_region2 = MyText(2, QRectF(0, 0, 30, 30), "Child2", region)
-
-        #        self.membranes.regions[0] = region
-        #        self.membranes.regions[1] = child_region
-        #        self.membranes.regions[2] = child_region2
-
         layout.addWidget(self.membranes.view)
-        # self.membranes.show_scene()
         container.setLayout(layout)
 
     def btn_pressed(self):
@@ -83,7 +82,6 @@ class MainWindow(QMainWindow):
 
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
-        print("RESIZING", random.randint(0, 100))
         self.resize_scene()
 
     def resize_scene(self):
@@ -99,6 +97,14 @@ class MainWindow(QMainWindow):
         dialog.exec()
         self.membranes.set_model(ModelType.BASE, dialog.get_text())
         self.statusBar().show()
+
+    def save_file_dialog(self):
+        name = QFileDialog.getSaveFileName(self, 'Save File')
+        self.membranes.save_model(name[0])
+
+    def load_file_dialog(self):
+        name = QFileDialog.getOpenFileName(self, 'Open File')
+        self.membranes.load_model(name[0])
 
     def create_symport_dialog(self):
         dialog = StructureDialog(self, MembraneSimulator.is_valid_structure)

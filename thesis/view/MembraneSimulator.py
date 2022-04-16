@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from PySide6.QtWidgets import (
     QWidget,
@@ -43,6 +44,18 @@ class MembraneSimulator(QWidget):
         msg_box = QMessageBox()
         msg_box.setText(f"Simulation Over!\nResult:{result}")
         msg_box.exec()
+
+    def set_model_object(self, model_obj):
+        if isinstance(model_obj, BaseModel):
+            self.type = ModelType.BASE
+        elif isinstance(model_obj, SymportAntiport):
+            self.type = ModelType.SYMPORT
+        self.model = model_obj
+        self.model.signal.sim_over.connect(self.simulation_over)
+        self.model.signal.obj_changed.connect(self.update_obj_view)
+        self.model.signal.rules_changed.connect(self.update_rule_view)
+        self.model.signal.region_dissolved.connect(self.update_dissolve)
+        self.draw_model()
 
     def set_model(self, type, string):
         if type == ModelType.BASE:
@@ -120,7 +133,7 @@ class MembraneSimulator(QWidget):
 
     def show_membranes(self):
         self.view_regions[self.skin_id].show()
-    
+
     def hide_membranes(self):
         self.view_regions[self.skin_id].hide()
 
@@ -140,3 +153,15 @@ class MembraneSimulator(QWidget):
 
     def simulate_computation(self):
         self.model.simulate_computation()
+
+    def save_model(self, name):
+        self.model.save(name)
+
+    def load_model(self, name):
+        with open(name, 'r') as load_file:
+            json_dict = json.load(load_file)
+        if json_dict["type"] == 'BaseModel':
+            model = BaseModel.load(json_dict)
+        elif json_dict["type"] == 'SymportAntiport':
+            model = SymportAntiport.load(json_dict)
+        self.set_model_object(model)
