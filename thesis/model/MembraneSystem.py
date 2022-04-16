@@ -185,6 +185,23 @@ class Environment(MultiSet):
 
 
 class MembraneSignal(QObject):
+    """
+    A class to represent the signals which can be emitted by the membrane system
+
+    Attributes
+    ----------
+    sim_over : Signal
+        the signal that communicates that the simulation is over
+    sim_step_over : Signal
+        the signal that communicates that a simulation step is over
+    region_dissolved : Signal
+         the signal that communicates that a region has dissolved
+    obj_changed : Signal
+         the signal that communicates that a region's objects have changed
+    rules_changed : Signal
+         the signal that communicates that a region's rules have changed
+    """
+
     sim_over = Signal(dict)
     sim_step_over = Signal(int)
     region_dissolved = Signal(int)
@@ -193,9 +210,38 @@ class MembraneSignal(QObject):
 
 
 class MembraneSystem(QObject):
+    """
+    A class to represent the abstract membrane system
+
+    Attributes
+    ----------
+    tree : MembraneStructure
+        the tree structure of the regions in the membrane system
+    environment : Environment
+        the environment of the membrane system
+    step_counter : int
+        the number of simulation steps that have occured
+    regions : dict
+        the dictionary containing the region objects keyed by their identifier
+    signal : MembraneSignal
+        the objects for containing all the available signals
+    """
+
     def __init__(self,
                  tree=None,
                  regions=None, infinite_obj=None):
+        """
+        A function to initialize the membrane system
+
+        Parameters
+        ----------
+        tree : MembraneStructure
+            the tree structure of the regions in the membrane system
+        regions : dict
+            the dictionary containing the regions keyed by their identifier
+        infinite_obj : list
+            the list of objects in the environment with infinite multiplicity
+        """
         self.tree = tree
         self.environment = Environment(infinite_obj=infinite_obj)
         self.step_counter = 0
@@ -210,22 +256,80 @@ class MembraneSystem(QObject):
 
     # @abc.abstractmethod
     def apply(self, rule, region):
+        """
+        Abstract function to apply an evolution rule to a region
+
+        Parameters
+        ----------
+        rule : Rule
+            the rule to be applied
+        region : Region
+            the region that the rule is connected to
+        """
+
         pass
 
     # @abc.abstractmethod
     def is_applicable(self, rule, region):
+        """
+        Abstract function to determine whether a rule can be applied to a region
+
+        Parameters
+        ----------
+        rule : Rule
+            the rule to be applied
+        region : Region
+            the region that the rule is connected to
+
+        Returns
+        -------
+        bool
+            True if it can be applied, False otherwise
+        """
+
         pass
 
     # @abc.abstractmethod
     def simulate_step(self):
+        """
+        Abstract function used to simulate a single evolution step in the
+        membrane system
+        """
+
         pass
 
     # @abc.abstractmethod
     def get_result(self):
+        """
+        Abstract function used to return the result of the calculation
+        """
+
         pass
 
     @classmethod
     def is_valid_parentheses(cls, m_str):
+        """
+        A classmethod used to check if the string `m_str` is a valid structure
+        for a membrane system
+
+        Membrane systems can easily be represented with between brackets with
+        their objects as characters. Nesting them is also possible making it the
+        most consise way to describe such systems (rules have to be omitted or
+        brought to similar string format)
+
+        Parameters
+        ----------
+        m_str : str
+            the string containing the structure and objects of
+            the membrane system
+
+        Returns
+        -------
+        bool
+            True if `m_str` can represent a valid membrane system,
+            False otherwise
+        """
+
         open_paren = set(['(', '{', '['])
         close_paren = set([')', '}', ']'])
         stack = []
@@ -251,29 +355,107 @@ class MembraneSystem(QObject):
     # @abc.abstractmethod
     @classmethod
     def create_model_from_str(cls, m_str):
+        """
+        Abstract method used to create the membrane system corresponding
+        to the given string
+
+        Before calling this method, one has to check if the string is valid with
+        the function `is_valid_parentheses()`
+
+        Parameters
+        ----------
+        m_str : str
+            the string containing the membrane systems configuration
+        """
+
         pass
 
     def get_rule_string(self, region_id):
+        """
+        A function to return the string representation of a region's list of
+        rules
+
+        Parameters
+        ----------
+        region_id : int
+            the unique identifier of the region
+
+        Returns
+        -------
+        str
+            the concatenated string of the rules in the region
+        """
         return self.regions[region_id].get_rule_string()
 
     @classmethod
     def is_valid_rule(cls, rule_str):
+        """
+        Abstract class method used to check if a string is a valid
+        representation of a rule
+
+        Parameters
+        ----------
+        rule_str : str
+            the string containing the rule
+
+        Returns
+        -------
+        bool
+            True if it is a valid rule, False otherwise
+        """
+
         pass
 
     @classmethod
-    def string_to_rules(cls):
+    def string_to_rules(cls, rule_str):
+        """
+        Abstract class method used to create a list of rules from `rule_str`
+
+        Returns
+        -------
+        list
+            the list of created rules
+        """
+
         pass
 
     @classmethod
-    def parse_rule(cls):
+    def parse_rule(cls, rule_str):
+        """
+        Abstract class method used to parse `rule_str` and create a rule
+
+        Returns
+        -------
+        Rule
+            the rule created by the string
+        """
+
         pass
 
     @property
     def regions(self):
+        """
+        A getter method for the membrane system's regions
+
+        Returns
+        -------
+        dict
+            the dictionary containing {region_id : region_obj} pairs
+        """
+
         return self._regions
 
     @regions.setter
     def regions(self, value):
+        """
+        The setter method for the membrane system's regions
+
+        Parameters
+        ----------
+        value : list
+            the list containing the new rules
+        """
+
         self._regions = value
 
     def select_and_apply_rules(self, region):
@@ -286,6 +468,20 @@ class MembraneSystem(QObject):
                 indices.remove(idx)
 
     def get_parent_region(self, region):
+        """
+        A function used to return a region's parent
+
+        Parameters
+        ----------
+        region : Region
+            the region whose parent needs to be returned
+
+        Returns
+        -------
+        Region
+            the parent region
+        """
+
         region_id = region.id
         self.tree.preorder(self.tree.skin, self.tree.get_parent,
                            lambda x: x.id == region_id)
@@ -293,6 +489,20 @@ class MembraneSystem(QObject):
         return self.regions[result_node.id]
 
     def get_all_children(self, region):
+        """
+        A function used to return the children of the given region
+
+        Parameters
+        ----------
+        region : Region
+            the region whose children need to be returned
+
+        Returns
+        -------
+        list
+            the list containing the children
+        """
+
         region_id = region.id
         self.tree.preorder(self.tree.skin, self.tree.get_all_children,
                            lambda x: x.id == region_id)
@@ -300,6 +510,21 @@ class MembraneSystem(QObject):
         return [self.regions[i.id] for i in result_list]
 
     def get_num_of_children(self, region):
+        """
+        A function used to return the number of children
+        of the given region
+
+        Parameters
+        ----------
+        region : Region
+            the region whose number of children needs to be returned
+
+        Returns
+        -------
+        int
+            the number of children to node has
+        """
+
         region_id = region.id
         self.tree.preorder(self.tree.skin,
                            self.tree.get_num_of_children,
@@ -307,6 +532,20 @@ class MembraneSystem(QObject):
         return self.tree.result
 
     def get_child(self, region):
+        """
+        A function used to return one of the children of the given region
+
+        Parameters
+        ----------
+        region : Region
+            the region whose number of children needs to be returned
+
+        Returns
+        -------
+        Region
+            the child of the region
+        """
+
         region_id = region.id
         self.tree.preorder(self.tree.skin, self.tree.get_all_children,
                            lambda x: x.id == region_id)
@@ -315,9 +554,30 @@ class MembraneSystem(QObject):
             random.choice(result_list).id]
 
     def get_root_id(self):
+        """
+        A function used to return the identifier of the root node in the
+        tree structure
+
+        Returns
+        -------
+        int
+            the identifier of the root node
+        """
+
         return self.tree.get_root_id()
 
     def any_rule_applicable(self):
+        """
+        A function to check if any rule can be applied in the membrane system
+
+        This is important, because the simulation ends when this condition is
+        not met
+
+        Returns
+        -------
+        bool
+            True if there is a rule which can be applied, False otherwise
+        """
         for region in self.regions.values():
             for rule in region.rules:
                 if self.is_applicable(rule, region):
@@ -325,6 +585,13 @@ class MembraneSystem(QObject):
         return False
 
     def simulate_computation(self):
+        """
+        A function to run the whole simulation of a membrane system
+
+        Emits `sim_over` signal when there are no possible rules to apply to any
+        region
+        """
+
         while self.any_rule_applicable():
             self.simulate_step()
         self.signal.sim_over.emit(self.get_result())

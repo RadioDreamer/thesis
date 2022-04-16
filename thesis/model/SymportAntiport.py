@@ -12,17 +12,85 @@ from Region import Region
 
 
 class SymportAntiport(MembraneSystem):
+    """
+    A class to represent the symport antiport invariant of the membrane systems
+
+    In this type of system, the rules can be of three types:
+    `ANTIPORT` means that objects travel both in and out of the region
+    `SYMPORT_IN` means that objects travel only into the region
+    `SYMPORT_OUT` means that objects travel only out of the region
+
+    Attributes
+    ----------
+    tree : MembraneStructure
+        the tree structure of the regions in the membrane system
+    environment : Environment
+        the environment of the membrane system
+    step_counter : int
+        the number of simulation steps that have occured
+    regions : dict
+        the dictionary containing the region objects keyed by their identifier
+    signal : MembraneSignal
+        the objects for containing all the available signals
+    out_id : int
+        the special region's identifier which contains the result of the
+        computation
+    """
+
     def __init__(self, tree=None,
                  regions=None, infinite_obj=None, out_id=None):
+        """
+        A function used to initalize a symport/antiport system
+
+        Parameters
+        ----------
+        tree : MembraneStructure
+            the tree structure of the regions in the membrane system
+        regions : dict
+            the dictionary containing the regions keyed by their identifier
+        infinite_obj : list
+            the list of objects in the environment with infinite multiplicity
+        out_id : int
+            the identifier of the output region
+        """
+
         MembraneSystem.__init__(self, tree=tree, regions=regions,
                                 infinite_obj=infinite_obj)
         assert out_id is not None
         self.output_id = out_id
 
     def __repr__(self):
+        """
+        A function which generates the instance's representation
+
+        Returns
+        -------
+        str
+            the string containing the configuration of the system
+        """
+
         return f'Env:{self.environment} {self.regions.__repr__()}'
 
     def apply(self, rule, region):
+        """
+        A function that overrides the base class's `apply`
+
+        If there are exported objects within the region, we simply remove them
+        and add them to the parent region (since rules can always be in the form
+        of `IN: ___ OUT: ____`, thus if the rule is assigned to `region`, objects
+        can only travel outwards from it. The imported objects are removed from
+        the parent's objects and added to this region's objects. If the rule is
+        `SYMPORT_IN` or `SYMPORT_OUT` then only one of the two interactions will
+        happen.
+
+        Parameters
+        ----------
+        rule : SymportRule
+            the rule to be applied
+        region : Region
+            the region that the rule is assigned to
+        """
+
         if rule.rule_type == TransportationRuleType.SYMPORT_IN:
             if region.id == self.get_root_id():
                 self.environment -= rule.imported_obj
@@ -43,6 +111,22 @@ class SymportAntiport(MembraneSystem):
             parent.objects -= rule.imported_obj
 
     def is_applicable(self, rule, region):
+        """
+        A function that checks if a rule can be applied to a region
+
+        Parameters
+        ----------
+        rule : SymportRule
+            the rule to be applied
+        region : Region
+            the region that the rule is assigned to
+
+        Returns
+        -------
+        bool
+            True if it can be applied, False otherwise
+        """
+
         assert isinstance(rule, SymportRule)
         if rule.rule_type == TransportationRuleType.ANTIPORT:
             if self.get_root_id() == region.id:
@@ -76,6 +160,13 @@ class SymportAntiport(MembraneSystem):
                 return False
 
     def simulate_step(self):
+        """
+        A function to simulate a single evolution step in the membrane system
+
+        The order in which the regions are selected has to be random, in order
+        to guarantee non-determinisic behaviour
+        """
+
         if not self.any_rule_applicable():
             self.signal.sim_over.emit()
             return
@@ -90,10 +181,39 @@ class SymportAntiport(MembraneSystem):
         self.signal.sim_step_over.emit(self.step_counter)
 
     def get_result(self):
-        return self.regions[self.output_id]
+        """
+        A function to return the result of the calculation
+
+        Only returns the correct output if called after emitting `sim_over`
+
+        For the symport/antiport system, the result of the simulation is the
+        state of the region with `out_id` identifier
+
+        Returns
+        -------
+        MultiSet
+            the objects in the region with identifier `out_id`
+        """
+
+        return self.regions[self.output_id].objects
 
     @classmethod
     def create_model_from_str(cls, m_str):
+        """
+       A static method responsible for creating a `SymportAntiport` instance
+       from a string
+
+       Parameters
+       ----------
+       m_str : str
+           the string containing the configuration of the model
+
+       Returns
+       -------
+       SymportAntiport
+           the model corresponding to the string
+       """
+
         if not MembraneSystem.is_valid_parentheses(m_str):
             raise InvalidArgumentException
         root_node = None
@@ -135,6 +255,21 @@ class SymportAntiport(MembraneSystem):
 
     @classmethod
     def is_valid_rule(cls, rule_str):
+        """
+        A class method responsible for determining whether a string contains a
+        valid configuration for a rule
+
+        Parameters
+        ----------
+        rule_str : str
+            the string containing the rule
+
+        Returns
+        -------
+        bool
+            True if the string contains a valid rule, False otherwise
+        """
+
         rule_str = rule_str.replace(" ", "")
         return re.match(
             r'^(IN:\s*[a-z]+\s*$|OUT:\s*[a-z]+\s*$|(\s*IN:\s*\w+\s*OUT:\s*\w+\s*|\s*OUT:\s*[a-z]+\s*IN:\s*\w+\s*))',
@@ -142,6 +277,22 @@ class SymportAntiport(MembraneSystem):
 
     @classmethod
     def string_to_rules(cls, rules_str):
+        """
+        A class method which creates a list of rules from a string
+
+        The rules in the string must be separated by '\n'
+
+        Parameters
+        ----------
+        rules_str : str
+            the string describing a number of rules
+
+        Returns
+        -------
+        list
+            the list containing the parsed rules
+        """
+
         result_rules = []
         split_str = rules_str.split("\n")
         for rule in split_str:
@@ -150,6 +301,20 @@ class SymportAntiport(MembraneSystem):
 
     @classmethod
     def parse_rule(cls, rule_str):
+        """
+        A class method for parsing a string into a rule
+
+        Parameters
+        ----------
+        rule_str : str
+            the string containing the rule
+
+        Returns
+        -------
+        Rule
+            the rule that the string corresponds to
+        """
+        
         exp_obj = None
         imp_obj = None
         rule_str = rule_str.replace(" ", "")

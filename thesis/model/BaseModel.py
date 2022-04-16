@@ -15,10 +15,44 @@ from Region import Region
 
 
 class BaseModel(MembraneSystem):
+    """
+    A class to represent the base model of a membrane system
+
+    Attributes
+    ----------
+    tree : MembraneStructure
+        the tree structure of the regions in the membrane system
+    environment : Environment
+        the environment of the membrane system
+    step_counter : int
+        the number of simulation steps that have occured
+    regions : dict
+        the dictionary containing the region objects keyed by their identifier
+    signal : MembraneSignal
+        the objects for containing all the available signals
+    """
+
     def __init__(self, **kwargs):
+        """
+        A function used to initialize the membrane system
+
+        Essentially calls the base class's `__init__`
+        """
+
         super().__init__(**kwargs)
 
     def apply(self, rule, region):
+        """
+        A function that overrides the base class's `apply`
+
+        Parameters
+        ----------
+        rule : Rule
+            the rule that is to be applied
+        region : Region
+            the region on which the rule is to be applied
+        """
+
         if isinstance(rule, PriorityRule):
             if self.is_applicable(rule.strong_rule, region):
                 rule = rule.strong_rule
@@ -42,6 +76,22 @@ class BaseModel(MembraneSystem):
             region.is_dissolving = True
 
     def is_applicable(self, rule, region):
+        """
+        A function to check whether a rule can applied to a region
+
+        Parameters
+        ----------
+        rule : Rule
+            the rule to be checked
+        region : Region
+            the region that the rule acts on
+
+        Returns
+        -------
+        bool
+            True if the rule can be applied, False otherwise
+        """
+
         if isinstance(rule, PriorityRule):
             return self.is_applicable(rule.strong_rule,
                                       region) or self.is_applicable(
@@ -59,6 +109,17 @@ class BaseModel(MembraneSystem):
                     return region.objects.has_subset(rule.left_side)
 
     def simulate_step(self):
+        """
+        A function to simulate a single evolution step in the membrane system
+
+        During on step there may be dissolving regions, which are dealt with
+        after going through each region
+
+        Increases the `step_counter` variable by 1
+
+        Emits `region_dissolved(int)` and `sim_step_over`
+        """
+
         if not self.any_rule_applicable():
             self.signal.sim_over.emit(self.get_result())
             return
@@ -78,16 +139,54 @@ class BaseModel(MembraneSystem):
         self.signal.sim_step_over.emit(self.step_counter)
 
     def get_result(self):
-        print("GOOD")
+        """
+        A function to return the result of the calculation
+
+        Only returns the correct output if called after emitting `sim_over`
+
+        For the base model, the result of the simulation is the environment's
+        state
+
+        Returns
+        -------
+        MultiSet
+            the objects in the environment
+        """
+
         return self.environment.objects
 
     def dissolve_region(self, region):
+        """
+        A function used to handle the dissolving of the given region
+
+        The dissolving regions objects will travel to it's parent region. The
+        dissolving region's children will have the same parent as the
+        dissolving region one.
+
+        Parameters
+        ----------
+        region : Region
+            the region currently dissolving
+        """
+
         self.get_parent_region(region).objects += region.objects
         self.tree.preorder(self.tree.skin, self.tree.remove_node,
                            lambda x: x.id == region.id)
         del self.regions[region.id]
 
     def select_and_apply_rules(self, region):
+        """
+        A function that is responsible for selecting and applying rules in a
+        region
+
+        The rules are always chosen non-deterministically
+
+        Parameters
+        ----------
+        region : Region
+            the region in which rules can be chosen and applied
+        """
+
         indices = list(range(len(region.rules)))
         while indices:
             idx = random.choice(indices)
@@ -100,6 +199,21 @@ class BaseModel(MembraneSystem):
 
     @staticmethod
     def create_model_from_str(m_str):
+        """
+        A static method responsible for creating a `BaseModel` instance from a
+        string
+
+        Parameters
+        ----------
+        m_str : str
+            the string containing the configuration of the base model
+
+        Returns
+        -------
+        BaseModel
+            the base model corresponding to the string
+        """
+
         if not MembraneSystem.is_valid_parentheses(m_str):
             raise InvalidArgumentException
 
@@ -135,6 +249,21 @@ class BaseModel(MembraneSystem):
 
     @classmethod
     def is_valid_rule(cls, rule_str):
+        """
+        A class method responsible for determining whether a string contains a
+        valid configuration for a rule
+
+        Parameters
+        ----------
+        rule_str : str
+            the string containing the rule
+
+        Returns
+        -------
+        bool
+            True if the string contains a valid rule, False otherwise
+        """
+
         rule_str = rule_str.replace(" ", "")
         return re.match(
             r'[a-z]+->(|#)(IN|in):[a-z]*(OUT|out):[a-z]*(HERE|here):[a-z]*(|>[a-z]+(|#)->(IN|in):[a-z]*(OUT|out):[a-z]*(HERE|here):)',
@@ -142,6 +271,20 @@ class BaseModel(MembraneSystem):
 
     @classmethod
     def parse_rule(cls, rule_str):
+        """
+        A class method for parsing a string into a rule
+
+        Parameters
+        ----------
+        rule_str : str
+            the string containing the rule
+
+        Returns
+        -------
+        Rule
+            the rule that the string corresponds to
+        """
+
         rule_str = rule_str.replace(" ", "")
         if rule_str.count('>') == 3:
             first = rule_str.index('>')
@@ -195,6 +338,22 @@ class BaseModel(MembraneSystem):
 
     @classmethod
     def string_to_rules(cls, rules_str):
+        """
+        A class method which creates a list of rules from a string
+
+        The rules in the string must be separated by '\n'
+
+        Parameters
+        ----------
+        rules_str : str
+            the string describing a number of rules
+
+        Returns
+        -------
+        list
+            the list containing the parsed rules
+        """
+
         result_rules = []
         split_str = rules_str.split("\n")
         for rule in split_str:
