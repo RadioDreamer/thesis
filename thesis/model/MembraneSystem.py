@@ -606,28 +606,94 @@ class MembraneSystem(QObject):
 
     @classmethod
     def load_from_json_dict(cls, json_dict):
+        """
+        A class method used to construct a membrane system (or one of its derived
+        classes) from a JSON dictionary object
+
+        Since this is a classmethod, this function will work perfectly well with
+        subclasses, since each of them have to implement `create_model_from_str`
+        and `parse_rule`, in order to be instantiable.
+
+        Parameters
+        ----------
+        json_dict
+            the JSON dictionary containing the configuration of the membrane
+            system
+
+        Returns
+        -------
+        MembraneSystem (or subtype)
+            the system constructed from the JSON dictionary
+        """
+
         structure = json_dict["structure"]
         model = cls.create_model_from_str(structure)
-        for id, rule in json_dict["rules"].items():
-            parsed_rule = cls.parse_rule(rule)
-            model[id].add_rule(parsed_rule)
+        root_id = min(list(map(int, model.regions.keys())))
+        for id in json_dict["rules"].keys():
+            rule_list = json_dict["rules"][id]
+            for rule in rule_list:
+                parsed_rule = cls.parse_rule(rule)
+                shifted_id = int(id) + root_id
+                model.regions[shifted_id].add_rule(parsed_rule)
         return model
 
     def create_json_dict(self):
+        """
+        A function used to extract the information from the membrane system that
+        is essential for recreating
+
+        Returns
+        -------
+        dict
+            the dictionary that will be used to serialize the system
+        """
+
         result = {}
         result["type"] = self.__class__.__name__
         result["structure"] = self.structure_str
         result["rules"] = {}
         for r in self.regions.values():
             for rule in r.rules:
-                result["rules"][r.id] = str(rule)
+                result["rules"][r.id - self.get_root_id()] = []
+
+        for r in self.regions.values():
+            for rule in r.rules:
+                result["rules"][r.id - self.get_root_id()].append(str(rule))
         return result
 
     def save(self, path):
+        """
+        A function responsible for saving the state of the membrane system to
+        the given path
+
+        Parameters
+        ----------
+        path : str
+            the string containing the file path
+        """
+
         json_dict = self.create_json_dict()
         with open(path, 'w') as save_file:
             json.dump(json_dict, save_file)
 
     @classmethod
     def load(cls, json_dict):
+        """
+        A class method used for instantiating a membrane system from a JSON
+        dictionary
+
+        The membrane system will be of type that is specified in the `type` pair
+        contained in the dictionary
+
+        Parameters
+        ----------
+        json_dict : dict
+            the dictionary containing information for the membrane system's
+            creation
+
+        Returns
+        -------
+        MembraneSystem (or any of it's derived classes)
+            the system created by the dictionary
+        """
         return cls.load_from_json_dict(json_dict)

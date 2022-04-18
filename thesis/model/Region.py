@@ -138,4 +138,6 @@ class Region(QObject):
         return '\n'.join(rule_str)
 
     def add_rule(self, rule):
-        self.rules().append(rule)
+        self.rules.append(rule)
+        result = self.get_rule_string()
+        self.signal.rules_changed.emit(self.id, result)

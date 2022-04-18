@@ -90,7 +90,10 @@ class MembraneSimulator(QWidget):
                                                      str(
                                                          self.model.regions[
                                                              self.skin_id].objects),
-                                                     "", simulator=self)
+
+                                                     self.model.regions[
+                                                         self.skin_id].get_rule_string(),
+                                                     simulator=self)
         self.scene.addItem(self.view_regions[self.skin_id])
 
         gen_child_list = [self.skin_id]
@@ -118,7 +121,8 @@ class MembraneSimulator(QWidget):
                                                              str(
                                                                  self.model.regions[
                                                                      child.id].objects),
-                                                             "",
+                                                             self.model.regions[
+                                                                 child.id].get_rule_string(),
                                                              simulator=self,
                                                              parent=
                                                              self.view_regions[

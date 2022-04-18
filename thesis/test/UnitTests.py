@@ -4,6 +4,7 @@ import pytest
 
 # sys.path.append("/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model")
 sys.path.append("../model")
+sys.path.append("../view")
 from MultiSet import (
     MultiSet,
     ObjectNotFoundException,
@@ -489,10 +490,10 @@ def test_parse_rule():
     assert rule4.weak_rule.right_side == {('c', Direction.OUT): 1}
     assert rule4.strong_rule.left_side == {'a': 1}
     assert rule4.strong_rule.right_side == {('c', Direction.OUT): 1,
-                                ('a', Direction.OUT): 1,
-                                ('a', Direction.IN): 1,
-                                ('b', Direction.IN): 2,
-                                ('d', Direction.HERE): 2}
+                                            ('a', Direction.OUT): 1,
+                                            ('a', Direction.IN): 1,
+                                            ('b', Direction.IN): 2,
+                                            ('d', Direction.HERE): 2}
 
     s5 = "aaae -> IN: a OUT:HERE:"
     rule5 = BaseModel.parse_rule(s5)
@@ -531,6 +532,134 @@ def test_symport_parse():
     assert rule4.exported_obj == {'c': 2, 'd': 2}
     assert rule4.imported_obj is None
     assert rule4.rule_type == TransportationRuleType.SYMPORT_OUT
-# s6 = "a-># IN:abb OUT:ca HERE:dd"
-# rule6 = BaseModel.parse_rule(s6)
-# print(rule6)
+
+
+def test_append_rules():
+    n = Node()
+    n.add_child(Node())
+    n[0].add_child(Node())
+    ms = MembraneStructure(n)
+
+    dis_rule = DissolvingRule(left_side={}, right_side={})
+    region_0 = Region(n.id)
+    region_1 = Region(n.children[0].id, rules=[dis_rule],
+                      objects={'z': 2})
+    region_2 = Region(n.children[0].children[0].id,
+                      objects={'a': 2, 'b': 3}, rules=[dis_rule])
+    regions = {n.id: region_0, n[0].id: region_1, n[0][0].id: region_2}
+    model = BaseModel(tree=ms, regions=regions)
+
+    added_rule = BaseModelRule({'a': 1}, {('b', Direction.HERE): 1})
+    model.regions[n.id].add_rule(added_rule)
+    assert len(region_0.rules) == 1
+
+    added_rule_2 = BaseModelRule({'c': 1}, {('d', Direction.HERE): 1})
+    model.regions[n.id].add_rule(added_rule_2)
+    assert len(region_0.rules) == 2
+
+
+def test_save_model():
+    n = Node()
+    n.add_child(Node())
+    n[0].add_child(Node())
+    ms = MembraneStructure(n)
+
+    dis_rule = DissolvingRule(left_side={}, right_side={})
+    region_0 = Region(n.id)
+    region_1 = Region(n.children[0].id, rules=[dis_rule],
+                      objects={'z': 2})
+    region_2 = Region(n.children[0].children[0].id,
+                      objects={'a': 2, 'b': 3}, rules=[dis_rule])
+    regions = {n.id: region_0, n[0].id: region_1, n[0][0].id: region_2}
+    model = BaseModel(tree=ms, regions=regions)
+
+    added_rule = BaseModelRule({'a': 1}, {('b', Direction.HERE): 1})
+    model.regions[n.id].add_rule(added_rule)
+
+    added_rule_2 = BaseModelRule({'c': 1}, {('d', Direction.HERE): 1})
+    model.regions[n.id].add_rule(added_rule_2)
+
+    json_dict = model.create_json_dict()
+    assert json_dict["type"] == 'BaseModel'
+    assert json_dict["structure"] is None
+    assert json_dict["rules"][n.id - model.get_root_id()] == [str(added_rule),
+                                                              str(added_rule_2)]
+
+    model2 = BaseModel.create_model_from_str("[ [ab]]")
+    root_id = min(model2.regions.keys())
+    added_rule3 = BaseModelRule({'c': 1}, {('f', Direction.HERE): 1})
+    model2.regions[root_id].add_rule(added_rule3)
+    json_dict2 = model2.create_json_dict()
+    assert json_dict2["type"] == 'BaseModel'
+    assert json_dict2["structure"] == "[ [ab]]"
+    assert json_dict2["rules"][0] == [str(added_rule3)]
+
+    model3 = SymportAntiport.create_model_from_str("[[#ab]]")
+    root_id = min(model3.regions.keys())
+    other_id = root_id + 1
+    added_rule4 = SymportRule(TransportationRuleType.SYMPORT_IN,
+                              imported_obj={'a': 1})
+    added_rule5 = SymportRule(TransportationRuleType.SYMPORT_OUT,
+                              exported_obj={'b': 2})
+
+    model3.regions[root_id].add_rule(added_rule4)
+    model3.regions[other_id].add_rule(added_rule5)
+
+    json_dict3 = model3.create_json_dict()
+    assert json_dict3["type"] == 'SymportAntiport'
+    assert json_dict3["structure"] == "[[#ab]]"
+    assert model3.output_id == other_id
+    assert json_dict3["rules"][0] == [str(added_rule4)]
+    assert json_dict3["rules"][other_id - model3.get_root_id()] == [
+        str(added_rule5)]
+
+
+def test_load_model():
+    model = BaseModel.create_model_from_str("[ [ ab]]")
+    root_id = min(model.regions.keys())
+    added_rule3 = BaseModelRule({'c': 1}, {('f', Direction.HERE): 1})
+    model.regions[root_id].add_rule(added_rule3)
+
+    json_dict = model.create_json_dict()
+    loaded_model = BaseModel.load_from_json_dict(json_dict)
+
+    assert loaded_model.structure_str == "[ [ ab]]"
+    root_id = min(loaded_model.regions.keys())
+    child_id = root_id + 1
+    assert len(loaded_model.regions[root_id].rules) == 1
+    assert loaded_model.regions[child_id].objects == {'a': 1, 'b': 1}
+    assert loaded_model.get_num_of_children(loaded_model.regions[root_id]) == 1
+
+    model2 = SymportAntiport.create_model_from_str("acc[a[#cc]]")
+
+    json_dict2 = model2.create_json_dict()
+    loaded_model2 = SymportAntiport.load_from_json_dict(json_dict2)
+
+    root_id = min(loaded_model2.regions.keys())
+    other_id = root_id + 1
+    assert loaded_model2.structure_str == "acc[a[#cc]]"
+    assert loaded_model2.output_id == other_id
+    assert loaded_model2.regions[root_id].objects == {'a': 1}
+    assert loaded_model2.regions[other_id].objects == {'c': 2}
+    assert loaded_model2.environment.infinite_obj == set(['a', 'c'])
+    assert len(loaded_model2.environment.infinite_obj) == 2
+
+
+def test_multiple_save_multiple_load():
+    model = BaseModel.create_model_from_str("[ [ ab]]")
+    model2 = SymportAntiport.create_model_from_str("acc[a[#cc]]")
+    model3 = BaseModel.create_model_from_str("[ [c []]]")
+    model3.regions[model3.get_root_id()].add_rule(
+        BaseModelRule({'a': 1}, {('c', Direction.OUT): 2}))
+
+    json_dict = model.create_json_dict()
+    json_dict2 = model2.create_json_dict()
+    json_dict3 = model3.create_json_dict()
+
+    l_model = BaseModel.load_from_json_dict(json_dict)
+    l_model2 = SymportAntiport.load_from_json_dict(json_dict2)
+    l_model3 = BaseModel.load_from_json_dict(json_dict3)
+
+    assert l_model.structure_str == "[ [ ab]]"
+    assert l_model2.structure_str == "acc[a[#cc]]"
+    assert l_model3.structure_str == "[ [c []]]"
