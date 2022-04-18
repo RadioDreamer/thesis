@@ -16,15 +16,15 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QResizeEvent, QAction
 from StructureDialog import StructureDialog
 from MembraneSimulator import MembraneSimulator, ModelType
-
+from HelpMenu import HelpMenu
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.resize(800, 800)
+        self.resize(1400, 900)
         self.setWindowTitle("Membránrendszer szimuláció")
-        container = QWidget()
-        self.setCentralWidget(container)
+        # container = QWidget()
+
         self.membranes = MembraneSimulator(self.rect().width() / 2,
                                            self.rect().height() / 2)
         menu = self.menuBar()
@@ -58,6 +58,13 @@ class MainWindow(QMainWindow):
         run_step.triggered.connect(self.membranes.simulate_step)
         run_sim.triggered.connect(self.membranes.simulate_computation)
 
+
+        # Súgó
+        help_menu = menu.addMenu("Súgó")
+        help_action = QAction("Segítség a szoftver használatához", self)
+        help_menu.addActions([help_action])
+        help_action.triggered.connect(self.show_help)
+
         self.setStatusBar(QStatusBar(self))
         self.statusBar().addPermanentWidget(
             QPushButton("Teljes szimuláció indítása"))
@@ -66,19 +73,25 @@ class MainWindow(QMainWindow):
         self.statusBar().addPermanentWidget(QLabel("Lépések száma: 0"))
         self.statusBar().hide()
 
-        self.button = QPushButton("Press me")
-        self.button.pressed.connect(self.btn_pressed)
-        layout = QVBoxLayout()
-        layout.addWidget(self.button)
-
-        layout.addWidget(self.membranes.view)
-        container.setLayout(layout)
+        self.setCentralWidget(self.membranes.view)
+        # self.button = QPushButton("Press me")
+        # self.button.pressed.connect(self.btn_pressed)
+        # layout = QVBoxLayout()
+        # layout.addWidget(self.button)
+        #
+        # layout.addWidget(self.membranes.view)
+        # container.setLayout(layout)
 
     def btn_pressed(self):
         if self.membranes.is_visible():
             self.membranes.hide_membranes()
         else:
             self.membranes.show_membranes()
+
+
+    def show_help(self):
+        help_menu = HelpMenu()
+        help_menu.exec()
 
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)

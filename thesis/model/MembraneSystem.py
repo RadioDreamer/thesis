@@ -648,10 +648,8 @@ class MembraneSystem(QObject):
             the dictionary that will be used to serialize the system
         """
 
-        result = {}
-        result["type"] = self.__class__.__name__
-        result["structure"] = self.structure_str
-        result["rules"] = {}
+        result = {"type": self.__class__.__name__,
+                  "structure": self.structure_str, "rules": {}}
         for r in self.regions.values():
             for rule in r.rules:
                 result["rules"][r.id - self.get_root_id()] = []
