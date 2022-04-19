@@ -10,7 +10,8 @@ from PySide6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
     QStatusBar,
-    QFileDialog
+    QFileDialog,
+    QMessageBox
 )
 
 from PySide6.QtGui import QResizeEvent, QAction
@@ -27,6 +28,9 @@ class MainWindow(QMainWindow):
 
         self.membranes = MembraneSimulator(self.rect().width() / 2,
                                            self.rect().height() / 2)
+        self.membranes.signal.counter_increment.connect(self.increment_counter_label)
+        self.membranes.signal.simulation_over.connect(self.simulation_over)
+
         menu = self.menuBar()
 
         save_action = QAction("Mentés", self)
@@ -68,9 +72,9 @@ class MainWindow(QMainWindow):
         self.setStatusBar(QStatusBar(self))
         self.statusBar().addPermanentWidget(
             QPushButton("Teljes szimuláció indítása"))
-        self.statusBar().addPermanentWidget(
-            QPushButton("Szimuláció lépés indítása"))
-        self.statusBar().addPermanentWidget(QLabel("Lépések száma: 0"))
+        self.counter_label = QLabel("Lépések száma: 0")
+        self.statusBar().addPermanentWidget(QPushButton("Szimuláció lépés indítása"))
+        self.statusBar().addPermanentWidget(self.counter_label)
         self.statusBar().hide()
 
         self.setCentralWidget(self.membranes.view)
@@ -82,12 +86,13 @@ class MainWindow(QMainWindow):
         # layout.addWidget(self.membranes.view)
         # container.setLayout(layout)
 
-    def btn_pressed(self):
-        if self.membranes.is_visible():
-            self.membranes.hide_membranes()
-        else:
-            self.membranes.show_membranes()
+    def increment_counter_label(self, event):
+        self.counter_label.setText(str(event))
 
+    def simulation_over(self, result):
+        msg_box = QMessageBox()
+        msg_box.setText(f"Simulation Over!\nResult:{result}")
+        msg_box.exec()
 
     def show_help(self):
         help_menu = HelpMenu()

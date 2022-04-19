@@ -4,7 +4,9 @@
 
 ## Kezdő lépések
 
-### Egy membránrendszer betöltéséhez két módot biztosít az alkalmazás:
+## Betöltés
+
+Egy membránrendszer betöltéséhez két módot biztosít az alkalmazás:
 
 1. Mentett membránrendszer betöltése ( *Menü* => *Fájl* => *Betöltés*)
     - Ilyenkor egy már meglévő fájlban lévő membránrendszer kerül betöltésre.
@@ -31,3 +33,25 @@
            feldolgozott jelenti a végleges kimeneti régiót)
     - Meg kell jegyezni, hogy a struktúra és a benne lévő objektumok megadása nem elegendő ahhoz, hogy szimulálni
       tudjunk egy membránrendszert, hiszen evolúciós szabályok nélkül nincs változás a rendszerben
+
+## Régiók szerkesztése
+
+## Mentés
+
+( *Menü* => *Mentés* )
+
+- A szoftver lehetőséget biztosít felhasználó által megadott membránrendszer aktuális állapotának elmentésére. Ez nagyon
+  hasznos tud lenni, hiszen ilyenkor nem kell minden alkalommal a struktúra megadásával majd szabályok hozzávételével
+  újraalkotni egy kezdőállapotot, hanem elegendő csak betölteni.
+- A mentés kezdeményezhető a menüsávból, de a **Ctrl+S** billentyűkombináció is hozzá van rendelve a funkcióhoz
+
+## Szimuláció futtatása
+
+- Miután megkonstruáltál egy membránrendszert, már csak egy dolog van hátra: szimulálni azt.
+- A szimuláláshoz két funkciót biztosít a program:
+    1. Lépésenkénti futtatás ( *Menü* => *Futtatás* => *Szimuláció lépés indítása*)
+        - Ilyenkor a membránrendszerben csak egy evolúció zajlik vége, azaz minden régióban alkalmazzuk a kiválasztott
+          szabályok multihalmazát
+    2. Teljes szimuláció futtatása ( *Menü* => *Futtatás* => *Teljes szimuláció indítása*)
+        - Ilyenkor a membránrendszer teljes számítása végbemegy, egy felugró ablakban pedig megjelenik a számítás
+          eredménye

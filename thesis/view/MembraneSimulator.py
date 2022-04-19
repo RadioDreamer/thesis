@@ -12,12 +12,17 @@ from BaseModel import BaseModel
 from SymportAntiport import SymportAntiport
 from MultiSet import MultiSet
 from RegionView import RegionView
-from PySide6.QtCore import QRectF
+from PySide6.QtCore import QRectF, QObject, Signal
 
 
 class ModelType(Enum):
     BASE = 0
     SYMPORT = 1
+
+
+class SimulatorSignal(QObject):
+    simulation_over = Signal(dict)
+    counter_increment = Signal(int)
 
 
 class MembraneSimulator(QWidget):
@@ -30,28 +35,19 @@ class MembraneSimulator(QWidget):
         self.view = QGraphicsView()
         self.view_regions = {}
         self.view.setScene(self.scene)
-
+        self.signal = SimulatorSignal()
         self.max_width = max_width
         self.max_height = max_height
-
-    #    @classmethod
-    #    def is_valid_rule(cls, rule_str):
-    #        return MembraneSystem.is_valid_rule(rule_str)
-
-    def simulation_over(self, result):
-        print("ENV", self.model.environment.objects)
-        print("RESULT", result)
-        msg_box = QMessageBox()
-        msg_box.setText(f"Simulation Over!\nResult:{result}")
-        msg_box.exec()
 
     def set_model_object(self, model_obj):
         if isinstance(model_obj, BaseModel):
             self.type = ModelType.BASE
         elif isinstance(model_obj, SymportAntiport):
             self.type = ModelType.SYMPORT
+
         self.model = model_obj
-        self.model.signal.sim_over.connect(self.simulation_over)
+        self.model.signal.sim_over.connect(self.signal.simulation_over.emit)
+        self.model.signal.sim_step_over.connect(self.signal.counter_increment.emit)
         self.model.signal.obj_changed.connect(self.update_obj_view)
         self.model.signal.rules_changed.connect(self.update_rule_view)
         self.model.signal.region_dissolved.connect(self.update_dissolve)
@@ -64,7 +60,9 @@ class MembraneSimulator(QWidget):
         elif type == ModelType.SYMPORT:
             self.type = ModelType.SYMPORT
             self.model = SymportAntiport.create_model_from_str(string)
-        self.model.signal.sim_over.connect(self.simulation_over)
+
+        self.model.signal.sim_over.connect(self.signal.simulation_over.emit)
+        self.model.signal.sim_step_over.connect(self.signal.counter_increment.emit)
         self.model.signal.obj_changed.connect(self.update_obj_view)
         self.model.signal.rules_changed.connect(self.update_rule_view)
         self.model.signal.region_dissolved.connect(self.update_dissolve)

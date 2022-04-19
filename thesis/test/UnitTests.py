@@ -2,7 +2,6 @@ import re
 import sys
 import pytest
 
-# sys.path.append("/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/model")
 sys.path.append("../model")
 sys.path.append("../view")
 from MultiSet import (
