@@ -197,6 +197,12 @@ def test_environment():
     with pytest.raises(InvalidOperationException) as _:
         env -= MultiSet({'c': 2, 'a': 10000, 'g': 2, 'b': 2})
 
+    with pytest.raises(InvalidOperationException) as _:
+        another_multiset = env + MultiSet({'a': 1})
+
+    with pytest.raises(InvalidOperationException) as _:
+        another_multiset = env - MultiSet({'a': 1})
+
 
 def test_dissolve():
     n = Node()

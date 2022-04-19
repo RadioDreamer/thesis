@@ -36,6 +36,39 @@ Egy membránrendszer betöltéséhez két módot biztosít az alkalmazás:
 
 ## Régiók szerkesztése
 
+- Egy régió objektumainak és szabályainak szerkesztéséhez duplán kell kattintani a régió belsejébe
+- Ilyenkor egy felugró ablakban külön szövegdobozban adhatjuk meg a régió új objektumait a felső szövegdobozban
+  (alapértelmezett szövegként jelenik meg a régió jelenlegi objektumhalmaza), illetve új szabályait.
+- Az objektumok csak az angol ábécé kisbetűiből állhatnak ([a-z])
+
+### Szabályok helyes formátuma
+
+- Mivel a programmal két típusú membránrendszer szimulálható, ezért ezek külön feltételeket szabnak a szabályaik
+  alakjáról
+- Alapmodell
+    - Általánosan:
+      *1* ->(#) IN: *2* OUT: *3* HERE: *4*
+        1. A szabály úgynevezett bal oldala. Azokból az objektumokból áll, amelyeknek rendelkezésre kell állniuk a
+           régióban ahhoz, hogy végbemehessen az evolúciós lépés
+        2. A szabály alkalmazásának következtében a szülőbe vándorló objektumok
+        3. A szabály alkalmazásának következtében valamelyik gyerek régióba vándorló objektumok (nemdeterminisztikusan
+           választjuk ki, de csak akkor alkalmazható a szabály, ha legalább egy gyerekkel rendelkezik a régió)
+        4. A szabály alkalmazásának következtében keletkező helyben maradó objektumok
+    - Ha a bal és jobb oldalt elválasztó nyíl végén egy '#' szimbólum található, az azt jelenti, hogy az adott régió a
+      szabály alkalmazása után felbomlik
+    - Üres bal oldallal nem konstruálható szabály
+    - Az objektumok ebben az esetben is csak az angol ábécé kisbetűi lehetnek
+    - Ezen kívül megadható még prioritásos szabály, amelynek alakja:
+    *erősebb_szabály* > *gyengébb szabály*
+      - Mindaddig nem alkalmazhatjuk a gyengébb szabályt, ameddig az erősebb alkalmazható.
+- Szimport-antiport modell
+    - Általánosan:
+      IN: 1 OUT: 2 **VAGY** IN: 1 **VAGY** OUT: 2
+        1. A régióba beérkező objektumok
+        2. A régióból kivándorló objektumok
+    - Fontos megjegyezni, hogy ha a legelső típusú (antiport) szabályt szeretnénk megadni, olyankor mindkét irányba
+      kötelező, hogy legalább egy objektum mozogjon
+
 ## Mentés
 
 ( *Menü* => *Mentés* )

@@ -42,7 +42,5 @@ class HelpMenu(QDialog):
         layout.addWidget(self.button_box)
         self.setLayout(layout)
 
-
-
-    def resizeEvent(self, event):
-        self.help_md.resize(event.size())
+#    def resizeEvent(self, event):
+#        self.help_md.resize(event.size())
