@@ -10,9 +10,29 @@ from PySide6.QtGui import QTextCursor, QTextBlockFormat
 
 
 class HelpMenu(QDialog):
+    """
+    A class for displaying helpful information to the user using the simulator
+
+    Attributes
+    ----------
+    button_box : QDialogButtonBox
+        the button box to accept user input
+    help_md : QTextEdit
+        the text field for displaying the guide
+    """
+
     def __init__(self, parent=None):
+        """
+        A function for initializing the guide
+
+        Parameters
+        ----------
+        parent : QObject
+            the parent of the dialog window
+        """
+
         super().__init__(parent)
-        self.setMinimumSize(750,400)
+        self.setMinimumSize(750, 400)
 
         with open("./software_guide.md") as md_file:
             help_md_string = md_file.readlines()
@@ -41,6 +61,3 @@ class HelpMenu(QDialog):
         layout.addWidget(self.help_md)
         layout.addWidget(self.button_box)
         self.setLayout(layout)
-
-#    def resizeEvent(self, event):
-#        self.help_md.resize(event.size())

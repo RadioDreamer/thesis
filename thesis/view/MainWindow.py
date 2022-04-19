@@ -11,9 +11,11 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QStatusBar,
     QFileDialog,
-    QMessageBox
+    QMessageBox,
+    QDialog
 )
 
+from PySide6.QtCore import QFile
 from PySide6.QtGui import QResizeEvent, QAction
 from StructureDialog import StructureDialog
 from MembraneSimulator import MembraneSimulator, ModelType
@@ -112,23 +114,27 @@ class MainWindow(QMainWindow):
 
     def create_base_dialog(self):
         dialog = StructureDialog(self, MembraneSimulator.is_valid_structure)
-        dialog.exec()
-        self.membranes.set_model(ModelType.BASE, dialog.get_text())
-        self.statusBar().show()
+        result = dialog.exec()
+        if result == QDialog.Accepted:
+            self.membranes.set_model(ModelType.BASE, dialog.get_text())
+            self.statusBar().show()
 
     def save_file_dialog(self):
         name = QFileDialog.getSaveFileName(self, 'Save File')
-        self.membranes.save_model(name[0])
+        if name[0] != '':
+            self.membranes.save_model(name[0])
 
     def load_file_dialog(self):
         name = QFileDialog.getOpenFileName(self, 'Open File')
-        self.membranes.load_model(name[0])
+        if QFile.exists(name[0]):
+            self.membranes.load_model(name[0])
 
     def create_symport_dialog(self):
         dialog = StructureDialog(self, MembraneSimulator.is_valid_structure)
-        dialog.exec()
-        self.membranes.set_model(ModelType.SYMPORT, dialog.get_text())
-        self.statusBar().show()
+        result = dialog.exec()
+        if result == QDialog.Accepted:
+            self.membranes.set_model(ModelType.SYMPORT, dialog.get_text())
+            self.statusBar().show()
 
 
 if __name__ == "__main__":

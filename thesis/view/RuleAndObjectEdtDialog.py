@@ -1,3 +1,5 @@
+import re
+
 from PySide6.QtWidgets import (
     QDialog,
     QVBoxLayout,
@@ -10,6 +12,26 @@ from PySide6.QtWidgets import (
 
 
 class RuleAndObjectEditDialog(QDialog):
+    """
+    A class responsible for displaying the dialog for changing a region's
+    rules and objects, then storing the input for updating the view
+
+    Attributes
+    ----------
+    valid_fn : function
+        the function that validates the rules from the user input
+    rules : string
+        the string containing the current rules of the region
+    button_box : QDialogButtonBox
+        the button box to accept or the cancel the dialog
+    layout : QVBoxLayout
+        the layout of the dialog
+    object_edit : QLineEdit
+        the editing tool for the objects in the region
+    rule_edit_list : QPlainTextEdit
+        the editor for editing the rules in the region
+    """
+
     def __init__(self, region_objects, rules_string, type, valid_fn=None,
                  parent=None):
         super().__init__(parent)
@@ -37,21 +59,35 @@ class RuleAndObjectEditDialog(QDialog):
         self.setLayout(self.layout)
 
     def get_rules(self):
+        """
+        Getter method for returning the state of the rules
+
+        Returns
+        -------
+        str
+            the string containing the state of the region's rules
+        """
+
         return self.rules
 
     def accept(self):
-        if self.rules == self.rule_edit_list.toPlainText():
-            super().accept()
+        """
+        Slot method for handling the user clicking the accept button
+
+        If both the objects and the rules are valid, then calls the base
+        class's `accept().
+        """
+        obj_cond = re.match(r'^[a-z]*$', self.object_edit.text()) is None
 
         rule_list = self.rule_edit_list.toPlainText().split('\n')
-        cond = True
+        all_rule_cond = True
         if rule_list != [""]:
             for rule in rule_list:
                 if not self.valid_fn(rule):
-                    cond = False
+                    all_rule_cond = False
                     break
 
-        if not cond:
+        if not all_rule_cond or obj_cond:
             msg_box = QMessageBox(self)
             msg_box.setText("Nem helyes szabály!")
             msg_box.exec()
