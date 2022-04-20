@@ -9,11 +9,38 @@ from PySide6.QtWidgets import (
 
 
 class StructureDialog(QDialog):
+    """
+    A class for displaying the dialog that accepts the string representation of
+    the membrane system's structure and objects
+
+    Attributes
+    ----------
+    valid_fn : function
+        the function that validates the structure from the user input
+    _text : str
+        the user input after clicking 'OK'
+    button_box : QDialogButtonBox
+        the button box to accept or the cancel the dialog
+    layout : QVBoxLayout
+        the layout of the dialog
+    """
+
     def __init__(self, parent=None, valid_fn=None):
+        """
+        A function for initializing the dialog
+
+        Parameters
+        ----------
+        parent : QWidget
+            the parent widget of the dialog
+        valid_fn : function
+            the function that will be used to validate the user input
+        """
+
         super().__init__(parent)
         self.setWindowTitle("Membránstruktúra megadása")
         self.valid_fn = valid_fn
-        self.text = ""
+        self._text = ""
         QBtn = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         self.button_box = QDialogButtonBox(QBtn)
         self.button_box.accepted.connect(self.accept)
@@ -30,6 +57,13 @@ class StructureDialog(QDialog):
         self.setLayout(self.layout)
 
     def accept(self):
+        """
+        A slot connected to clicking the 'OK' button on the dialog
+
+        If the user input is valid by `valid_fn`, then the base class's `accept`
+        is called, else a `QMessageBox` appears with a warning
+        """
+
         if self.valid_fn(self.text):
             super().accept()
         else:
@@ -37,8 +71,30 @@ class StructureDialog(QDialog):
             msg_box.setText("Not a valid membrane system!")
             msg_box.exec()
 
-    def set_text(self, string):
-        self.text = string
+    @property
+    def text(self):
+        """
+        A getter method for returning the user input
 
-    def get_text(self):
-        return self.text
+        Returns
+        -------
+        str
+            the string containing the user input
+        """
+
+        return self._text
+
+    @text.setter
+    def text(self, string):
+        """
+        A setter method for changing the variable that stores the user input
+
+        Parameters
+        ----------
+        string : str
+            the new value of the field `text`
+        """
+
+        self._text = string
+
+
