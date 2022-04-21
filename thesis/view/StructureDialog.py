@@ -40,7 +40,7 @@ class StructureDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("Membránstruktúra megadása")
         self.valid_fn = valid_fn
-        self._text = ""
+        self.text = ""
         QBtn = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         self.button_box = QDialogButtonBox(QBtn)
         self.button_box.accepted.connect(self.accept)
@@ -71,8 +71,7 @@ class StructureDialog(QDialog):
             msg_box.setText("Not a valid membrane system!")
             msg_box.exec()
 
-    @property
-    def text(self):
+    def get_text(self):
         """
         A getter method for returning the user input
 
@@ -82,10 +81,9 @@ class StructureDialog(QDialog):
             the string containing the user input
         """
 
-        return self._text
+        return self.text
 
-    @text.setter
-    def text(self, string):
+    def set_text(self, string):
         """
         A setter method for changing the variable that stores the user input
 
@@ -95,6 +93,6 @@ class StructureDialog(QDialog):
             the new value of the field `text`
         """
 
-        self._text = string
+        self.text = string
 
 

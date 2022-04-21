@@ -115,6 +115,7 @@ class RegionView(QGraphicsRectItem):
     #        super().mouseMoveEvent(event)
 
     ##################################
+
     def center_text(self):
         text_rect = QRectF(self.obj_text.boundingRect())
         rule_rect = QRectF(self.rule_text.boundingRect())

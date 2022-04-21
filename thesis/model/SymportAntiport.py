@@ -40,7 +40,8 @@ class SymportAntiport(MembraneSystem):
     """
 
     def __init__(self, tree=None,
-                 regions=None, infinite_obj=None, structure_str=None, out_id=None):
+                 regions=None, infinite_obj=None, structure_str=None,
+                 out_id=None):
         """
         A function used to initalize a symport/antiport system
 
@@ -57,7 +58,8 @@ class SymportAntiport(MembraneSystem):
         """
 
         MembraneSystem.__init__(self, tree=tree, regions=regions,
-                                infinite_obj=infinite_obj, structure_str=structure_str)
+                                infinite_obj=infinite_obj,
+                                structure_str=structure_str)
         assert out_id is not None
         self.output_id = out_id
 
@@ -105,12 +107,18 @@ class SymportAntiport(MembraneSystem):
                 self.environment += rule.exported_obj
             else:
                 self.get_parent_region(region).new_objects += rule.exported_obj
-        else:
-            region.objects -= rule.exported_obj
-            region.new_objects += rule.imported_obj
-            parent = self.get_parent_region(region)
-            parent.new_objects += rule.exported_obj
-            parent.objects -= rule.imported_obj
+        elif rule.rule_type == TransportationRuleType.ANTIPORT:
+            if region.id == self.get_root_id():
+                self.environment += rule.exported_obj
+                self.environment -= rule.imported_obj
+                region.objects -= rule.exported_obj
+                region.objects += rule.imported_obj
+            else:
+                region.objects -= rule.exported_obj
+                region.new_objects += rule.imported_obj
+                parent = self.get_parent_region(region)
+                parent.new_objects += rule.exported_obj
+                parent.objects -= rule.imported_obj
 
     def is_applicable(self, rule, region):
         """
@@ -162,6 +170,9 @@ class SymportAntiport(MembraneSystem):
                 return False
 
     def simulate_step(self):
+        # TODO: rendszerszinten nézni a szabályokat, nem elég régiónként
+        #  végigmenni
+
         """
         A function to simulate a single evolution step in the membrane system
 
@@ -253,7 +264,9 @@ class SymportAntiport(MembraneSystem):
                 raise InvalidArgumentException
 
         structure = MembraneStructure(root_node)
-        return SymportAntiport(tree=structure, regions=regions, out_id=output_id, infinite_obj=infite_obj, structure_str=m_str)
+        return SymportAntiport(tree=structure, regions=regions,
+                               out_id=output_id, infinite_obj=infite_obj,
+                               structure_str=m_str)
 
     @classmethod
     def is_valid_rule(cls, rule_str):
