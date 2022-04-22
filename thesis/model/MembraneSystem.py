@@ -139,7 +139,7 @@ class Environment(MultiSet):
         """
 
         for obj, mul in multiset:
-            if obj in self.infinite_obj:
+            if self.infinite_obj and obj in self.infinite_obj:
                 pass
             elif obj in self.objects:
                 self[obj] += mul
@@ -313,6 +313,26 @@ class MembraneSystem(QObject):
 
         pass
 
+    def select_and_apply_rules(self, region):
+        pass
+        # indices = list(range(len(region.rules)))
+        # while indices:
+        #     idx = random.choice(indices)
+        #     if self.is_applicable(region.rules[idx], region):
+        #         self.apply(region.rules[idx], region)
+        #     else:
+        #         indices.remove(idx)
+
+    @classmethod
+    def copy_system(cls, ms):
+        pass
+        # return cls(tree=ms.tree, regions=ms.regions,..)
+        # Lehet így is meg lehet oldani
+
+    @classmethod
+    def simulate_membrane_system(cls):
+        pass
+
     @classmethod
     def is_valid_parentheses(cls, m_str):
         """
@@ -464,15 +484,6 @@ class MembraneSystem(QObject):
         """
 
         self._regions = value
-
-    def select_and_apply_rules(self, region):
-        indices = list(range(len(region.rules)))
-        while indices:
-            idx = random.choice(indices)
-            if self.is_applicable(region.rules[idx], region):
-                self.apply(region.rules[idx], region)
-            else:
-                indices.remove(idx)
 
     def get_parent_region(self, region):
         """

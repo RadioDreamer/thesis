@@ -1,3 +1,4 @@
+import copy
 import random
 import re
 from MembraneSystem import MembraneSystem
@@ -134,8 +135,8 @@ class BaseModel(MembraneSystem):
             if region.is_dissolving:
                 dissolving_regions.append(region)
         for region in dissolving_regions:
-            self.dissolve_region(region)
             self.signal.region_dissolved.emit(region.id)
+            self.dissolve_region(region)
 
         self.step_counter += 1
         self.signal.sim_step_over.emit(self.step_counter)
@@ -156,6 +157,23 @@ class BaseModel(MembraneSystem):
         """
 
         return self.environment.objects
+
+    @classmethod
+    def copy_system(cls, ms):
+        tree = copy.deepcopy(ms.tree)
+        env = copy.deepcopy(ms.environment)
+        structure_str = copy.deepcopy(ms.structure_str)
+
+        regions_dict = {k: [None, None] for k in ms.regions.keys()}
+        for r_id, rule in ms.regions.items():
+            regions_dict[r_id][0] = copy.deepcopy(ms.regions[r_id].objects)
+            regions_dict[r_id][1] = copy.deepcopy(ms.regions[r_id].rules)
+
+        regions = {id: Region(id, l[0], l[1]) for id, l in regions_dict.items()}
+        copy_model = BaseModel(tree=tree, regions=regions,
+                               structure_str=structure_str)
+        copy_model.environment = env
+        return copy_model
 
     def dissolve_region(self, region):
         """
@@ -249,14 +267,14 @@ class BaseModel(MembraneSystem):
         result = BaseModel(tree=structure, regions=regions, structure_str=m_str)
         return result
 
-#    @staticmethod
-#    def load_from_json_dict(cls, json_dict):
-#        structure = json_dict["structure"]
-#        model = cls.create_model_from_str(structure)
-#        for id, rule in json_dict["rules"].items():
-#            parsed_rule = cls.parse_rule(rule)
-#            model[id].add_rule(parsed_rule)
-#        return model
+    #    @staticmethod
+    #    def load_from_json_dict(cls, json_dict):
+    #        structure = json_dict["structure"]
+    #        model = cls.create_model_from_str(structure)
+    #        for id, rule in json_dict["rules"].items():
+    #            parsed_rule = cls.parse_rule(rule)
+    #            model[id].add_rule(parsed_rule)
+    #        return model
 
     @classmethod
     def is_valid_rule(cls, rule_str):

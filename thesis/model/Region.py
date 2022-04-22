@@ -115,6 +115,7 @@ class Region(QObject):
         value : MultiSet
             the multiset containing the new state of `objects`
         """
+
         self.signal.obj_changed.emit(self.id, str(value))
         self._objects = value
 
@@ -122,6 +123,7 @@ class Region(QObject):
         """
         A function used to generate the instance representation
         """
+
         return "Region:" + self.objects.__repr__()
 
     def get_rule_string(self):
@@ -134,6 +136,7 @@ class Region(QObject):
         str
             the string containing all the region's rules separated by '\n'
         """
+
         rule_str = [str(r) for r in self._rules]
         return '\n'.join(rule_str)
 

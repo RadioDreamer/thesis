@@ -170,26 +170,30 @@ class SymportAntiport(MembraneSystem):
                 return False
 
     def simulate_step(self):
-        # TODO: rendszerszinten nézni a szabályokat, nem elég régiónként
-        #  végigmenni
-
         """
         A function to simulate a single evolution step in the membrane system
 
-        The order in which the regions are selected has to be random, in order
-        to guarantee non-determinisic behaviour
+        The order in which the rules are selected across all the regions has
+        to be random, in order to guarantee non-determinisic behaviour
         """
 
         if not self.any_rule_applicable():
             self.signal.sim_over.emit(self.get_result())
             return
-        shuffle_regions = list(self.regions.values())
-        random.shuffle(shuffle_regions)
-        for region in shuffle_regions:
-            self.select_and_apply_rules(region)
+
+        rule_indices = {}
+        idx = 0
+        for region in self.regions.values():
+            for rule in region.rules:
+                rule_indices[idx] = (rule, region)
+                idx = idx + 1
+
+        self.select_and_apply_rules()
+
         for region in self.regions.values():
             region.objects += region.new_objects
             region.new_objects = MultiSet()
+
         self.step_counter += 1
         self.signal.sim_step_over.emit(self.step_counter)
 
@@ -209,6 +213,23 @@ class SymportAntiport(MembraneSystem):
         """
 
         return self.regions[self.output_id].objects
+
+    def select_and_apply_rules(self):
+        rule_indices = {}
+        idx = 0
+        for region in self.regions.values():
+            for rule in region.rules:
+                rule_indices[idx] = (rule, region)
+                idx = idx + 1
+
+        while rule_indices:
+            rand_idx = random.choice(list(rule_indices.keys()))
+            rand_rule = rule_indices[rand_idx][0]
+            rand_region = rule_indices[rand_idx][1]
+            if self.is_applicable(rand_rule, rand_region):
+                self.apply(rand_rule, rand_region)
+            else:
+                del rule_indices[rand_idx]
 
     @classmethod
     def create_model_from_str(cls, m_str):

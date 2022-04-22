@@ -668,3 +668,24 @@ def test_multiple_save_multiple_load():
     assert l_model.structure_str == "[ [ ab]]"
     assert l_model2.structure_str == "acc[a[#cc]]"
     assert l_model3.structure_str == "[ [c []]]"
+
+
+def test_copy_model():
+    model = BaseModel.create_model_from_str("[ [ ab]]")
+    model2 = BaseModel.copy_system(model)
+    assert model2.structure_str == "[ [ ab]]"
+    assert len(model2.regions) == 2
+
+    root_id = min(model.regions.keys())
+    model.regions[root_id].objects = MultiSet({'a': 3})
+    assert model2.regions[root_id].objects == {}
+
+    model2.environment += MultiSet({'c': 2})
+    assert model.environment.objects == {}
+    assert model2.environment.objects == {'c': 2}
+
+    added_rule = BaseModelRule({'a': 1}, {('f', Direction.HERE): 2})
+    model.regions[root_id].add_rule(added_rule)
+    assert len(model2.regions[root_id].rules) == 0
+    assert len(model.regions[root_id].rules) == 1
+

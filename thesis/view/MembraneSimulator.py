@@ -160,9 +160,7 @@ class MembraneSimulator(QWidget):
         self.draw_model()
 
     def update_dissolve(self, id):
-        # TODO: a gyerekek is törlődnek a `removeItem()`-mel, őket újra hozzá
-        # kell adni
-
+        print(id)
         """
         A function to update the scene of the membrane system on the event of a
         region dissolving
@@ -172,14 +170,19 @@ class MembraneSimulator(QWidget):
         id : int
             the identifier of the region that is dissolving
         """
-
-        self.scene.removeItem(self.view_regions[id])
         print(self.view_regions.keys())
-        print(self.view_regions[2])
-        self.view_regions[2].setParent(
-            self.view_regions[
-                self.model.get_parent_region(self.model.regions[1]).id])
+        self.scene.removeItem(self.view_regions[id])
+        parent_id = self.model.get_parent_region(self.model.regions[id]).id
+        child_list = self.model.get_all_children(self.model.regions[id])
+        if child_list:
+            child_id = [e.id for e in child_list]
+
+            for iter_id in child_id:
+                self.view_regions[iter_id].setParentItem(
+                    self.view_regions[parent_id])
+
         del self.view_regions[id]
+        print(self.view_regions.keys())
 
     def update_obj_view(self, id, string):
         """

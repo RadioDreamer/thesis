@@ -77,6 +77,7 @@ class RuleAndObjectEditDialog(QDialog):
         If both the objects and the rules are valid, then calls the base
         class's `accept().
         """
+
         obj_cond = re.match(r'^[a-z]*$', self.object_edit.text()) is None
 
         rule_list = self.rule_edit_list.toPlainText().split('\n')
