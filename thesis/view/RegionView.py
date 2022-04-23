@@ -136,6 +136,7 @@ class RegionView(QGraphicsRectItem):
         dialog.exec()
 
         rule_result = dialog.get_rules()
+        print(rule_result)
         if not rule_result == rule_string:
             self.simulator.update_region_rules(self.id, rule_result)
 

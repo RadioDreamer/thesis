@@ -349,7 +349,7 @@ class MembraneSimulator(QWidget):
         function
         """
 
-        self.model.simulate_computation()
+        self.model.simulate_membrane_system(10)
 
     def save_model(self, name):
         """

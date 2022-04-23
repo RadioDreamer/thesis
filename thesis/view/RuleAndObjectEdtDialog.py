@@ -81,8 +81,9 @@ class RuleAndObjectEditDialog(QDialog):
         obj_cond = re.match(r'^[a-z]*$', self.object_edit.text()) is None
 
         rule_list = self.rule_edit_list.toPlainText().split('\n')
+        rule_list = [r for r in rule_list if r != ""]
         all_rule_cond = True
-        if rule_list != [""]:
+        if rule_list:
             for rule in rule_list:
                 if not self.valid_fn(rule):
                     all_rule_cond = False
@@ -93,5 +94,6 @@ class RuleAndObjectEditDialog(QDialog):
             msg_box.setText("Nem helyes szabály!")
             msg_box.exec()
         else:
-            self.rules = self.rule_edit_list.toPlainText()
+            # self.rules = self.rule_edit_list.toPlainText()
+            self.rules = '\n'.join(rule_list)
             super().accept()

@@ -384,7 +384,6 @@ class BaseModel(MembraneSystem):
         list
             the list containing the parsed rules
         """
-
         result_rules = []
         split_str = rules_str.split("\n")
         for rule in split_str:

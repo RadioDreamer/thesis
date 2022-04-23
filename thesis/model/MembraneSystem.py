@@ -207,7 +207,8 @@ class MembraneSignal(QObject):
          the signal that communicates that a region's rules have changed
     """
 
-    sim_over = Signal(dict)
+    #sim_over = Signal(dict)
+    sim_over = Signal(list)
     sim_step_over = Signal(int)
     region_dissolved = Signal(int)
     obj_changed = Signal(int, str)
@@ -346,6 +347,7 @@ class MembraneSystem(QObject):
 
             for i in range(num_of_sim):
                 results.append(futures[i].result())
+        self.signal.sim_over.emit(results)
         return results
 
     @classmethod
@@ -628,7 +630,7 @@ class MembraneSystem(QObject):
 
         while self.any_rule_applicable():
             self.simulate_step()
-        self.signal.sim_over.emit(self.get_result())
+        # self.signal.sim_over.emit(self.get_result())
         return self.get_result()
 
     @classmethod

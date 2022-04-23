@@ -115,8 +115,8 @@ class MainWindow(QMainWindow):
 
         Parameters
         ----------
-        result : dict
-            the dictionary containing the results
+        result : list
+            the list containing the results
         """
 
         msg_box = QMessageBox()
