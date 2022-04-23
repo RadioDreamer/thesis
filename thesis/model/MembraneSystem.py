@@ -1,9 +1,13 @@
+import multiprocessing
 import random
 import json
 from typing import Dict, List
+from concurrent.futures import ThreadPoolExecutor
+
 from MultiSet import MultiSet
 from MultiSet import InvalidOperationException
 from PySide6.QtCore import QObject, Signal
+
 
 
 class InvalidArgumentException(Exception):
@@ -326,12 +330,23 @@ class MembraneSystem(QObject):
     @classmethod
     def copy_system(cls, ms):
         pass
-        # return cls(tree=ms.tree, regions=ms.regions,..)
-        # Lehet így is meg lehet oldani
 
-    @classmethod
-    def simulate_membrane_system(cls):
-        pass
+    def simulate_membrane_system(self, num_of_sim=100):
+        def compute(model):
+            model_copy = model.__class__.copy_system(model)
+            model_copy.simulate_computation()
+            return model_copy.get_result()
+
+        cpu_count = multiprocessing.cpu_count()
+        futures = []
+        results = []
+        with ThreadPoolExecutor(max_workers=cpu_count) as executor:
+            for i in range(num_of_sim):
+                futures.append(executor.submit(compute, self))
+
+            for i in range(num_of_sim):
+                results.append(futures[i].result())
+        return results
 
     @classmethod
     def is_valid_parentheses(cls, m_str):
@@ -525,7 +540,8 @@ class MembraneSystem(QObject):
         self.tree.preorder(self.tree.skin, self.tree.get_all_children,
                            lambda x: x.id == region_id)
         result_list = self.tree.result
-        return [self.regions[i.id] for i in result_list]
+        return None if result_list is None else [self.regions[i.id] for i in
+                                                 result_list]
 
     def get_num_of_children(self, region):
         """

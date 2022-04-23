@@ -1,6 +1,8 @@
+import multiprocessing
 import re
 import sys
 import pytest
+from concurrent.futures import ThreadPoolExecutor
 
 sys.path.append("../model")
 sys.path.append("../view")
@@ -329,8 +331,6 @@ def test_base_model_with_example():
     rule_0 = BaseModelRule({'a': 1, 'b': 1}, {('c', Direction.HERE): 2})
     rule_00 = BaseModelRule({'a': 1}, {('d', Direction.OUT): 2})
 
-    print(rule_0)
-    print(rule_00)
     obj_0 = {'a': 2, 'b': 1}
     region_0 = Region(n.id, objects=obj_0, rules=[rule_0, rule_00])
 
@@ -341,14 +341,12 @@ def test_base_model_with_example():
     model.apply(rule_0, region_0)
     assert region_0.new_objects.multiplicity('c') == 2
     assert region_0.objects.multiplicity('a') == 1
-    print(region_0.objects)
     with pytest.raises(ObjectNotFoundException) as _:
         region_0.objects.multiplicity('b')
 
     region_0.new_objects = None
     region_0.objects = MultiSet({'a': 2, 'b': 1})
 
-    print(model.tree.get_root_id())
     model.apply(rule_00, region_0)
     assert len(region_0.objects) == 2
     assert region_0.objects.multiplicity('a') == 1
@@ -405,10 +403,9 @@ def test_base_model_with_example():
                inner_id: region_inner}
 
     model = BaseModel(tree=ms1, regions=regions)
-    while model.any_rule_applicable():
-        print(model.regions)
-        model.simulate_step()
-    print(model.get_result())
+    print(model.simulate_membrane_system(10))
+
+test_base_model_with_example()
 
 
 def test_create_from_str():
@@ -688,4 +685,46 @@ def test_copy_model():
     model.regions[root_id].add_rule(added_rule)
     assert len(model2.regions[root_id].rules) == 0
     assert len(model.regions[root_id].rules) == 1
+
+    sa_model = SymportAntiport.create_model_from_str("ab[[#ab]]")
+    sa_copy = SymportAntiport.copy_system(sa_model)
+    assert sa_copy.structure_str == "ab[[#ab]]"
+    assert len(sa_copy.regions) == 2
+
+    sa_root_id = min(sa_model.regions.keys())
+    sa_model.regions[sa_root_id].objects += MultiSet({'a': 2})
+    assert sa_copy.regions[sa_root_id].objects == {}
+    assert sa_copy.output_id == sa_root_id + 1
+
+    sa_model.output_id = sa_root_id
+    assert sa_copy.output_id == sa_root_id + 1
+
+
+def compute(model):
+    model_copy = model.__class__.copy_system(model)
+    model_copy.simulate_computation()
+    return model_copy.get_result()
+
+
+def test_compute_membrane_system():
+    model = BaseModel.create_model_from_str("[ab]")
+    root_id = model.get_root_id()
+    model.regions[root_id].add_rule(
+        BaseModelRule({'a': 1, 'b': 1}, {('g', Direction.OUT): 1}))
+    model.regions[root_id].add_rule(
+        BaseModelRule({'a': 1, 'b': 1}, {('z', Direction.OUT): 1}))
+
+    assert len(model.simulate_membrane_system(10)) == 10
+    # num_of_comp = 100
+    # cpu_count = multiprocessing.cpu_count()
+    # futures = []
+    # results = []
+    # with ThreadPoolExecutor(max_workers=cpu_count) as executor:
+    #     for i in range(num_of_comp):
+    #         futures.append(executor.submit(compute, model))
+    #
+    #     for i in range(num_of_comp):
+    #         results.append(futures[i].result())
+    #
+    # print(results)
 

@@ -160,6 +160,7 @@ class BaseModel(MembraneSystem):
 
     @classmethod
     def copy_system(cls, ms):
+        assert isinstance(ms, BaseModel)
         tree = copy.deepcopy(ms.tree)
         env = copy.deepcopy(ms.environment)
         structure_str = copy.deepcopy(ms.structure_str)
@@ -169,7 +170,8 @@ class BaseModel(MembraneSystem):
             regions_dict[r_id][0] = copy.deepcopy(ms.regions[r_id].objects)
             regions_dict[r_id][1] = copy.deepcopy(ms.regions[r_id].rules)
 
-        regions = {id: Region(id, l[0], l[1]) for id, l in regions_dict.items()}
+        regions = {r_id: Region(r_id, l[0], l[1]) for r_id, l in
+                   regions_dict.items()}
         copy_model = BaseModel(tree=tree, regions=regions,
                                structure_str=structure_str)
         copy_model.environment = env

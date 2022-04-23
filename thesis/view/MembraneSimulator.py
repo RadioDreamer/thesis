@@ -170,7 +170,7 @@ class MembraneSimulator(QWidget):
         id : int
             the identifier of the region that is dissolving
         """
-        print(self.view_regions.keys())
+
         self.scene.removeItem(self.view_regions[id])
         parent_id = self.model.get_parent_region(self.model.regions[id]).id
         child_list = self.model.get_all_children(self.model.regions[id])
@@ -182,7 +182,6 @@ class MembraneSimulator(QWidget):
                     self.view_regions[parent_id])
 
         del self.view_regions[id]
-        print(self.view_regions.keys())
 
     def update_obj_view(self, id, string):
         """
@@ -198,6 +197,7 @@ class MembraneSimulator(QWidget):
         """
 
         self.view_regions[id].obj_text.setText(string)
+        self.view_regions[id].center_text()
 
     def update_rule_view(self, id, string):
         """
@@ -213,6 +213,7 @@ class MembraneSimulator(QWidget):
         """
 
         self.view_regions[id].rule_text.setText(string)
+        self.view_regions[id].center_text()
 
     def draw_model(self):
         """
