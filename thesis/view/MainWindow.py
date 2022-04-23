@@ -17,7 +17,8 @@ from PySide6.QtCore import QFile
 from PySide6.QtGui import QResizeEvent, QAction
 
 from StructureDialog import StructureDialog
-from MembraneSimulator import MembraneSimulator, ModelType
+from MembraneSimulator import MembraneSimulator, ModelType, \
+    InvalidStructureException
 from HelpMenu import HelpMenu
 
 
@@ -107,7 +108,7 @@ class MainWindow(QMainWindow):
             the new number of steps for the model
         """
 
-        self.counter_label.setText(str(event))
+        self.counter_label.setText(f"Lépések száma:{str(event)}")
 
     def simulation_over(self, result):
         """
@@ -120,7 +121,7 @@ class MainWindow(QMainWindow):
         """
 
         msg_box = QMessageBox()
-        msg_box.setText(f"Simulation Over!\nResult:{result}")
+        msg_box.setText(f"Vége a szimulációnak!\nSzámítás eredménye:{result}")
         msg_box.exec()
 
     def show_help(self):
@@ -131,29 +132,29 @@ class MainWindow(QMainWindow):
         help_menu = HelpMenu()
         help_menu.exec()
 
-    def resizeEvent(self, event: QResizeEvent):
-        """
-        Event handler for resizing of the window
+    #    def resizeEvent(self, event: QResizeEvent):
+    #        """
+    #        Event handler for resizing of the window
 
-        Parameters
-        ----------
-        event : QResizeEvent
-            the event containing information about the resizing
-        """
+    #        Parameters
+    #        ----------
+    #        event : QResizeEvent
+    #            the event containing information about the resizing
+    #        """
 
-        super().resizeEvent(event)
-        self.resize_scene()
+    #        super().resizeEvent(event)
+    #        self.resize_scene()
 
-    def resize_scene(self):
-        """
-        A function that resizes the scene of the simulation
-        """
+    #    def resize_scene(self):
+    #        """
+    #        A function that resizes the scene of the simulation
+    #        """
 
-        if not self.isVisible():
-            return
-        size = self.membranes.view.maximumViewportSize()
-        self.membranes.view.scene().setSceneRect(0, 0, size.width(),
-                                                 size.height())
+    #        if not self.isVisible():
+    #            return
+    #        size = self.membranes.view.maximumViewportSize()
+    #        self.membranes.view.scene().setSceneRect(0, 0, size.width(),
+    #                                                 size.height())
 
     def create_base_dialog(self):
         """
@@ -164,8 +165,15 @@ class MainWindow(QMainWindow):
         dialog = StructureDialog(self, MembraneSimulator.is_valid_structure)
         result = dialog.exec()
         if result == QDialog.Accepted:
-            self.membranes.set_model(ModelType.BASE, dialog.get_text())
-            self.statusBar().show()
+            try:
+                self.membranes.set_model(ModelType.BASE, dialog.get_text())
+                self.statusBar().show()
+            except InvalidStructureException:
+                msg_box = QMessageBox()
+                msg_box.setText(
+                    "A megadott szöveg formátuma helytelen!\nA súgó gombra "
+                    "kattintva olvashatsz az elvárt formátumról.")
+                msg_box.exec()
 
     def create_symport_dialog(self):
         """
@@ -176,8 +184,15 @@ class MainWindow(QMainWindow):
         dialog = StructureDialog(self, MembraneSimulator.is_valid_structure)
         result = dialog.exec()
         if result == QDialog.Accepted:
-            self.membranes.set_model(ModelType.SYMPORT, dialog.get_text())
-            self.statusBar().show()
+            try:
+                self.membranes.set_model(ModelType.SYMPORT, dialog.get_text())
+                self.statusBar().show()
+            except InvalidStructureException:
+                msg_box = QMessageBox()
+                msg_box.setText(
+                    "A megadott szöveg formátuma helytelen!\nA súgó gombra "
+                    "kattintva olvashatsz az elvárt formátumról.")
+                msg_box.exec()
 
     def save_file_dialog(self):
         """

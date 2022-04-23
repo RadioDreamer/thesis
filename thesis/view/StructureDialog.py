@@ -68,7 +68,8 @@ class StructureDialog(QDialog):
             super().accept()
         else:
             msg_box = QMessageBox()
-            msg_box.setText("Not a valid membrane system!")
+            msg_box.setText("A megadott szöveg formátuma helytelen!\nA súgó gombra "
+            "kattintva olvashatsz az elvárt formátumról.")
             msg_box.exec()
 
     def get_text(self):

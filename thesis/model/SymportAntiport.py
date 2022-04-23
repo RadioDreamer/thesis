@@ -179,7 +179,7 @@ class SymportAntiport(MembraneSystem):
         """
 
         if not self.any_rule_applicable():
-            self.signal.sim_over.emit(self.get_result())
+            self.signal.sim_over.emit([self.get_result()])
             return
 
         rule_indices = {}

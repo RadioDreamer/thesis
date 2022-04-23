@@ -7,13 +7,20 @@ from PySide6.QtWidgets import (
     QMessageBox
 )
 
-from MembraneSystem import MembraneSystem
+from MembraneSystem import MembraneSystem, InvalidArgumentException
 from BaseModel import BaseModel
 from SymportAntiport import SymportAntiport
 from MultiSet import MultiSet
 from RegionView import RegionView
 from PySide6.QtCore import QRectF, QObject, Signal
 
+
+class InvalidStructureException(Exception):
+    """
+    A class to signal an exception when creating a membrane system from string
+    """
+
+    pass
 
 class ModelType(Enum):
     """
@@ -143,21 +150,22 @@ class MembraneSimulator(QWidget):
             the string containing information on how to construct the membrane
             system
         """
-
-        if type == ModelType.BASE:
-            self.model = BaseModel.create_model_from_str(string)
-            self.type = ModelType.BASE
-        elif type == ModelType.SYMPORT:
-            self.type = ModelType.SYMPORT
-            self.model = SymportAntiport.create_model_from_str(string)
-
-        self.model.signal.sim_over.connect(self.signal.simulation_over.emit)
-        self.model.signal.sim_step_over.connect(
-            self.signal.counter_increment.emit)
-        self.model.signal.obj_changed.connect(self.update_obj_view)
-        self.model.signal.rules_changed.connect(self.update_rule_view)
-        self.model.signal.region_dissolved.connect(self.update_dissolve)
-        self.draw_model()
+        try:
+            if type == ModelType.BASE:
+                self.model = BaseModel.create_model_from_str(string)
+                self.type = ModelType.BASE
+            elif type == ModelType.SYMPORT:
+                self.type = ModelType.SYMPORT
+                self.model = SymportAntiport.create_model_from_str(string)
+            self.model.signal.sim_over.connect(self.signal.simulation_over.emit)
+            self.model.signal.sim_step_over.connect(
+                self.signal.counter_increment.emit)
+            self.model.signal.obj_changed.connect(self.update_obj_view)
+            self.model.signal.rules_changed.connect(self.update_rule_view)
+            self.model.signal.region_dissolved.connect(self.update_dissolve)
+            self.draw_model()
+        except InvalidArgumentException:
+            raise InvalidStructureException
 
     def update_dissolve(self, id):
         print(id)
@@ -181,6 +189,8 @@ class MembraneSimulator(QWidget):
                 self.view_regions[iter_id].setParentItem(
                     self.view_regions[parent_id])
 
+        self.view_regions[parent_id].adjust_text()
+        self.view_regions[parent_id].center_text()
         del self.view_regions[id]
 
     def update_obj_view(self, id, string):
@@ -196,7 +206,9 @@ class MembraneSimulator(QWidget):
             the string containing the new objects string representation
         """
 
-        self.view_regions[id].obj_text.setText(string)
+        #self.view_regions[id].obj_text.setText(string)
+        self.view_regions[id].obj_text.setPlainText(string)
+        self.view_regions[id].adjust_text()
         self.view_regions[id].center_text()
 
     def update_rule_view(self, id, string):
@@ -212,7 +224,9 @@ class MembraneSimulator(QWidget):
             the string containing the new list of rules in a string format
         """
 
-        self.view_regions[id].rule_text.setText(string)
+        #self.view_regions[id].rule_text.setText(string)
+        self.view_regions[id].rule_text.setPlainText(string)
+        self.view_regions[id].adjust_text()
         self.view_regions[id].center_text()
 
     def draw_model(self):

@@ -124,7 +124,7 @@ class BaseModel(MembraneSystem):
         """
 
         if not self.any_rule_applicable():
-            self.signal.sim_over.emit(self.get_result())
+            self.signal.sim_over.emit([self.get_result()])
             return
         for region in self.regions.values():
             self.select_and_apply_rules(region)
@@ -160,6 +160,23 @@ class BaseModel(MembraneSystem):
 
     @classmethod
     def copy_system(cls, ms):
+        """
+        A class method to deep copy a base model object
+
+        Since a QObject subclass cannot be serialized, we can copy the object
+        by deepcopying everything that is needed to construct the new object
+
+        Parameters
+        ----------
+        ms : BaseModel
+            the membrane system to be copied
+
+        Returns
+        -------
+        BaseModel
+            the deep copy of the model
+        """
+
         assert isinstance(ms, BaseModel)
         tree = copy.deepcopy(ms.tree)
         env = copy.deepcopy(ms.environment)
@@ -353,7 +370,6 @@ class BaseModel(MembraneSystem):
                 'HERE:',
                 '|').split(
                 '|')
-            # rs_list = list(filter(''.__ne__, rs_list))
             in_obj = MultiSet.string_to_multiset(rs_list[0])
             out_obj = MultiSet.string_to_multiset(rs_list[1])
             here_obj = MultiSet.string_to_multiset(rs_list[2])
