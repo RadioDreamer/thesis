@@ -355,7 +355,7 @@ class MembraneSimulator(QWidget):
 
         self.model.simulate_step()
 
-    def simulate_computation(self):
+    def simulate_computation(self, num_of_sim=10):
         """
         A function to simulate the whole computation the membrane system
 
@@ -363,7 +363,7 @@ class MembraneSimulator(QWidget):
         function
         """
 
-        self.model.simulate_membrane_system(10)
+        self.model.simulate_membrane_system(num_of_sim)
 
     def save_model(self, name):
         """

@@ -20,7 +20,7 @@ from StructureDialog import StructureDialog
 from MembraneSimulator import MembraneSimulator, ModelType, \
     InvalidStructureException
 from HelpMenu import HelpMenu
-
+from SimulationStepDialog import SimulationStepDialog
 
 class MainWindow(QMainWindow):
     """
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
 
         super().__init__()
         # Size and title of the main window
-        self.resize(1400, 900)
+        self.resize(1920, 1080)
         self.setWindowTitle("Membránrendszer szimuláció")
 
         # Instantiating the simulator widget and connect to it's signals
@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         run_sim = QAction("Teljes szimuláció indítása", self)
         run_menu.addActions([run_sim, run_step])
         run_step.triggered.connect(self.membranes.simulate_step)
-        run_sim.triggered.connect(self.membranes.simulate_computation)
+        run_sim.triggered.connect(self.run_simulation)
 
         # Help menu
         help_menu = menu.addMenu("Súgó")
@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
         self.setStatusBar(QStatusBar(self))
         run_sim_button = QPushButton("Teljes szimuláció indítása")
         run_step_button = QPushButton("Szimuláció lépés indítása")
-        run_sim_button.clicked.connect(self.membranes.simulate_computation)
+        run_sim_button.clicked.connect(self.run_simulation)
         run_step_button.clicked.connect(self.membranes.simulate_step)
 
         self.statusBar().addPermanentWidget(run_sim_button)
@@ -96,6 +96,13 @@ class MainWindow(QMainWindow):
         self.statusBar().hide()
 
         self.setCentralWidget(self.membranes.view)
+
+
+    def run_simulation(self):
+        dialog = SimulationStepDialog()
+        result = dialog.exec()
+        if result == dialog.Accepted:
+            self.membranes.simulate_computation(dialog.get_number())
 
     def increment_counter_label(self, event):
         """
@@ -218,6 +225,7 @@ class MainWindow(QMainWindow):
         name = QFileDialog.getOpenFileName(self, 'Open File')
         if QFile.exists(name[0]):
             self.membranes.load_model(name[0])
+            self.statusBar().show()
 
 
 if __name__ == "__main__":

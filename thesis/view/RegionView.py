@@ -17,6 +17,7 @@ class RegionView(QGraphicsRectItem):
         self.rule_text = QGraphicsTextItem(rules, self)
 
         font = QFont("Source Code Pro Semibold")
+        font.setPointSize(10)
         self.obj_text.setFont(font)
         self.rule_text.setFont(font)
 
