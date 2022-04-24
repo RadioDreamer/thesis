@@ -9,7 +9,6 @@ from MultiSet import InvalidOperationException
 from PySide6.QtCore import QObject, Signal
 
 
-
 class InvalidArgumentException(Exception):
     """
     A class to signal an exception regarding incorrect arguments given to a
@@ -207,7 +206,7 @@ class MembraneSignal(QObject):
          the signal that communicates that a region's rules have changed
     """
 
-    #sim_over = Signal(dict)
+    # sim_over = Signal(dict)
     sim_over = Signal(list)
     sim_step_over = Signal(int)
     region_dissolved = Signal(int)
@@ -630,7 +629,6 @@ class MembraneSystem(QObject):
 
         while self.any_rule_applicable():
             self.simulate_step()
-        # self.signal.sim_over.emit(self.get_result())
         return self.get_result()
 
     @classmethod
@@ -656,7 +654,14 @@ class MembraneSystem(QObject):
         """
 
         structure = json_dict["structure"]
+        env_objects = MultiSet.string_to_multiset(json_dict["env_obj"]).objects
+        env_infinite = json_dict["env_inf"]
+
         model = cls.create_model_from_str(structure)
+        model.environment.objects = env_objects
+        model.environment.infinite_obj = set(
+            env_infinite) if env_infinite else None
+
         root_id = min(list(map(int, model.regions.keys())))
         for id in json_dict["rules"].keys():
             rule_list = json_dict["rules"][id]
@@ -664,6 +669,10 @@ class MembraneSystem(QObject):
                 parsed_rule = cls.parse_rule(rule)
                 shifted_id = int(id) + root_id
                 model.regions[shifted_id].add_rule(parsed_rule)
+        for id in json_dict["objects"].keys():
+            shifted_id = int(id) + root_id
+            model.regions[shifted_id].objects = MultiSet.string_to_multiset(
+                json_dict["objects"][id])
         return model
 
     def create_json_dict(self):
@@ -676,11 +685,24 @@ class MembraneSystem(QObject):
         dict
             the dictionary that will be used to serialize the system
         """
+        kept_char = ['[', '{', '(', ']', '}', ')', '#']
+        only_structure_str = None if self.structure_str is None else ''.join(
+            [c for c in self.structure_str if c in kept_char])
+        if self.environment.infinite_obj:
+            env_inf = ''.join(list(self.environment.infinite_obj))
+        else:
+            env_inf = None
 
         result = {"type": self.__class__.__name__,
-                  "structure": self.structure_str, "rules": {}}
+                  "structure": only_structure_str, "rules": {},
+                  "env_obj": str(self.environment),
+                  "env_inf": env_inf,
+                  "objects": {}}
+
         for r in self.regions.values():
-            for rule in r.rules:
+            result["objects"][r.id - self.get_root_id()] = str(
+                self.regions[r.id].objects)
+            for _ in r.rules:
                 result["rules"][r.id - self.get_root_id()] = []
 
         for r in self.regions.values():

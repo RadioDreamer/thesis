@@ -405,8 +405,6 @@ def test_base_model_with_example():
     model = BaseModel(tree=ms1, regions=regions)
     print(model.simulate_membrane_system(10))
 
-test_base_model_with_example()
-
 
 def test_create_from_str():
     s = "[aa[b   b][ c]]"
@@ -433,8 +431,6 @@ def test_is_valid_rule_base():
 
     s5 = "aaa #-> IN: bb OUT: a HERE:>aaa #-> IN: bb OUT: a HERE:"
     assert not BaseModel.is_valid_rule(s5)
-
-    s6 = 'a'
 
 
 def test_is_valid_rule_symport():
@@ -586,6 +582,11 @@ def test_save_model():
     assert json_dict["structure"] is None
     assert json_dict["rules"][n.id - model.get_root_id()] == [str(added_rule),
                                                               str(added_rule_2)]
+    assert json_dict["objects"][1] == str(region_1.objects)
+    assert json_dict["objects"][2] == str(region_2.objects)
+    assert str(region_0.objects) == ''
+    assert json_dict["env_inf"] is None
+    assert json_dict["env_obj"] is ''
 
     model2 = BaseModel.create_model_from_str("[ [ab]]")
     root_id = min(model2.regions.keys())
@@ -593,8 +594,9 @@ def test_save_model():
     model2.regions[root_id].add_rule(added_rule3)
     json_dict2 = model2.create_json_dict()
     assert json_dict2["type"] == 'BaseModel'
-    assert json_dict2["structure"] == "[ [ab]]"
+    assert json_dict2["structure"] == "[[]]"
     assert json_dict2["rules"][0] == [str(added_rule3)]
+    assert json_dict2["objects"][1] == 'ab'
 
     model3 = SymportAntiport.create_model_from_str("[[#ab]]")
     root_id = min(model3.regions.keys())
@@ -609,7 +611,7 @@ def test_save_model():
 
     json_dict3 = model3.create_json_dict()
     assert json_dict3["type"] == 'SymportAntiport'
-    assert json_dict3["structure"] == "[[#ab]]"
+    assert json_dict3["structure"] == "[[#]]"
     assert model3.output_id == other_id
     assert json_dict3["rules"][0] == [str(added_rule4)]
     assert json_dict3["rules"][other_id - model3.get_root_id()] == [
@@ -625,7 +627,7 @@ def test_load_model():
     json_dict = model.create_json_dict()
     loaded_model = BaseModel.load_from_json_dict(json_dict)
 
-    assert loaded_model.structure_str == "[ [ ab]]"
+    assert loaded_model.structure_str == "[[]]"
     root_id = min(loaded_model.regions.keys())
     child_id = root_id + 1
     assert len(loaded_model.regions[root_id].rules) == 1
@@ -639,7 +641,7 @@ def test_load_model():
 
     root_id = min(loaded_model2.regions.keys())
     other_id = root_id + 1
-    assert loaded_model2.structure_str == "acc[a[#cc]]"
+    assert loaded_model2.structure_str == "[[#]]"
     assert loaded_model2.output_id == other_id
     assert loaded_model2.regions[root_id].objects == {'a': 1}
     assert loaded_model2.regions[other_id].objects == {'c': 2}
@@ -662,9 +664,13 @@ def test_multiple_save_multiple_load():
     l_model2 = SymportAntiport.load_from_json_dict(json_dict2)
     l_model3 = BaseModel.load_from_json_dict(json_dict3)
 
-    assert l_model.structure_str == "[ [ ab]]"
-    assert l_model2.structure_str == "acc[a[#cc]]"
-    assert l_model3.structure_str == "[ [c []]]"
+    assert l_model.structure_str == "[[]]"
+    assert l_model.regions[l_model.get_root_id()+1].objects == {'a': 1, 'b': 1}
+    assert l_model2.structure_str == "[[#]]"
+    assert l_model2.environment.infinite_obj == set(['a','c'])
+    assert l_model2.regions[l_model2.get_root_id()+1].objects == {'c': 2}
+    assert l_model2.regions[l_model2.get_root_id()].objects == {'a': 1}
+    assert l_model3.structure_str == "[[[]]]"
 
 
 def test_copy_model():
@@ -698,33 +704,4 @@ def test_copy_model():
 
     sa_model.output_id = sa_root_id
     assert sa_copy.output_id == sa_root_id + 1
-
-
-def compute(model):
-    model_copy = model.__class__.copy_system(model)
-    model_copy.simulate_computation()
-    return model_copy.get_result()
-
-
-def test_compute_membrane_system():
-    model = BaseModel.create_model_from_str("[ab]")
-    root_id = model.get_root_id()
-    model.regions[root_id].add_rule(
-        BaseModelRule({'a': 1, 'b': 1}, {('g', Direction.OUT): 1}))
-    model.regions[root_id].add_rule(
-        BaseModelRule({'a': 1, 'b': 1}, {('z', Direction.OUT): 1}))
-
-    assert len(model.simulate_membrane_system(10)) == 10
-    # num_of_comp = 100
-    # cpu_count = multiprocessing.cpu_count()
-    # futures = []
-    # results = []
-    # with ThreadPoolExecutor(max_workers=cpu_count) as executor:
-    #     for i in range(num_of_comp):
-    #         futures.append(executor.submit(compute, model))
-    #
-    #     for i in range(num_of_comp):
-    #         results.append(futures[i].result())
-    #
-    # print(results)
 
