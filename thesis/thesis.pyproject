@@ -1,3 +1,3 @@
 {
-    "files": ["view/RuleAndObjectEdtDialog.py","model/Region.py","view/RegionView.py","test/UnitTests.py","model/Rule.py","model/__pycache__/test_stuff.py","main.py","view/HelpMenu.py","view/MainWindow.py","model/MembraneStructure.py","model/BaseModel.py","view/StructureDialog.py","model/MultiSet.py","model/MembraneSystem.py","view/MembraneSimulator.py","model/SymportAntiport.py","view/SimulationStepDialog.py"]
+    "files": ["view/RuleAndObjectEditDialog.py","model/Region.py","view/HelpMenu.py","model/MembraneStructure.py","view/ResultDialog.py","view/StructureDialog.py","model/MembraneSystem.py","model/SymportAntiport.py","view/RegionView.py","test/UnitTests.py","model/Rule.py","model/__pycache__/test_stuff.py","view/SimulationStepDialog.py","main.py","view/MainWindow.py","model/BaseModel.py","model/MultiSet.py","view/MembraneSimulator.py"]
 }

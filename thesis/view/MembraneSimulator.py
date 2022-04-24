@@ -123,7 +123,7 @@ class MembraneSimulator(QWidget):
             self.type = ModelType.SYMPORT
 
         self.model = model_obj
-        self.model.signal.sim_over.connect(self.signal.simulation_over.emit)
+        self.model.signal.sim_over.connect(self.summarize_results)
         self.model.signal.sim_step_over.connect(
             self.signal.counter_increment.emit)
         self.model.signal.obj_changed.connect(self.update_obj_view)
@@ -305,15 +305,6 @@ class MembraneSimulator(QWidget):
 
         return MembraneSystem.is_valid_parentheses(string)
 
-    # def show_membranes(self):
-    #     self.view_regions[self.skin_id].show()
-    #
-    # def hide_membranes(self):
-    #     self.view_regions[self.skin_id].hide()
-
-    # def is_visible(self):
-    #     return self.view_regions[self.skin_id].isVisible()
-
     def update_region_objects(self, id, new_objects: str):
         """
         A function that takes the user input and sets the region's object to the
@@ -364,6 +355,17 @@ class MembraneSimulator(QWidget):
         """
 
         self.model.simulate_membrane_system(num_of_sim)
+
+    def summarize_results(self, list):
+        summary = {}
+        res_pairs = [(k,v) for e in list for k,v in e.items()]
+        for result in res_pairs:
+            result
+            if result not in summary.keys():
+                summary[result] = 1
+            else:
+                summary[result] += 1
+        self.signal.simulation_over.emit(summary)
 
     def save_model(self, name):
         """

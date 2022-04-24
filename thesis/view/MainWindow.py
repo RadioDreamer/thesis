@@ -21,6 +21,8 @@ from MembraneSimulator import MembraneSimulator, ModelType, \
     InvalidStructureException
 from HelpMenu import HelpMenu
 from SimulationStepDialog import SimulationStepDialog
+from ResultDialog import ResultDialog
+
 
 class MainWindow(QMainWindow):
     """
@@ -97,7 +99,6 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.membranes.view)
 
-
     def run_simulation(self):
         dialog = SimulationStepDialog()
         result = dialog.exec()
@@ -127,9 +128,8 @@ class MainWindow(QMainWindow):
             the list containing the results
         """
 
-        msg_box = QMessageBox()
-        msg_box.setText(f"Vége a szimulációnak!\nSzámítás eredménye:{result}")
-        msg_box.exec()
+        result_dialog = ResultDialog(result)
+        result_dialog.exec()
 
     def show_help(self):
         """
