@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 6.0.2, 2022-03-20T11:52:09. -->
+<!-- Written by QtCreator 7.0.0, 2022-04-27T10:34:09. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -137,6 +137,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/test2/SizeGripItem.py</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/test2/SizeGripItem.py</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/test2/SizeGripItem.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{ff42a8e5-7766-4989-9384-4866ce504c88}</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/test2/SizeGripItem.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
