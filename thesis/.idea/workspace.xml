@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d1ecb737-82c8-486d-8dcf-6091f4f32bcd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/resources/icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/resources.qrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test2/test2.pyproject.user" beforeDir="false" afterPath="$PROJECT_DIR$/../test2/test2.pyproject.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../test2/widget.py" beforeDir="false" afterPath="$PROJECT_DIR$/../test2/widget.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/software_guide.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis.pyproject" beforeDir="false" afterPath="$PROJECT_DIR$/thesis.pyproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thesis.pyproject.user" beforeDir="false" afterPath="$PROJECT_DIR$/thesis.pyproject.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/HelpMenu.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/HelpMenu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/view/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/MainWindow.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="ProjectId" id="26IMVKroka67dj0d3w35at0zSeK" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Python" />
+  </component>
+  <component name="RunManager" selected="Python.help_script">
+    <configuration name="UnitTests" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="thesis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/UnitTests.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="help_script" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="thesis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/view" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/view/help_script.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.help_script" />
+        <item itemvalue="Python.UnitTests" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d1ecb737-82c8-486d-8dcf-6091f4f32bcd" name="Changes" comment="" />
+      <created>1647106669903</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1647106669903</updated>
+      <workItem from="1647106671170" duration="2627000" />
+      <workItem from="1647186053518" duration="3542000" />
+      <workItem from="1647275229173" duration="6213000" />
+      <workItem from="1647340755762" duration="4081000" />
+      <workItem from="1647425285017" duration="6069000" />
+      <workItem from="1647442829710" duration="7408000" />
+      <workItem from="1647503107214" duration="10959000" />
+      <workItem from="1647599892159" duration="6851000" />
+      <workItem from="1647628265543" duration="2182000" />
+      <workItem from="1647685846051" duration="2418000" />
+      <workItem from="1647708148427" duration="3987000" />
+      <workItem from="1647785905804" duration="2484000" />
+      <workItem from="1648056543957" duration="1180000" />
+      <workItem from="1648116890453" duration="5294000" />
+      <workItem from="1648195013395" duration="2218000" />
+      <workItem from="1648318649707" duration="2793000" />
+      <workItem from="1648546542974" duration="1736000" />
+      <workItem from="1648829386952" duration="1503000" />
+      <workItem from="1648889939991" duration="11549000" />
+      <workItem from="1648981756566" duration="1594000" />
+      <workItem from="1649009054339" duration="47000" />
+      <workItem from="1649184177249" duration="127000" />
+      <workItem from="1649233199359" duration="8802000" />
+      <workItem from="1649352521192" duration="4303000" />
+      <workItem from="1649415970268" duration="5728000" />
+      <workItem from="1649432392722" duration="1398000" />
+      <workItem from="1649489789129" duration="4456000" />
+      <workItem from="1649582440960" duration="3124000" />
+      <workItem from="1649678980823" duration="307000" />
+      <workItem from="1649749730529" duration="5329000" />
+      <workItem from="1649764252113" duration="928000" />
+      <workItem from="1649854843327" duration="10144000" />
+      <workItem from="1649924766498" duration="5597000" />
+      <workItem from="1650030857348" duration="2513000" />
+      <workItem from="1650049023361" duration="1579000" />
+      <workItem from="1650104078905" duration="2658000" />
+      <workItem from="1650184622661" duration="9224000" />
+      <workItem from="1650274700960" duration="10925000" />
+      <workItem from="1650361787467" duration="10249000" />
+      <workItem from="1650390310521" duration="2976000" />
+      <workItem from="1650449015614" duration="2339000" />
+      <workItem from="1650457405080" duration="5158000" />
+      <workItem from="1650536616063" duration="2033000" />
+      <workItem from="1650538666890" duration="3539000" />
+      <workItem from="1650549589102" duration="2466000" />
+      <workItem from="1650615252452" duration="2929000" />
+      <workItem from="1650618354112" duration="3191000" />
+      <workItem from="1650622975637" duration="4514000" />
+      <workItem from="1650703012124" duration="12226000" />
+      <workItem from="1650820821691" duration="2574000" />
+      <workItem from="1650877292922" duration="1508000" />
+      <workItem from="1650975581844" duration="699000" />
+      <workItem from="1651046596553" duration="2524000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/test/UnitTests.py</url>
+          <line>276</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/thesis$help_script.coverage" NAME="help_script Coverage Results" MODIFIED="1651053346674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/view" />
+    <SUITE FILE_PATH="coverage/thesis$UnitTests.coverage" NAME="UnitTests Coverage Results" MODIFIED="1647709724103" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+  </component>
+</project>
