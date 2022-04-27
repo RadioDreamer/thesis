@@ -9,13 +9,13 @@ Az alkalmazás célja, hogy a felhasználó segítségével membránrendszereket
 
 \section{Hardver és szoftver követelmények}
 
-A szoftver futtatásához Linux környezetre van szükség, amely támogatja a \verb|.bin| kiterjesztésű fájlok értelmezését. A program teljes funkcionalitásának kihasználásához a felhasználó számítógépének a bemeneti perifériák közül egérrel és billentyűzettel kell rendelkeznie. A szoftver hardverigénye nem igényel részletesebb specifikációt.
+A szoftver futtatásához Linux környezetre van szükség, amely támogatja az \verb|ELF| formátumú bináris állományok értelmezését. Ezen felül a futtatási környezetnek rendelkeznie kell \textit{Python interpreterrel}, illetve a \textit{Qt} keretrendszerhez való hozzáférés érdekében \verb|PySide6| modullal. Az utóbbi könnyen megtehető shell környezetben a \verb|pip install PySide6| paranccsal . A program teljes funkcionalitásának kihasználásához a felhasználó számítógépének a bemeneti perifériák közül egérrel és billentyűzettel kell rendelkeznie. A szoftver hardverigénye nem igényel részletesebb specifikációt.
 
 
 \section{Futtatás}
 
 Mivel a program futtatható állományban kerül a felhasználóhoz, ezért annak az indításhoz elegendő megnyitni a fájlt tartalmazó mappát, majd duplán kattintani a fájlt reprezentáló ikonra. Ugyanez parancssori környezetben is elvégezhető, ilyenkor a terminálban a megfelelő mappába való elnavigálás után a 
-\verb|./MembraneSimulator.bin| parancs megadásával futtatható a program.
+\verb|./MembraneSimulator| parancs megadásával futtatható a program.
 
 \section{Grafikus felhasználói felület}
 
@@ -30,9 +30,16 @@ A felhasználó az alkalmazással a grafikus felhasználói felületen keresztü
 	\label{fig:example-1}
 \end{figure}
 
+A főablak az alkalmazás megnyitásakor még tartalmaz egyetlen grafikus elemet sem, viszont a menüsorban található menüpontok segítségével könnyedén változtatni lehet ezen. Ha a felhasználónak nincs korábbi tapasztala a program használatával, akkor érdemes a \textit{Súgó} menüpont kiválasztásával kezdenie, amelyről részletesen szó esik a \ref{help} fejezetben.
+
 \subsection{Dialógusablakok}
 
+A legfontosabb interakció a felhasználó és a szoftver között a dialógisablakokon keresztül történik.  
+
 \subsubsection{Membránstruktúra megadása}
+
+Egy membránrendszer megalkotásának kezdeti módja a struktúrájának megadásával kezdődik. Mivel egy membránrendszerben a membránok hierarchikusan helyezkednek el, ezért a teljes rétegződést nagyon jól lehet ábrázolni fa alakban, ahol mindenkinek a szülő csúcsa az őt legszűkebben tartalmazó régió. Ezzel egyenértékű az a felírás, amikor egyetlen karakterláncban fejezzük ki ugyanezt, azáltal, hogy egy régiót megfeleltetünk egy nyitó-csukó zárójelpárral. Ilyenkor a két zárójel között elhelyezett objektumok jelentik a régió tartalmát. Azonban nem csak objektumok, de más régiók is helyet kaphatnak, ezzel kifejezve azt, hogy a már említett régió közvetlen gyerekét szeretnénk megadni. 
+
 \subsubsection{Objektumok módosítása}
 \subsubsection{Szabályok módosítása}
 \subsubsection{Szimulációk számának megadása}
@@ -40,5 +47,4 @@ A felhasználó az alkalmazással a grafikus felhasználói felületen keresztü
 \subsubsection{Betöltés}
 \subsubsection{Eredményablak}
 
-\section{Használati útmutató}
-
+\section{Használati útmutató}\label{help}
