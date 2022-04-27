@@ -134,7 +134,6 @@ class RegionView(QGraphicsRectItem):
                               text_rect.height())
 
     def mouseDoubleClickEvent(self, event):
-        # Itt lehet majd editelni az objektumokat és a szabályokat
         objects = self.simulator.model.regions[self.id].objects
         rule_string = self.simulator.model.get_rule_string(self.id)
 
@@ -146,7 +145,6 @@ class RegionView(QGraphicsRectItem):
         dialog.exec()
 
         rule_result = dialog.get_rules()
-        print(rule_result)
         if not rule_result == rule_string:
             self.simulator.update_region_rules(self.id, rule_result)
 

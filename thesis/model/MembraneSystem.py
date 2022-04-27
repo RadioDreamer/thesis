@@ -318,20 +318,62 @@ class MembraneSystem(QObject):
         pass
 
     def select_and_apply_rules(self, region):
+        """
+        Abstract function responsible for non-deterministically selecting rules
+        in a region and applying them
+
+        Parameters
+        ----------
+        region : Region
+            the region in which rules are to be applied
+        """
+
         pass
-        # indices = list(range(len(region.rules)))
-        # while indices:
-        #     idx = random.choice(indices)
-        #     if self.is_applicable(region.rules[idx], region):
-        #         self.apply(region.rules[idx], region)
-        #     else:
-        #         indices.remove(idx)
 
     @classmethod
     def copy_system(cls, ms):
+        """
+        Abstract function used to return a deep copy of the membrane system
+
+        Parameters
+        ----------
+        ms : MembraneSystem
+            the membrane system to be copied
+
+        Returns
+        -------
+        MembraneSystem
+            the deep copy of the the given membrane system
+        """
+
         pass
 
     def simulate_membrane_system(self, num_of_sim=100):
+        """
+        A function that is used to showcase the nondeterministic behaviour of
+        the membrane system by making a given number of copies of the current
+        state and for each copy calling `simulate_computation()`
+
+        Because of the nondeterministic behaviour, these simulations can have
+        different results
+
+        Each membrane system is a task in a `ThreadPoolExecutor` taskfarm style
+        setup
+
+        The maximum number of threads used by the calculation is the number of
+        CPU cores the user's computer has
+
+        Parameters
+        ----------
+        num_of_sim : int
+            number of times to calculation is to be simulated (default is 100)
+
+        Returns
+        -------
+        list
+            the list containing the result of all the simulations combined
+        """
+
         def compute(model):
             model_copy = model.__class__.copy_system(model)
             model_copy.simulate_computation()

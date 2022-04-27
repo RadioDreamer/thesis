@@ -295,4 +295,5 @@ class MembraneStructure:
         node : Node
             the node we want to add the child to
         """
+
         node.add_child(Node())

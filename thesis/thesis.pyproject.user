@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 7.0.0, 2022-04-23T22:39:50. -->
+<!-- Written by QtCreator 7.0.0, 2022-04-25T11:59:33. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -165,24 +165,6 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/StructureDialog.py</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/StructureDialog.py</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/StructureDialog.py</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{ff42a8e5-7766-4989-9384-4866ce504c88}</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/StructureDialog.py</value>
-    <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
-    <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
-    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
-    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view</value>
-   </valuemap>
-   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.11">
-    <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
-    <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
-    <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
-    <valuelist type="QVariantList" key="CustomOutputParsers"/>
-    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
-    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/MembraneSimulator.py</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/MembraneSimulator.py</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/MembraneSimulator.py</value>
@@ -194,7 +176,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view</value>
    </valuemap>
-   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.12">
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.11">
     <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
     <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
     <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
@@ -212,7 +194,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view</value>
    </valuemap>
-   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.13">
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.12">
     <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
     <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
     <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
@@ -224,6 +206,60 @@
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/HelpMenu.py</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{ff42a8e5-7766-4989-9384-4866ce504c88}</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/HelpMenu.py</value>
+    <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view</value>
+   </valuemap>
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.13">
+    <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
+    <valuelist type="QVariantList" key="CustomOutputParsers"/>
+    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
+    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/SimulationStepDialog.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/SimulationStepDialog.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/SimulationStepDialog.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{ff42a8e5-7766-4989-9384-4866ce504c88}</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/SimulationStepDialog.py</value>
+    <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view</value>
+   </valuemap>
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.14">
+    <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
+    <valuelist type="QVariantList" key="CustomOutputParsers"/>
+    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
+    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/ResultDialog.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/ResultDialog.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/ResultDialog.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{ff42a8e5-7766-4989-9384-4866ce504c88}</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/ResultDialog.py</value>
+    <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view</value>
+   </valuemap>
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.15">
+    <value type="bool" key="Analyzer.Perf.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.QmlProfiler.Settings.UseGlobalSettings">true</value>
+    <value type="bool" key="Analyzer.Valgrind.Settings.UseGlobalSettings">true</value>
+    <valuelist type="QVariantList" key="CustomOutputParsers"/>
+    <value type="int" key="PE.EnvironmentAspect.Base">2</value>
+    <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/RuleAndObjectEditDialog.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/RuleAndObjectEditDialog.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/RuleAndObjectEditDialog.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{ff42a8e5-7766-4989-9384-4866ce504c88}</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/RuleAndObjectEditDialog.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
@@ -363,18 +399,18 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/RuleAndObjectEdtDialog.py</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/RuleAndObjectEdtDialog.py</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/RuleAndObjectEdtDialog.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/StructureDialog.py</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">PythonEditor.RunConfiguration./home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/StructureDialog.py</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/StructureDialog.py</value>
     <value type="QString" key="PythonEditor.RunConfiguation.Interpreter">{ff42a8e5-7766-4989-9384-4866ce504c88}</value>
-    <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/RuleAndObjectEdtDialog.py</value>
+    <value type="QString" key="PythonEditor.RunConfiguation.Script">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view/StructureDialog.py</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/levi/ELTE/ELTE6/SZAKDOGA/thesis/thesis/view</value>
    </valuemap>
-   <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">14</value>
+   <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">16</value>
   </valuemap>
  </data>
  <data>

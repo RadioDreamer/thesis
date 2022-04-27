@@ -22,7 +22,7 @@ class ResultDialog(QDialog):
         self.inner_data_layout = QHBoxLayout()
         self.data_list = QListWidget()
 
-        sorted_by_freq = dict(sorted(results.items(), key=lambda x: x[0][1]))
+        sorted_by_freq = dict(sorted(results.items(), key=lambda x: x[1]))
         result_list = list(map(lambda x: str(x),sorted_by_freq.keys()))
         self.data_list.addItems(result_list)
 

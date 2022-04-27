@@ -359,12 +359,15 @@ class MembraneSimulator(QWidget):
     def summarize_results(self, list):
         summary = {}
         res_pairs = [(k,v) for e in list for k,v in e.items()]
+        empty_count = list.count({})
         for result in res_pairs:
             result
             if result not in summary.keys():
                 summary[result] = 1
             else:
                 summary[result] += 1
+        print(summary)
+        summary['NO OBJECTS'] = empty_count
         self.signal.simulation_over.emit(summary)
 
     def save_model(self, name):

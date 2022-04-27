@@ -141,6 +141,16 @@ class Region(QObject):
         return '\n'.join(rule_str)
 
     def add_rule(self, rule):
+        """
+        A function used to add a single rule to the region's rules
+
+        Emits `signal.rules_changed`
+
+        Parameters
+        ----------
+        rule : Rule
+            the rule to be added to the list of rules
+        """
         self.rules.append(rule)
         result = self.get_rule_string()
         self.signal.rules_changed.emit(self.id, result)

@@ -217,6 +217,20 @@ class SymportAntiport(MembraneSystem):
 
     @classmethod
     def copy_system(cls, ms):
+        """
+        A function to return the deep copy of the given membrane system
+
+        Parameters
+        ----------
+        ms : SymportAntiport
+            the symport-antiport system to be copied
+
+        Returns
+        -------
+        SymportAntiport
+            the copy of the model
+        """
+
         assert isinstance(ms, SymportAntiport)
         tree = copy.deepcopy(ms.tree)
         env = copy.deepcopy(ms.environment)
@@ -236,6 +250,13 @@ class SymportAntiport(MembraneSystem):
         return copy_model
 
     def select_and_apply_rules(self):
+        """
+        A function responsible for non-deterministically selecting rules in
+        the whole membrane system and then applying them
+
+        The randomness is guaranteed by `random.choice`'s uniform distribution
+        """
+
         rule_indices = {}
         idx = 0
         for region in self.regions.values():
