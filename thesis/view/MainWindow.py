@@ -1,6 +1,8 @@
 import sys
 
 sys.path.append("../model")
+sys.path.append("../resources")
+
 from PySide6.QtWidgets import (
     QMainWindow,
     QApplication,
@@ -14,7 +16,7 @@ from PySide6.QtWidgets import (
     QDialog
 )
 from PySide6.QtCore import QFile
-from PySide6.QtGui import QResizeEvent, QAction
+from PySide6.QtGui import QResizeEvent, QAction, QIcon
 
 from StructureDialog import StructureDialog
 from MembraneSimulator import MembraneSimulator, ModelType, \
@@ -22,7 +24,7 @@ from MembraneSimulator import MembraneSimulator, ModelType, \
 from HelpMenu import HelpMenu
 from SimulationStepDialog import SimulationStepDialog
 from ResultDialog import ResultDialog
-
+import resources
 
 class MainWindow(QMainWindow):
     """
@@ -230,6 +232,8 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication([])
+    # Setting the application icon
+    app.setWindowIcon(QIcon(":/icon/icon.png"))
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
