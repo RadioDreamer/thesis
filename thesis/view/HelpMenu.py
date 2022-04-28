@@ -106,15 +106,7 @@ class HelpMenu(QDialog):
 
         super().__init__(parent)
         self.setMinimumSize(750, 400)
-        #        file = QFile(":/help/software_guide.md")
-        #        datastream = QDataStream(file)
-        #        help_md_string = ""
-        #        try:
-        #            file.open(QIODevice.ReadOnly)
-        #            datastream >> help_md_string
-        #            print("STRING", help_md_string)
-        #        finally:
-        #            file.close()
+        self.setWindowTitle("Használati útmutató")
 
         QBtn = QDialogButtonBox.StandardButton.Ok
         self.button_box = QDialogButtonBox(QBtn)

@@ -6,6 +6,9 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QMessageBox
 )
+from PySide6.QtGui import QFont
+from MembraneSimulator import ModelType
+
 
 
 class StructureDialog(QDialog):
@@ -25,7 +28,7 @@ class StructureDialog(QDialog):
         the layout of the dialog
     """
 
-    def __init__(self, parent=None, valid_fn=None):
+    def __init__(self, type=None, parent=None, valid_fn=None):
         """
         A function for initializing the dialog
 
@@ -47,8 +50,19 @@ class StructureDialog(QDialog):
         self.button_box.rejected.connect(self.reject)
 
         self.layout = QVBoxLayout()
-        msg = QLabel("Add meg a membránstruktúra szöveges reprezentációját!")
+
+        if type == ModelType.BASE:
+            msg = QLabel("Add meg az alapmodell struktúrájának szöveges reprezentációját!")
+        elif type == ModelType.SYMPORT:
+            msg = QLabel("Add meg a szimport-antiport rendszer struktúrájának szöveges reprezentációját!")
+
+        font = QFont()
+        font.setPointSize(11)
+        msg.setFont(font)
+
         edit = QLineEdit()
+        font.setPointSize(13)
+        edit.setFont(font)
 
         edit.textChanged.connect(self.set_text)
         self.layout.addWidget(msg)

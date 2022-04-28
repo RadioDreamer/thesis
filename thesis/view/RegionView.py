@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import QPen, QBrush, QColor, QFont
 from RuleAndObjectEditDialog import RuleAndObjectEditDialog
-
+from MembraneSimulator import ModelType
 
 class RegionView(QGraphicsRectItem):
     def __init__(self, id, rect, obj, rules, simulator=None, parent=None):
@@ -21,8 +21,8 @@ class RegionView(QGraphicsRectItem):
         self.obj_text.setFont(font)
         self.rule_text.setFont(font)
 
-        text_rect = QRectF(self.obj_text.boundingRect())
-        rule_rect = QRectF(self.rule_text.boundingRect())
+#        text_rect = QRectF(self.obj_text.boundingRect())
+#        rule_rect = QRectF(self.rule_text.boundingRect())
 
         self.center_text()
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
@@ -33,7 +33,7 @@ class RegionView(QGraphicsRectItem):
         self.click_pos = None
         self.click_rect = None
 
-    def paint(self,painter, option, widget):
+    def paint(self, painter, option, widget):
         painter.drawRoundedRect(self.rect(), 25, 25, Qt.RelativeSize)
 
     def adjust_text(self):

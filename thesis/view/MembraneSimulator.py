@@ -1,16 +1,17 @@
 import json
-from enum import Enum
 from PySide6.QtWidgets import (
     QWidget,
     QGraphicsScene,
     QGraphicsView,
     QMessageBox
 )
+from PySide6.QtCore import Qt
 
 from MembraneSystem import MembraneSystem, InvalidArgumentException
 from BaseModel import BaseModel
 from SymportAntiport import SymportAntiport
 from MultiSet import MultiSet
+from ModelType import ModelType
 from RegionView import RegionView
 from PySide6.QtCore import QRectF, QObject, Signal
 
@@ -21,16 +22,6 @@ class InvalidStructureException(Exception):
     """
 
     pass
-
-class ModelType(Enum):
-    """
-    An enum class responsible for describing the type of the membrane system
-
-    Currently there are two types supported
-    """
-
-    BASE = 0
-    SYMPORT = 1
 
 
 class SimulatorSignal(QObject):
@@ -259,10 +250,10 @@ class MembraneSimulator(QWidget):
                 children = self.model.get_all_children(
                     self.model.regions[current_node_id])
                 child_width = self.view_regions[
-                                  current_node_id].rect().width() / (2 * len(
+                                  current_node_id].rect().width() / (2 * 0.8* len(
                     children))
                 child_height = self.view_regions[
-                                   current_node_id].rect().height() / (2 * len(
+                                   current_node_id].rect().height() / (2 * 0.8  * len(
                     children))
 
                 for i, child in enumerate(children):
@@ -367,7 +358,8 @@ class MembraneSimulator(QWidget):
             else:
                 summary[result] += 1
         print(summary)
-        summary['NO OBJECTS'] = empty_count
+        if empty_count != 0:
+            summary['NO OBJECTS'] = empty_count
         self.signal.simulation_over.emit(summary)
 
     def save_model(self, name):
