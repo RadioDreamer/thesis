@@ -40,6 +40,23 @@ A legfontosabb interakció a felhasználó és a szoftver között a dialógisab
 
 Egy membránrendszer megalkotásának kezdeti módja a struktúrájának megadásával kezdődik. Mivel egy membránrendszerben a membránok hierarchikusan helyezkednek el, ezért a teljes rétegződést nagyon jól lehet ábrázolni fa alakban, ahol mindenkinek a szülő csúcsa az őt legszűkebben tartalmazó régió. Ezzel egyenértékű az a felírás, amikor egyetlen karakterláncban fejezzük ki ugyanezt, azáltal, hogy egy régiót megfeleltetünk egy nyitó-csukó zárójelpárral. Ilyenkor a két zárójel között elhelyezett objektumok jelentik a régió tartalmát. Azonban nem csak objektumok, de más régiók is helyet kaphatnak, ezzel kifejezve azt, hogy a már említett régió közvetlen gyerekét szeretnénk megadni. 
 
+\begin{figure}[H]
+	\centering
+	\subcaptionbox{Dialógusablak alapmodell létrehozásához}{
+		\includegraphics[width=0.45\linewidth]{structure_dialog_base_model.png}}
+	\vspace{5pt}
+	\subcaptionbox{Dialógusablak szimport-antiport rendszer létrehozásához}{
+		\includegraphics[width=0.45\linewidth]{structure_dialog_symport.png}}
+	\caption{Dialógusablakok membránrendszer létrehozásához}
+	\label{fig:example-2}
+\end{figure}
+
+A \ref{fig:example-2} ábra egy alapmodellbe tartozó membránrendszer struktúrájának megadásahoz használt dialógusablakot mutatja. A megadott karakterláncban a régiók kezdetét és végét jelző zárójelpárok, illetve a bennük előforduló objektumok az angol ábécé kisbetűi szerepelhetnek.
+
+Ha a megadott karakterlánc nem a megfelelő formátumú, akkor a felhasználó figyelmeztetésére egy hibaüzenet jelenik meg a képernyőn. A helyes formátum feltétele, hogy a zárójelpárok karakterein és az szimport-antiport rendszereknél a kimeneti régió jelzésére használt speciális \textit{\#} karakteren kívül csak az angol ábécé kisbetűi szerepelhetnek a bemenetben, illetve annak meg kell felelnie a helyes zárójelezés szabályainak. 
+
+
+
 \subsubsection{Objektumok módosítása}
 \subsubsection{Szabályok módosítása}
 \subsubsection{Szimulációk számának megadása}
