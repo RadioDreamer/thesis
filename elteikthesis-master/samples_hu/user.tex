@@ -43,7 +43,7 @@ Egy membránrendszer megalkotásának kezdeti módja a struktúrájának megadá
 \begin{figure}[H]
 	\centering
 	\subcaptionbox{Dialógusablak alapmodell létrehozásához}{
-		\includegraphics[width=0.45\linewidth]{structure_dialog_base_model.png}}
+		\includegraphics[width=0.4\linewidth]{structure_dialog_base_model.png}}
 	\vspace{5pt}
 	\subcaptionbox{Dialógusablak szimport-antiport rendszer létrehozásához}{
 		\includegraphics[width=0.45\linewidth]{structure_dialog_symport.png}}
@@ -86,11 +86,103 @@ A \ref{fig:create_system} segítségével alkotott membránrendszerek még nem f
 
  A szabályok felépítése függ a membránrendszer típusától. Minden szabály megadása során először fel kell tüntetni, hogy mik azok az objektumok (olyankor ugyanolyan objektumból akár több is egyszerre), amelyek szükségesek a szabály alkalmazásához. 
 
-Szimport-antiport rendszereknél ez a feltétel teljes mértékben elegendő ahhoz, hogy a szabály létrejöjjön, hiszen abban a modellben nincs lehetőség új objektumok létrehozására; a hangsúly inkább az objektumok régiók közötti mozgatására helyeződik. Ahogyan a \ref{fig:rule_edit_symport} alsó szövegdobozában is látható, szimport-antiport rendszerek esetében két típusú szabály hozható létre. Az első a szimport szabály, amelynek két formája van. Az \textit{IN:} kezdetű szabály alkalmazása esetén a kijelölt objektumok a membránt körülvevő tartományból a jelenleg szerkesztés alatt álló tartományba vándorolnak. Az \textit{OUT:} kezdetű szabálynál pedig a szerkesztés alatt álló régióból a membránt körülvevő tartományba kerülnek az objektumok.
+Szimport-antiport rendszereknél ez a feltétel teljes mértékben elegendő ahhoz, hogy a szabály létrejöjjön, hiszen abban a modellben nincs lehetőség új objektumok létrehozására; a hangsúly inkább az objektumok régiók közötti mozgatására helyeződik. Ahogyan a \ref{fig:rule_edit_symport} alsó szövegdobozában is látható, szimport-antiport rendszerek esetében két különböző típusú szabály hozható létre. Az első a szimport szabály, amelynek két formája van. Az \textit{IN:} kezdetű szabály alkalmazása esetén a kijelölt objektumok a membránt körülvevő tartományból a jelenleg szerkesztés alatt álló tartományba vándorolnak; az \textit{OUT:} kezdetű szabálynál pedig a szerkesztés alatt álló régióból a membránt körülvevő tartományba kerülnek az objektumok. A másik típushoz az \textit{ún.} antiport szabályokat soroljuk, akkor egyszerre történik meg az előbbiekkel analóg módon be- és kivándorlás. A bevándorló objektumok előtt az \textit{IN:} prefix szerepel, a kivándorló objektumok pedig az \textit{OUT:} után találhatóak. Ezen két rész a karakterláncon belül felcserélhető, illetve köztük és az objektumok között tetszőleges számú szóköz karakter szerepelhet, amelyek a szabály megalkotásakor nem játszanak szerepet.
+
+Ahogy a \ref{fig:rule_edit_base} ábra is mutatja, az alapmodell esetében a szabályok komplexebb felépítéssel rendelkezhetnek. Első nagy különbség, hogy ebben a modellben objektumok átalakulhatnak, illetve eltűnhetnek vagy megsokszorozódhatnak. Ebben a modellben a szabály alkalmazásához szükséges objektumokat a szabály \textit{bal oldalának} nevezzük. A szabály meghatározása ezen objektumok felírásával kezdődik. A szabály alkalmazásának köszönhetően létrejövő objektumok halmazát a nevezzük a szabály \textit{jobb oldalának}, amelyben az objektumok mozgásának figyelembevételével 3 csoportra bonthatunk:
+
+\begin{compactenum}
+	\item Kivándorló objektumok, amelyek a szülő régióba fognak jutni. Ha a legkülső régióban alkalmaztuk a szabályt, akkor az ilyen címkéjű objektumok a környezetbe kerülnek. A szabály megalkotásánál ezen objektumok elé az \textit{OUT:} prefix kerül.
+	\item Bevándorló objektumok, amelyek véletlenszerűen valamelyik gyerek régióba fognak kerülni (az alapmodell ennél specifikusabban, címke alapján is megengedi az objektumok mozgását). A szöveges formátumban ezen objektumokat az \textit{IN:} szöveg előzi meg.
+	\item Régión belül létrejövő objektumok, amelyek a szabályhoz tartozó régióba kerülnek. Ezen objektumok elé a karakterláncban a \textit{HERE:} kifejezés kell álljon.
+\end{compactenum}
+A szabály bal és jobb oldalát a \textit{->} szimbólumok választják el, amelyek együttesen egy nyilat reprezentálnak, annak kifejezésére, hogy a bal oldalt a jobb oldal objektumai ,,váljták fel''.
+Tehát ekkor a \textit{ aa -> IN: bb OUT: cc HERE: dd} szöveghez tartozó alapmodellbeli szabály két \textit{a} objektumot igényel a végbemeneteléhez (amelyek felemésztődnek a reakció hatására), a régióból kivándorol két \textit{b} objektum, az egyik gyerek régióba bevándorol két \textit{c} objektum, illetve régión belül kialakul két új \textit{d} objektum.
+
+Az alapmodell szabályai kiegészülhetnek többletjelentéssel is. Ebben a modellben ugyanis megengedett lehet egy régió felbomlása, amely egy vagy egyszerre több szabály előidézésére is bekövetkezhet. Ez a szándék jelezhető egy szabály konstruálásakor, ha a bal- és jobb oldalt elválasztó nyilat reprezentáló karakter után közvetlenül egy \textit{\#} karaktert ír a felhasználó. Ilyenkor a régió tartalma és gyerek régiói a szülő régiójába kerülnek.
+
+% Struktúra gráfja
+%\begin{tikzpicture}[node distance={20mm}, thick, main/.style = {draw, circle}] 
+%\node[main] (1) {$1$}; 
+%\node[main] (2) [below left of=1] {$2$}; 
+%\node[main] (3) [below right of=1] {$3$}; 
+%\node[main] (4) [below left of=2] {$4$}; 
+%\node[main] (5) [below right of=2] {$5$}; 
+%\draw (1) -- (2);
+%\draw (1) -- (3); 
+%\draw (2) -- (4); 
+%\draw (2) -- (5); 
+%\end{tikzpicture}
+
 
 \subsubsection{Szimulációk számának megadása}
+
+A korábbi dialógusablakok segítségével a felhasználó lehetőséget szerzett arra, hogy a teljes mértékben a saját elképzeléseinek megfelelő membránrendszer hozza létre és konfigurálja fel objektumokkal és szabályokkal. Ezek után már csak a rendszer számításának szimulálása van hátra. A szimulálás végrehajtására két módot biztosít az alkalmazás:
+
+\begin{compactenum}
+\item Teljes szimuláció futtatása párhuzamosan tetszőleges számú másolattal 
+\item Egy szimulációs lépés az aktuális membránrendszeren
+\end{compactenum}
+
+Fontos megjegyezni, hogy a teljes szimuláció futtatásának kiválasztása esetén a képernyőn látható membránrendszer nem kerül szimulálásra, annak érdekében, hogy a szimulálni kívánt állapot megőrződjön, így utána változtatások nélkül kezdeményezhető a funkció megismétlése.
+
+\begin{figure}[H]
+	\centering
+	\scalebox{1}[1]{\includegraphics{num_of_simulation.png}}
+	\caption{Dialógusablak a szimulációk számának kiválasztásához}
+	\label{fig:num_of_sim}
+\end{figure}
+
+A szimuláció ismétléseinek számát egy olyan speciális szövegdobozzal lehet beállítani, amely bemenetként csak numerikus értékeket reprezentáló karaktereket fogad el. Alternatívaként a szövegdoboz jobb oldalán található nyilakkal is egyesével állítható az érték, amelynek alsó korlátja \textit{1}, felső korlátja pedig \textit{1000}.
+ 
 \subsubsection{Mentés}
+Miután a felhasználó kialakított egy olyan membránrendszert, amelyet szeretne elemezni vagy későbbi használat céljából megőrizni, az alkalmazás lehetőséget biztosít a jelenlegi állapot fájlba történő lementésére.
+
+\begin{figure}[H]
+	\centering
+	\scalebox{0.5}[0.5]{\includegraphics{save_system.png}}
+	\caption{Dialógusablak a membránrendszer mentéséhez}
+	\label{fig:save_system}
+\end{figure}
+
+A mentés folyamata a \textit{Mentés} gombra történő kattintással vagy a \verb| Ctrl+S| billentyűkombináció lenyomásával kezdeményezhető. A funkció kiválasztása után egy dialógusablak jelenik meg, amelyben a mentés helyére kell navigálnia a fájlrendszerben, majd a fájlnév megadása után az \textit{OK} gomb lenyomására létrejön a \textit{JSON} formátumú fájl a megadott útvonallal.
+
+Mivel a \textit{JSON} formátum könnyen értelmezhető és szerkeszthető, ezért egy jártasabb felhasználója a programnak képes egy lementett membránrendszeren módosításokat végezni a megfelelő szerkesztésekkel. 
+
+
+\begin{figure}[H]
+	\centering
+	\scalebox{0.4}[0.4]{\includegraphics{saved_json.png}}
+	\caption{Egy lementett membránrendszerhez tartozó JSON fájl  \protect\footnotemark}
+	\label{fig:saved_json}
+\end{figure}
+
+\footnotetext{Az ábrán látható konfiguráció a páros számokat generáló szimport-antiport rendszerhez tartozik}
+
 \subsubsection{Betöltés}
+
+Az alkalmazás biztosítja lementett membránrendszerek betöltését, amelynek hatására betöltődik a kiválasztott fájlhoz tartozó állapot a grafikus felületre.
+A betöltés nagyon hasonlóan működik a mentéshez, kezdeményezni a \textit{Betöltés} gombra történő kattintással vagy a \verb| Ctrl+O| billentyűkombináció lenyomásával lehetséges, mely után egy dialógusablak segítségével a felhasználó elnavigálhat a megnyitni kívánt fájlt tartalmazó mappához.
+
+\begin{figure}[H]
+	\centering
+	\scalebox{0.5}[0.5]{\includegraphics{load_system.png}}
+	\caption{Dialógusablak egy membránrendszer betöltéséhez}
+	\label{fig:load_system}
+\end{figure}
+
 \subsubsection{Eredményablak}
 
+Miután a felhasználó létrehozott egy membránrendszert és szimulálta azt, nincs más hátra mint értesülnie annak eredményéről.  Ezt a funkciót látja el az eredményablak, amely a membránrendszer számításának befejeződése után automatikusan megjelenik és egy listában gyakoriság szerint növekvő sorrendbe rendezve jeleníti meg a különböző számítási eredményeket.
+
+\begin{figure}[H]
+	\centering
+	\scalebox{0.5}[0.5]{\includegraphics{results.png}}
+	\caption{Szimulációs eredményeket kilistázó ablak}
+	\label{fig:load_system}
+\end{figure}
+
 \section{Használati útmutató}\label{help}
+
+A szoftver használata a membránrendszerek előzetes ismerete nélkül kriptikus tud lenni, ezért a felhasználó útbaigazítására és a szükséges jellemzőkkel kapcsolatos tudnivalók ismertetésére egy súgó funkció is megtalálható a menüsorban.
+
+A használati útmutató a \textit{Markdown} formátumnak megfelelő formázásban jelenik meg, amely jól strukturált és könnyen olvasható. A tartalma fejezetekre van bontva, amelyek kitérnek a korábban említett dialógusablakok sajátosságaira, az objektumokkal és szabályokkal kapcsolatos elvárásokra és a szoftver helyes használatának módjára.

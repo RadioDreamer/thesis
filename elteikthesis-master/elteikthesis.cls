@@ -28,6 +28,7 @@
 \RequirePackage{etoolbox}
 \RequirePackage{xparse}
 \RequirePackage{ifthen}
+\RequirePackage{tikz}
 
 % ------------------------------
 % Processing parameters
