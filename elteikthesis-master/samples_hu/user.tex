@@ -4,7 +4,7 @@
 
 \section{Az alkalmazás célja}
 
-Az alkalmazás célja, hogy a felhasználó segítségével membránrendszereket hozzon létre majd szimulálja számításaikat. A membránrendszer egy olyan biológiailag inspirált számítási modell, amely az eukarióta sejtek működését és felépítését követve evolúciós lépéseken keresztül történő információáramlást ír le membránok között. Minden membrán által körbezárt \textit{ún.} régió tartalmaz evolúciós szabályokat, amelyek nem változnak a membránrendszer működése közben. Az információt a rendszerben a régiókban található molekulák, \textit{ún.} objektumok hordozzák. Egy szabály csak akkor tud végbemenni, ha rendelkezésre állnak a szükséges objektumok kellő számban. Ilyen helyzetekben a szabályoknak végre is kell hajtódnia, tehát nem fordulhat elő, hogy minden objektum hozzáférhető, de nem kerül a szabály alkalmazásra. Egy evolúciós lépésben a maximális párhuzamosság elve érvényesül, azaz a szabályok véletszerűen kerülnek kiválasztása, egészen addig, amíg van alkalmazható szabály. Megadhatóak olyan speciális szamályok, amelyek alkalmazásának hatására egy membrán feloldódhat, ilyenkor a tartalma az őt körbevevő régióba kerül. A szabályok között prioritási sorrend is felállítható. A számítás legfontosabb tulajdonsága annak kimenete, amely általában a legkülső régión kívülre (azaz a környezetbe) kijutó objektumok számát jelenti.
+Az alkalmazás célja, hogy a felhasználó segítségével membránrendszereket hozzon létre majd szimulálja számításaikat. A membránrendszer egy olyan biológiailag inspirált számítási modell, amely az eukarióta sejtek működését és felépítését követve evolúciós lépéseken keresztül történő információáramlást ír le membránok között. Minden membrán által körbezárt \textit{ún.} régió tartalmaz evolúciós szabályokat, amelyek nem változnak a membránrendszer működése közben. Az információt a rendszerben a régiókban található molekulák, \textit{ún.} objektumok hordozzák. Egy szabály csak akkor tud végbemenni, ha rendelkezésre állnak a szükséges objektumok kellő számban. Ilyen helyzetekben a szabályoknak végre is kell hajtódnia, tehát nem fordulhat elő, hogy minden objektum hozzáférhető, de nem kerül a szabály alkalmazásra. Egy evolúciós lépésben a maximális párhuzamosság elve érvényesül, azaz a szabályok véletszerűen kerülnek kiválasztása, egészen addig, amíg van alkalmazható szabály. Az egyik szimulálható típusú rendszerben megadhatóak olyan speciális szabályok, amelyek alkalmazásának hatására egy membrán feloldódhat, ilyenkor teljes tartalma (benne levő objektumok és régiók) az őt körbevevő régióba kerül. A szabályok között prioritási sorrend is felállítható. A számítás legfontosabb tulajdonsága annak kimenete, amely általában a legkülső régión kívülre (azaz a környezetbe) kijutó objektumok számát jelenti.
 
 
 \section{Hardver és szoftver követelmények}
@@ -38,7 +38,9 @@ A legfontosabb interakció a felhasználó és a szoftver között a dialógisab
 
 \subsubsection{Membránstruktúra megadása}\label{create_structure}
 
-Egy membránrendszer megalkotásának kezdeti módja a struktúrájának megadásával kezdődik. Mivel egy membránrendszerben a membránok hierarchikusan helyezkednek el, ezért a teljes rétegződést nagyon jól lehet ábrázolni fa alakban, ahol mindenkinek a szülő csúcsa az őt legszűkebben tartalmazó régió. Ezzel egyenértékű az a felírás, amikor egyetlen karakterláncban fejezzük ki ugyanezt, azáltal, hogy egy régiót megfeleltetünk egy nyitó-csukó zárójelpárral. Ilyenkor a két zárójel között elhelyezett objektumok jelentik a régió tartalmát. Azonban nem csak objektumok, de más régiók is helyet kaphatnak, ezzel kifejezve azt, hogy a már említett régió közvetlen gyerekét szeretnénk megadni. 
+Egy membránrendszer megalkotásának kezdeti módja a struktúrájának megadásával kezdődik. Mivel egy membránrendszerben a membránok hierarchikusan helyezkednek el, ezért a teljes rétegződést nagyon jól lehet ábrázolni fa alakban, ahol mindenkinek a szülő csúcsa az őt legszűkebben tartalmazó régió. 
+
+Ezzel egyenértékű az a felírás, amikor egyetlen karakterláncban fejezzük ki ugyanezt, azáltal, hogy egy régiót megfeleltetünk egy nyitó-csukó zárójelpárral. Ilyenkor a két zárójel között elhelyezett objektumok jelentik a régió tartalmát. Azonban nem csak objektumok, de más régiók is helyet kaphatnak, ezzel kifejezve azt, hogy a már említett régió közvetlen gyerekét szeretnénk megadni. 
 
 \begin{figure}[H]
 	\centering
@@ -55,6 +57,24 @@ A \ref{fig:create_system} ábra a különböző típusú membránrendszerek stru
 A helyes formátum feltétele, hogy a zárójelpárok karakterein és az szimport-antiport rendszereknél a kimeneti régió jelzésére használt speciális \textit{\#} karakteren kívül csak az angol ábécé kisbetűi szerepelhetnek a bemenetben, illetve annak meg kell felelnie a helyes zárójelezés szabályainak. Ezt azt jelenti, hogy nem lehetnek átfedések régiók között, azaz olyan karakterláncok, amikor egy külső régió hamarabb kerül lezárásra, mint bármelyik benne lévő régió. Ha ezen feltételeknek megfelel a felhasználó által megadott karakterlánc, akkor a főablak teljes területét lefedő vásznon megjelenik a létrehozott membránrendszer.
 
 Ha a megadott karakterlánc nem a megfelelő formátumú, akkor a felhasználó figyelmeztetésére egy hibaüzenet jelenik meg a képernyőn. 
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[node distance={20mm}, thick, main/.style = {draw, circle}] 
+\node[main] (1) {$1$}; 
+\node[main] (2) [below left of=1] {$2$}; 
+\node[main] (3) [below right of=1] {$3$}; 
+\node[main] (4) [below left of=2] {$4$}; 
+\node[main] (5) [below right of=2] {$5$}; 
+\draw (1) -- (2);
+\draw (1) -- (3); 
+\draw (2) -- (4); 
+\draw (2) -- (5); 
+\end{tikzpicture}
+\caption{Membránrendszer hierarchikus felépítése\protect\footnotemark}\label{fig:structure_graph}
+\end{figure}
+
+\footnotetext{Az ábrán látható struktúra szöveges megfelelője a $[_1 [_2 [_4 ]_4 [_5 ]_5 ]_2 [_3 ]_3 ]_1$ karakterlánc}
 
 \subsubsection{Objektumok módosítása}
 
@@ -86,32 +106,19 @@ A \ref{fig:create_system} segítségével alkotott membránrendszerek még nem f
 
  A szabályok felépítése függ a membránrendszer típusától. Minden szabály megadása során először fel kell tüntetni, hogy mik azok az objektumok (olyankor ugyanolyan objektumból akár több is egyszerre), amelyek szükségesek a szabály alkalmazásához. 
 
-Szimport-antiport rendszereknél ez a feltétel teljes mértékben elegendő ahhoz, hogy a szabály létrejöjjön, hiszen abban a modellben nincs lehetőség új objektumok létrehozására; a hangsúly inkább az objektumok régiók közötti mozgatására helyeződik. Ahogyan a \ref{fig:rule_edit_symport} alsó szövegdobozában is látható, szimport-antiport rendszerek esetében két különböző típusú szabály hozható létre. Az első a szimport szabály, amelynek két formája van. Az \textit{IN:} kezdetű szabály alkalmazása esetén a kijelölt objektumok a membránt körülvevő tartományból a jelenleg szerkesztés alatt álló tartományba vándorolnak; az \textit{OUT:} kezdetű szabálynál pedig a szerkesztés alatt álló régióból a membránt körülvevő tartományba kerülnek az objektumok. A másik típushoz az \textit{ún.} antiport szabályokat soroljuk, akkor egyszerre történik meg az előbbiekkel analóg módon be- és kivándorlás. A bevándorló objektumok előtt az \textit{IN:} prefix szerepel, a kivándorló objektumok pedig az \textit{OUT:} után találhatóak. Ezen két rész a karakterláncon belül felcserélhető, illetve köztük és az objektumok között tetszőleges számú szóköz karakter szerepelhet, amelyek a szabály megalkotásakor nem játszanak szerepet.
+Szimport-antiport rendszereknél ez a feltétel teljes mértékben elegendő ahhoz, hogy a szabály létrejöjjön, hiszen abban a modellben nincs lehetőség új objektumok létrehozására; a hangsúly inkább az objektumok régiók közötti mozgatására helyeződik. Ahogyan a \ref{fig:rule_edit_symport} alsó szövegdobozában is látható, szimport-antiport rendszerek esetében két különböző típusú szabály hozható létre. Az első a szimport szabály, amelynek két formája van. Az \textit{IN:} kezdetű szabály alkalmazása esetén a kijelölt objektumok a membránt körülvevő tartományból a jelenleg szerkesztés alatt álló tartományba vándorolnak; az \textit{OUT:} kezdetű szabálynál pedig a szerkesztés alatt álló régióból a membránt körülvevő tartományba kerülnek az objektumok. A másik típushoz az ún. \textit{antiport szabályokat}  soroljuk, amelynél egyszerre történik meg az előbbiekkel analóg módon be- és kivándorlás. A bevándorló objektumok előtt az \textit{IN:} prefix szerepel, a kivándorló objektumok pedig az \textit{OUT:} után találhatóak. Ezen két rész a karakterláncon belül felcserélhető, illetve köztük és az objektumok között tetszőleges számú szóköz karakter szerepelhet, amelyek a szabály megalkotásakor nem játszanak szerepet.
 
 Ahogy a \ref{fig:rule_edit_base} ábra is mutatja, az alapmodell esetében a szabályok komplexebb felépítéssel rendelkezhetnek. Első nagy különbség, hogy ebben a modellben objektumok átalakulhatnak, illetve eltűnhetnek vagy megsokszorozódhatnak. Ebben a modellben a szabály alkalmazásához szükséges objektumokat a szabály \textit{bal oldalának} nevezzük. A szabály meghatározása ezen objektumok felírásával kezdődik. A szabály alkalmazásának köszönhetően létrejövő objektumok halmazát a nevezzük a szabály \textit{jobb oldalának}, amelyben az objektumok mozgásának figyelembevételével 3 csoportra bonthatunk:
 
 \begin{compactenum}
 	\item Kivándorló objektumok, amelyek a szülő régióba fognak jutni. Ha a legkülső régióban alkalmaztuk a szabályt, akkor az ilyen címkéjű objektumok a környezetbe kerülnek. A szabály megalkotásánál ezen objektumok elé az \textit{OUT:} prefix kerül.
-	\item Bevándorló objektumok, amelyek véletlenszerűen valamelyik gyerek régióba fognak kerülni (az alapmodell ennél specifikusabban, címke alapján is megengedi az objektumok mozgását). A szöveges formátumban ezen objektumokat az \textit{IN:} szöveg előzi meg.
-	\item Régión belül létrejövő objektumok, amelyek a szabályhoz tartozó régióba kerülnek. Ezen objektumok elé a karakterláncban a \textit{HERE:} kifejezés kell álljon.
+	\item Bevándorló objektumok, amelyek véletlenszerűen valamelyik gyerek régióba fognak kerülni (az alapmodell ennél specifikusabban, címke alapján is megengedi az objektumok mozgását, ezt azonban az alkalmazás nem támogatja). A szöveges formátumban ezen objektumokat az \textit{IN:} szöveg előzi meg.
+	\item Régión belül létrejövő objektumok, amelyek a szabályhoz tartozó régióba kerülnek. Ezen objektumok előtt a karakterláncban a \textit{HERE:} kifejezés kell álljon.
 \end{compactenum}
-A szabály bal és jobb oldalát a \textit{->} szimbólumok választják el, amelyek együttesen egy nyilat reprezentálnak, annak kifejezésére, hogy a bal oldalt a jobb oldal objektumai ,,váljták fel''.
-Tehát ekkor a \textit{ aa -> IN: bb OUT: cc HERE: dd} szöveghez tartozó alapmodellbeli szabály két \textit{a} objektumot igényel a végbemeneteléhez (amelyek felemésztődnek a reakció hatására), a régióból kivándorol két \textit{b} objektum, az egyik gyerek régióba bevándorol két \textit{c} objektum, illetve régión belül kialakul két új \textit{d} objektum.
+A szabály bal és jobb oldalát a \textit{"->"} szimbólumok választják el, amelyek együttesen egy nyilat reprezentálnak, annak kifejezésére, hogy a bal oldalt a jobb oldal objektumai ,,váljták fel''.
+Tehát ekkor a \textit{"aa -> IN: bb OUT: cc HERE: dd"} szöveghez tartozó alapmodellbeli szabály két \textit{a} objektumot igényel a végbemeneteléhez (amelyek felemésztődnek a reakció hatására), a régióból kivándorol két \textit{b} objektum, az egyik gyerek régióba bevándorol két \textit{c} objektum, illetve régión belül kialakul két új \textit{d} objektum.
 
 Az alapmodell szabályai kiegészülhetnek többletjelentéssel is. Ebben a modellben ugyanis megengedett lehet egy régió felbomlása, amely egy vagy egyszerre több szabály előidézésére is bekövetkezhet. Ez a szándék jelezhető egy szabály konstruálásakor, ha a bal- és jobb oldalt elválasztó nyilat reprezentáló karakter után közvetlenül egy \textit{\#} karaktert ír a felhasználó. Ilyenkor a régió tartalma és gyerek régiói a szülő régiójába kerülnek.
-
-% Struktúra gráfja
-%\begin{tikzpicture}[node distance={20mm}, thick, main/.style = {draw, circle}] 
-%\node[main] (1) {$1$}; 
-%\node[main] (2) [below left of=1] {$2$}; 
-%\node[main] (3) [below right of=1] {$3$}; 
-%\node[main] (4) [below left of=2] {$4$}; 
-%\node[main] (5) [below right of=2] {$5$}; 
-%\draw (1) -- (2);
-%\draw (1) -- (3); 
-%\draw (2) -- (4); 
-%\draw (2) -- (5); 
-%\end{tikzpicture}
 
 
 \subsubsection{Szimulációk számának megadása}
