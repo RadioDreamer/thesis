@@ -24,7 +24,7 @@ from MembraneSimulator import MembraneSimulator, InvalidStructureException
 from HelpMenu import HelpMenu
 from SimulationStepDialog import SimulationStepDialog
 from ResultDialog import ResultDialog
-import resources
+
 
 class MainWindow(QMainWindow):
     """
@@ -160,7 +160,6 @@ class MainWindow(QMainWindow):
         """
 
         if self.membranes.model:
-            print("HERE")
             size = self.membranes.view.maximumViewportSize()
             max_w = size.width()
             max_h = size.height()
@@ -236,7 +235,8 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication([])
-    # Setting the application icon
+
+    # Setting up the application icon
     app.setWindowIcon(QIcon(":/icon/icon.png"))
     window = MainWindow()
     window.show()

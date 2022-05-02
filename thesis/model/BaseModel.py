@@ -349,7 +349,6 @@ class BaseModel(MembraneSystem):
                 'HERE:',
                 '|').split(
                 '|')[1:]
-            print(right_side_list)
             in_obj = MultiSet.string_to_multiset(right_side_list[0])
             out_obj = MultiSet.string_to_multiset(right_side_list[1])
             here_obj = MultiSet.string_to_multiset(right_side_list[2])

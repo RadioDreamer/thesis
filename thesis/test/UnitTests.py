@@ -1,8 +1,5 @@
-import multiprocessing
-import re
 import sys
 import pytest
-from concurrent.futures import ThreadPoolExecutor
 
 sys.path.append("../model")
 sys.path.append("../view")
@@ -665,10 +662,11 @@ def test_multiple_save_multiple_load():
     l_model3 = BaseModel.load_from_json_dict(json_dict3)
 
     assert l_model.structure_str == "[[]]"
-    assert l_model.regions[l_model.get_root_id()+1].objects == {'a': 1, 'b': 1}
+    assert l_model.regions[l_model.get_root_id() + 1].objects == {'a': 1,
+                                                                  'b': 1}
     assert l_model2.structure_str == "[[#]]"
-    assert l_model2.environment.infinite_obj == set(['a','c'])
-    assert l_model2.regions[l_model2.get_root_id()+1].objects == {'c': 2}
+    assert l_model2.environment.infinite_obj == set(['a', 'c'])
+    assert l_model2.regions[l_model2.get_root_id() + 1].objects == {'c': 2}
     assert l_model2.regions[l_model2.get_root_id()].objects == {'a': 1}
     assert l_model3.structure_str == "[[[]]]"
 
@@ -704,4 +702,3 @@ def test_copy_model():
 
     sa_model.output_id = sa_root_id
     assert sa_copy.output_id == sa_root_id + 1
-

@@ -159,7 +159,6 @@ class MembraneSimulator(QWidget):
             raise InvalidStructureException
 
     def update_dissolve(self, id):
-        print(id)
         """
         A function to update the scene of the membrane system on the event of a
         region dissolving
@@ -197,7 +196,7 @@ class MembraneSimulator(QWidget):
             the string containing the new objects string representation
         """
 
-        #self.view_regions[id].obj_text.setText(string)
+        # self.view_regions[id].obj_text.setText(string)
         self.view_regions[id].obj_text.setPlainText(string)
         self.view_regions[id].adjust_text()
         self.view_regions[id].center_text()
@@ -215,7 +214,7 @@ class MembraneSimulator(QWidget):
             the string containing the new list of rules in a string format
         """
 
-        #self.view_regions[id].rule_text.setText(string)
+        # self.view_regions[id].rule_text.setText(string)
         self.view_regions[id].rule_text.setPlainText(string)
         self.view_regions[id].adjust_text()
         self.view_regions[id].center_text()
@@ -223,6 +222,15 @@ class MembraneSimulator(QWidget):
     def draw_model(self):
         """
         A function that is responsible for visualizing the membrane system
+
+        The algorithm for generating the regions:
+        1.  Generate the skin membrane and add it to the list `gen_child_list`
+            This list contains the regions whose children need to be generated
+        2.  We iterate until `gen_child_list` is empty
+            Take out the first element from the list: current_id
+                - If the region popped has no children, then simply just remove it
+                - If it has children, then add their ID to the list and generate
+                  the region with ID `current_id`
         """
 
         self.scene.clear()
@@ -250,11 +258,13 @@ class MembraneSimulator(QWidget):
                 children = self.model.get_all_children(
                     self.model.regions[current_node_id])
                 child_width = self.view_regions[
-                                  current_node_id].rect().width() / (2 * 0.8* len(
-                    children))
+                                  current_node_id].rect().width() / (
+                                          2 * 0.8 * len(
+                                      children))
                 child_height = self.view_regions[
-                                   current_node_id].rect().height() / (2 * 0.8  * len(
-                    children))
+                                   current_node_id].rect().height() / (
+                                           2 * 0.8 * len(
+                                       children))
 
                 for i, child in enumerate(children):
                     gen_child_list.append(child.id)
@@ -348,8 +358,24 @@ class MembraneSimulator(QWidget):
         self.model.simulate_membrane_system(num_of_sim)
 
     def summarize_results(self, list):
+        """
+        A function used to generate the desired format for the results of the
+        simulation
+
+        The format is a dictionary of {result : multiplicity} key-value pairs
+
+        Parameters
+        ----------
+        list : list
+            the list of the computation results
+
+        Returns
+        -------
+        dict
+            the dictionary containing {result : multiplicity} key-value pairs
+        """
         summary = {}
-        res_pairs = [(k,v) for e in list for k,v in e.items()]
+        res_pairs = [(k, v) for e in list for k, v in e.items()]
         empty_count = list.count({})
         for result in res_pairs:
             result
@@ -357,7 +383,6 @@ class MembraneSimulator(QWidget):
                 summary[result] = 1
             else:
                 summary[result] += 1
-        print(summary)
         if empty_count != 0:
             summary['NO OBJECTS'] = empty_count
         self.signal.simulation_over.emit(summary)

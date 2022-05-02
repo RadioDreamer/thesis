@@ -8,7 +8,21 @@ from PySide6.QtWidgets import (
 
 
 class SimulationStepDialog(QDialog):
+    """
+    A class for displaying the dialog that is used to select the number of
+    simulation steps to occur
+    """
+
     def __init__(self, parent=None):
+        """
+        Initializing method for the dialog
+
+        Parameters
+        ----------
+        parent : QWidget
+            the parent widget of the dialog
+        """
+
         super().__init__(parent)
         self.setWindowTitle("Szimulációk száma")
         self.label = QLabel("Add meg a szimulációk számát!")
