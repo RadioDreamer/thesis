@@ -1,50 +1,114 @@
 \chapter{Fejlesztői dokumentáció}
 \label{ch:impl}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nibh leo, dapibus in elementum nec, aliquet id sem. Suspendisse potenti. Nullam sit amet consectetur nibh. Donec scelerisque varius turpis at tincidunt.
+A szoftver működésének részletezéséhez elengedhetetlen a membránrendszerek formális modelljének ismerete, hiszen ezen rendszerek sajátos viselkedése az architechturális kérdésekben döntő szerepet képez.
 
+A teljes definíció előtt azonban érdemes még pár fogalmat bevezetni. Általánosan tehát egy olyan absztrakt számítási modell áll a szoftver központjában, amely egy biológiai sejthez hasonló felépítéssel rendelkezik, az egymásba ágyazott membránok régiókat különítenek el, amely régiókban különböző objektumok helyezkedhetnek el. A rendszerben az objektumokon felül szabályokat is rendelhetünk régiókhoz, ezen szabályok felelősek a membránrendszer állapotában végbemenő változásokért. A szabályokat a megfelelő feltételek teljesülése esetén kötelesek vagyunk alkalmazni, így egy evolúciós lépés a rendszer számításában addig tart, amíg van legalább egy akalmazható szabály. Érdemes már megjegyezni, hogy egy régió beazonosításához egy egyedi azonosítóra van szükség, illetve, hogy egy régiót könnyen azonosítani lehet az őt legszűkebben tartalmazó membránnal. Így természetes módon adódik, hogy a régiókat fa struktúrába tudjuk szervezni, amelyben minden egyes csúcs egy egyedi azonosítóval rendelkezik. Ezen fában a levelek az elemi membránokat reprezentálják, azaz azokat a régiókat, amelyeken belül nem helyezkedik el régió.  Ezen struktúra pedig nagyon könnyen megfeleltethető egy sztringnek.
 
-\section{Tételek, definíciók, megjegyzések}
+A másik fontos tervezési szempont az objektumok reprezentálásához kapcsolódik. A membránrendszerek az egy régión belül megtalálható objektumok sokaságát ún. \textit{multihalmazokkal} reprezentálják, amelyben minden objektum rendelkezik egy multiplicitás értékkel, amely számosságát mutatja meg a régión belül. A multihalmaz teljeskörű értelmezéséhez pedig szükség van egy ábécére, amely a lehetségesen előforduló objektumok halmazát tartalmazza. Ezen multihalmazok felett pedig műveleteket kell tudni értelmezni, amelyek az evolúciós szabályok által megkövetelt funkciókat kell magukba foglalniuk. Mivel egy evolúciós szabály felhasználja az alkalmazásához szükséges objektumokat (azaz szintén egy multihalmazt), ezért szükség van egy olyan műveletre, amely a régióhoz tartozó multihalmazból eltávolítja a felhasznált objektumokat. Ezt a funkciót a multihalmazok közötti kivonás művelet fogja biztosítani. Ahhoz, hogy eldöntsük, hogy egy szabály alkalmazható-e egy régióban, elegendő megvizsgálni, hogy a régióhoz tartozó multihalmaz magába fogalalja-e a szabályhoz tartozó bal oldali objektumok multihalmazát. Erre a problémára a halmazok közötti részhalmaz reláció nyújt megoldást. Végül az újonnan keletkező objektumokból álló multihalmaz hozzáadását a régió jelenlegi tartalmához a multihalmazokra nézett unió művelettel lehet modellezni. 
+
+Ezen megjegyzések után már bevezethetjük a membránrendszerek formális definícióját.
+
+\section{Definíciók, formális modell}
 
 \begin{definition}
-Mauris tristique sollicitudin ultrices. Etiam tristique quam sit amet metus dictum imperdiet. Nunc id lorem sed nisl pulvinar aliquet vitae quis arcu. Morbi iaculis eleifend porttitor.
+Egy $\Pi = \langle O, \mu , \omega_1 , \dots , \omega_m, R_1 , \dots , R_m , i_o  \rangle$ rendezett $(2m + 3)$-ast membránrendszernek (alapmodell) nevezzük, ha
+
+\begin{enumerate}
+\item O egy objektumokból álló ábécé
+\item $\mu$ egy \textit{m} membránból álló membránstruktúra. A régiók ekkor a $\{1,2, \dots, m\}$ elemeivel injektív módon vannak címkézve. Ilyenkor \textit{m}-et $\Pi$ fokának nevezzük.
+
+\item  $\omega_1 , \dots , \omega_m$ O feletti multihalmazokat reprezentáló sztringek, amelyek rendre az $1, 2, \dots, m$ címkéjű régiókhoz vannak rendelve
+
+\item $R_i, 1 \leq i \leq m \; \mu \; i$-edik membránjához rendelt O feletti \textit{evolúciós szabályok} véges halmaza. A szabályok $u \rightarrow v$ alakúak, ahol $u \in O^+, v \in (O \times TAR)^*$, ahol $TAR=\{here, out\} \cup \{ in_j | q \leq j \leq m \} $ Ha nem írjuk ki a $j$ indexet, akkor nemdeterminisztikusan történik régió kiválasztása
+
+\item$ i_o \in \{1,2, \dots, m\}$ egy elemi membrán címkéje, amely a modell kimeneti membránja.
+\end{enumerate}
 \end{definition}
 
-Maecenas rutrum eros sem, pharetra interdum nulla porttitor sit amet. In vitae viverra ante. Maecenas sit amet placerat orci, sed tincidunt velit. Vivamus mattis, enim vel suscipit elementum, quam odio venenatis elit, et mollis nulla nunc a risus. Praesent purus magna, tristique sed lacus sit amet, convallis malesuada magna. Phasellus faucibus varius purus, nec tristique enim porta vitae.
+Az előbbi definícióban meghatározott membránrendszerre a dolgozatban alapmodellként fogok hivatkozni. Az alkalmazás az alapmodell esetén csak a nemdeterminisztikus $in$ címkét engedi meg a szabályoknál. Ennek oka, hogy a szöveges reprezentációban csak így garantálható az, hogy egy karakter egy objektumot reprezentál, bárhol is szerepeljen a sztringben, illetve a régiók kézzel történő felcímkézésére sincs ezáltal szükség, hiszen ez lenne az egyetlen művelet, amely explicit használja a címkéket. 
 
-\begin{theorem}
-Nulla finibus ante vel arcu tincidunt, ut consectetur ligula finibus. Mauris mollis lectus sed ipsum bibendum, ac ultrices erat dictum. Suspendisse faucibus euismod lacinia. Etiam vel odio ante.
-\end{theorem}
-\begin{proof}
-Etiam pulvinar nibh quis massa auctor congue. Pellentesque quis odio vitae sapien molestie vestibulum sit amet et quam. Pellentesque vel dui eget enim hendrerit finibus at sit amet libero. Quisque sollicitudin ultrices enim, nec porta magna imperdiet vitae. Cras condimentum nunc dui.
-\end{proof}
-
-Donec dapibus sodales ante, at scelerisque nunc laoreet sit amet. Mauris porttitor tincidunt neque, vel ullamcorper neque pulvinar et. Integer eu lorem euismod, faucibus lectus sed, accumsan felis. 
-
-\begin{remark}
-Nunc ornare mi at augue vulputate, eu venenatis magna mollis. Nunc sed posuere dui, et varius nulla. Sed mollis nibh augue, eget scelerisque eros ornare nec. Praesent porta, metus eget eleifend consequat, eros ligula eleifend ex, a pellentesque mi est vitae urna. Vivamus turpis nunc, iaculis non leo eget, mattis vulputate tellus.
-\end{remark}
-
-Fusce in aliquet neque, in pretium sem. Donec tincidunt tellus id lectus pretium fringilla. Nunc faucibus, erat pretium tempus tempor, tortor mi fringilla neque, ac congue ex dui vitae mauris. Donec pretium et quam a cursus.
+A számítás formalizálásához fontos bevezetni a konfiguráció fogalmát.
+\begin{definition}\label{def:mem_sysm}
+A $C = (w_1, \dots, w_m)  \; a  \; \Pi = \langle O, \mu , \omega_1 , \dots , \omega_m, R_1 , \dots , R_m , i_o  \rangle$ membránrendszer konfigurációja, ha $w_i \in O^*$ és $w_i$ az $i$-edik régióban lévő objektumokból álló multihalmaz sztring reprezentációja
+\end{definition}
 
 \begin{note}
-Aliquam vehicula luctus mi a pretium. Nulla quam neque, maximus nec velit in, aliquam mollis tortor. Aliquam erat volutpat. Curabitur vitae laoreet turpis. Integer id diam ligula.
+Egy $C$ konfiguráció kezdőkonfiguráció, ha $ \; \forall 1 \leq i \leq m$ esetén $w_i = \omega_i$
 \end{note}
 
-Ut sollicitudin tempus urna et mollis. Aliquam et aliquam turpis, sed fermentum mauris. Nulla eget ex diam. Donec eget tellus pharetra, semper neque eget, rutrum diam.
+\begin{definition}
+A megállási konfiguráció olyan konfiguráció, amelyre nem lehet már evolúciós szabályt alkalmazni.
+\end{definition}
 
-\subsection{Egyenletek, matematika}
+\begin{definition}
+Az egylépéses konfigurációátmenet $C_1 \Longrightarrow_\Pi C_2$, akkor ha $C_1$-ből egy evolúciós ütemben megkapható $C_2$ (a maximális párhuzamosság elvének megfelelve). 
+\end{definition}
 
-Duis suscipit ipsum nec urna blandit, $2 + 2 = 4$ pellentesque vehicula quam fringilla. Vivamus euismod, lectus sit amet euismod viverra, dolor metus consequat sapien, ut hendrerit nisl nulla id nisi. Nam in leo eu quam sollicitudin semper a quis velit.
+\begin{note}
+Mivel a szabályok alkalmazása nemdeterminisztikus, ezért a konfigurációátmenet relációban egy $C_1$-hez több $C_2$ is létezhet.
+\end{note}
 
-$$a^2 + b^2 = c^2$$
+\begin{definition}
+A többlépéses konfigurációátmenet a $\Longrightarrow_\Pi$ reláció reflexív tranzitív lezártja. 
+\end{definition}
 
-Phasellus mollis, elit sed convallis feugiat, dolor quam dapibus nibh, suscipit consectetur lacus risus quis sem. Vivamus scelerisque porta odio, vitae euismod dolor accumsan ut.
+A rendszer egy számítása alatt tehát a kezdőkonfigurációból egy megállási konfigurációba történő többlépéses konfigurációátmenet-sorozatot értünk.
 
-In mathematica, identitatem Euleri (equation est scriptor vti etiam notum) sit aequalitatem \ref{eq:euler}.~egyenlet:
-\begin{equation}\label{eq:euler}
-e^{i \times \pi} + 1 = 0
-\end{equation}
+\begin{note}
+Ilyenkor a számítás eredményét többféleképpen definiálhatjuk. Alapértelmezetten a kimeneti régióban lévő objektumok számát jelenti. Az alkalmazás az alapmodell esetén ettől eltér és a környezetbe kijutó objektumok számát tekinti a számítás eredményének.
+\end{note}
+
+Létezik olyan kiterjesztése az \ref{def:mem_sysm} definíciónak, amelyben megengedünk olyan $u \rightarrow v \delta$ alakú szabályokat, ahol az $u \rightarrow v$ az eddigiekhez hasonló evolúciós szabály, a $\delta$ pedig egy speciális szimbólum, amely a membrán feloldódását jelzi a szabály alkalmazásának hatására. Tehát ha egy evolúciós lépésben alkalmazásra kerül egy ilyen speciális szabály, akkor az ütem végén a szabályhoz tartozó régió felbomlik, ilyenkor a benne lévő objektumok és membránok ( a szabályok nem) a membránt közvetlenül tartalmazó szülő régióba kerülnek. A legkülső régió sosem oldódhat fel. 
+
+A másik kiterjesztés a szabályok feletti részberendezés lehetőségét adja meg, mely szerint ha $r_1$ és $r_2$ relációban állnak (amelyet jelölhetünk $r_1 < r_2$-vel), akkor csak abban az esetben alkalmazható az $r_1$ szabály, ha $r_2$ már nem alkalmazható az evolúciós lépésben.
+
+A szoftver mindkét kiterjesztést alapértelmezetten támogatja, működésüket a későbbi fejezetekben részletesebben kifejtem.
+
+Az alkalmazás az alapmodell mellett a szimport-antiport rendszerek szimulálását támogatja. 
+Ebben a modellben az objektumok nem alakulhatnak át, csak a membránstruktúrán belül és a környezetbe vándorolhatnak. Az eddig definiált fogalmak a szimport-antiport rendszereknél is helyt állnak, egyedül a szabályok alakja és működéseigényel módosításokat. 
+Ezen felül a szimport-antiport rendszerek környezete rendelkezhet az $O$ ábécé egy olyan speciális részhalmazával, amelyben előforduló objektumok korlátlanul rendelkezésre állnak az evolúciós lépések során.
+Ennek megfelelően vezessük be az alábbi definíciót.
+
+\begin{definition}
+Egy $\Pi = \langle O, \mu , E, \omega_1 , \dots , \omega_m, R_1 , \dots , R_m , i_o  \rangle$ rendezett $(2m + 4)$-est szimport-antiport rendszernek nevezünk, ha
+
+\begin{enumerate}
+\item O egy objektumokból álló ábécé
+\item $\mu$ egy \textit{m} membránból álló membránstruktúra. A régiók ekkor a $\{1,2, \dots, m\}$ elemeivel injektív módon vannak címkézve. Ilyenkor \textit{m}-et $\Pi$ fokának nevezzük.
+
+\item  $\omega_1 , \dots , \omega_m$ O feletti multihalmazokat reprezentáló sztringek, amelyek rendre az $1, 2, \dots, m$ címkéjű régiókhoz vannak rendelve
+
+\item $E \subset O$ a környezetben korlátlanul rendelkezésre álló objektumok halmaza
+
+\item $R_i, 1 \leq i \leq m \; \mu \; i$-edik membránjához rendelt O feletti szimport/antiport szabályok véges halmaza
+
+\item$ i_o \in \{1,2, \dots, m\}$ egy elemi membrán címkéje, amely a modell kimeneti membránja.
+\end{enumerate}
+\end{definition}
+
+Ebben a modellben legyenek $x, y \in O^+$ objektumok multihalmazait reprezentáló sztringek. A velük alkotott szabályok az alábbi alakok egyikét ölthetik:
+
+\begin{enumerate}
+\item (x, in): Ilyenkor az x multihalmaz a membrán körül elhelyezkedő, őt legszűkebben tartalmazó régióból a membrán által határolt régióna vándorol
+\item (x, out): Ilyenkor az x multihalmaz az őt tartalmazó régióból a membránt körülvevő régióba mozog
+\item (x, in; y, out): Ilyenkor az x multihalmaz a membrán körül elhelyezkedő, őt legszűkebben tartalmazó régióból a membrán által határolt régióna vándorol, illetve az y multihalmaz a szabályt tartalmazó régióból a membránt körülvevő régióba mozog
+\end{enumerate}
+
+Az első két szabályt \textit{szimport szabálynak}, míg az utolsót \textit{antiport szabálynak} nevezzük.
+
+\begin{note}
+Ezen két típuson kívül léteznek még $uniport$ szabályok is, amelyek felfoghatók olyan speciális szimport szabályként, amelyekben $|x| = 1$, ahol $|x|$ a multihalmazban szereplő objektumot számát jelöli.
+\end{note}
+
+A konfigurációkkal kapcsolatos definíciók megegyeznek az alapmodellben leírtakkal, kiegészítve azt a környezet $O-E$-beli objektumaiból álló $\omega_0$ kezdeti multihalmazt reprezentáló sztringgel, a későbbi konfigurációkban pedig $w_0$-val.
+
+
+
+
+
+
+
 
 
 \section{Forráskódok}
