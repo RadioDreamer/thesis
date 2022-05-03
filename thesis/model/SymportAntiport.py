@@ -113,7 +113,7 @@ class SymportAntiport(MembraneSystem):
                 self.environment += rule.exported_obj
                 self.environment -= rule.imported_obj
                 region.objects -= rule.exported_obj
-                region.objects += rule.imported_obj
+                region.new_objects += rule.imported_obj
             else:
                 region.objects -= rule.exported_obj
                 region.new_objects += rule.imported_obj
@@ -181,13 +181,6 @@ class SymportAntiport(MembraneSystem):
         if not self.any_rule_applicable():
             self.signal.sim_over.emit([self.get_result()])
             return
-
-        rule_indices = {}
-        idx = 0
-        for region in self.regions.values():
-            for rule in region.rules:
-                rule_indices[idx] = (rule, region)
-                idx = idx + 1
 
         self.select_and_apply_rules()
 
