@@ -195,6 +195,7 @@ class Environment(MultiSet):
             else:
                 self.new_objects.add_object(obj, mul)
 
+
 class MembraneSignal(QObject):
     """
     A class to represent the signals which can be emitted by the membrane system
@@ -324,6 +325,7 @@ class MembraneSystem(QObject):
 
         pass
 
+    # @abc.abstractmethod
     def select_and_apply_rules(self, region):
         """
         Abstract function responsible for non-deterministically selecting rules
