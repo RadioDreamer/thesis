@@ -385,6 +385,7 @@ class MembraneSimulator(QWidget):
                 summary[result] += 1
         if empty_count != 0:
             summary['NO OBJECTS'] = empty_count
+        print(summary)
         self.signal.simulation_over.emit(summary)
 
     def save_model(self, name):

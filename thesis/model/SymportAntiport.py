@@ -105,12 +105,12 @@ class SymportAntiport(MembraneSystem):
         elif rule.rule_type == TransportationRuleType.SYMPORT_OUT:
             region.objects -= rule.exported_obj
             if self.get_root_id() == region.id:
-                self.environment += rule.exported_obj
+                self.environment.add_to_new_objects(rule.exported_obj)
             else:
                 self.get_parent_region(region).new_objects += rule.exported_obj
         elif rule.rule_type == TransportationRuleType.ANTIPORT:
             if region.id == self.get_root_id():
-                self.environment += rule.exported_obj
+                self.environment.add_to_new_objects(rule.exported_obj)
                 self.environment -= rule.imported_obj
                 region.objects -= rule.exported_obj
                 region.new_objects += rule.imported_obj
@@ -187,6 +187,10 @@ class SymportAntiport(MembraneSystem):
         for region in self.regions.values():
             region.objects += region.new_objects
             region.new_objects = MultiSet()
+
+        for obj, mul in self.environment.new_objects:
+            self.environment.add_object(obj, mul)
+        self.environment.new_objects = MultiSet()
 
         self.step_counter += 1
         self.signal.sim_step_over.emit(self.step_counter)

@@ -49,6 +49,7 @@ class Environment(MultiSet):
 
         super().__init__(objects)
         self.infinite_obj = set(infinite_obj) if infinite_obj else None
+        self.new_objects = MultiSet()
         if infinite_obj is not None:
             delete = [obj for obj in self.objects if obj in infinite_obj]
             for obj in delete:
@@ -187,6 +188,12 @@ class Environment(MultiSet):
         else:
             raise InvalidOperationException
 
+    def add_to_new_objects(self, multiset):
+        for obj, mul in multiset:
+            if self.infinite_obj and obj in self.infinite_obj:
+                pass
+            else:
+                self.new_objects.add_object(obj, mul)
 
 class MembraneSignal(QObject):
     """
