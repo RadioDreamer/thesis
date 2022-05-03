@@ -148,23 +148,6 @@ class BaseModelRule(Rule):
         result += right_side
         return result
 
-
-# Majd ehhez is visszatérünk
-#    def __repr__(self):
-#        left_side = []
-#        for k, v in self.left_side:
-#            left_side.extend([k for _ in range(v)])
-
-#        right_side = []
-#        for (obj, direction), v in self.right_side:
-#            if direction == Direction.HERE:
-#                right_side.extend([f'{obj}_here' for _ in range(v)])
-#            if direction == Direction.IN:
-#                right_side.extend([f'{obj}_in' for _ in range(v)])
-#            if direction == Direction.OUT:
-#                right_side.extend([f'{obj}_out' for _ in range(v)])
-#        return f'{left_side} -> {right_side}'
-
 class DissolvingRule(BaseModelRule):
     """
     A class used to describe a special rule in the base model

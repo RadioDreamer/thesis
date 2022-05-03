@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QMessageBox
 )
+from PySide6.QtGui import QFont
 
 
 class RuleAndObjectEditDialog(QDialog):
@@ -38,6 +39,7 @@ class RuleAndObjectEditDialog(QDialog):
         self.setWindowTitle("Régió szerkesztése")
         self.valid_fn = valid_fn
         self.rules = rules_string
+
         QBtn = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         self.button_box = QDialogButtonBox(QBtn)
         self.button_box.accepted.connect(self.accept)
@@ -50,7 +52,14 @@ class RuleAndObjectEditDialog(QDialog):
         self.object_edit.setText(region_objects)
 
         rule_msg = QLabel("A régió jelenlegi szabályai!")
+
+        font = QFont()
+        font.setPointSize(13)
+        rule_msg.setFont(font)
+        self.object_edit.setFont(font)
+
         self.rule_edit_list = QPlainTextEdit(self.rules)
+        self.rule_edit_list.setFont(font)
         self.layout.addWidget(obj_msg)
         self.layout.addWidget(self.object_edit)
         self.layout.addWidget(rule_msg)
