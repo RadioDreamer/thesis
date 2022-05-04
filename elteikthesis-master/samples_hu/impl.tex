@@ -20,7 +20,7 @@ Egy $\Pi = \langle O, \mu , \omega_1 , \dots , \omega_m, R_1 , \dots , R_m , i_o
 
 \item  $\omega_1 , \dots , \omega_m$ O feletti multihalmazokat reprezentáló sztringek, amelyek rendre az $1, 2, \dots, m$ címkéjű régiókhoz vannak rendelve
 
-\item $R_i, 1 \leq i \leq m \; \mu \; i$-edik membránjához rendelt O feletti \textit{evolúciós szabályok} véges halmaza. A szabályok $u \rightarrow v$ alakúak, ahol $u \in O^+, v \in (O \times TAR)^*$, ahol $TAR=\{here, out\} \cup \{ in_j | q \leq j \leq m \} $ Ha nem írjuk ki a $j$ indexet, akkor nemdeterminisztikusan történik régió kiválasztása
+\item $R_i, 1 \leq i \leq m \; \mu \; i$-edik membránjához rendelt O feletti \textit{evolúciós szabályok} véges halmaza. A szabályok $u \rightarrow v$ alakúak, ahol $u \in O^+, v \in (O \times TAR)^*$, ahol $TAR=\{here, out\} \cup \{ in_j | 1  \leq j \leq m \} $ Ha nem írjuk ki a $j$ indexet, akkor nemdeterminisztikusan történik régió kiválasztása
 
 \item$ i_o \in \{1,2, \dots, m\}$ egy elemi membrán címkéje, amely a modell kimeneti membránja.
 \end{enumerate}
@@ -106,19 +106,57 @@ A konfigurációkkal kapcsolatos definíciók megegyeznek az alapmodellben leír
 
 \section{Tervezés}
 
+A feladat modellezésének legelső mozzanata az alkalmazáshoz szükséges osztályok meghatározása. Elsőként megállapítható, hogy a membránrendszerek egyes típusainak sok közös vonása van, ezért célszerű az absztrakt ősosztály \verb|MembraneSystem| bevezetése . Ez az osztály magába foglal olyan műveleteket, amelyet minden szimulálandó membránrendszer köteles implementálni. Ez az osztály a kód karbantarthatóságát és bővíthetőségét is elősegíti, hiszen esetleges újabb membránrendszerek bevezetése esetén elegendő ezen osztály absztrakt metódusait implementálni. A szoftver esetében két konkrét membránrendszer típusról beszélhetünk, az alapmodellről (\verb|BaseModel|), illetve a szimport-antiport (\verb|SymportAntiport|)  rendszerekről, amelyek az ősosztály leszármazottaiként vannak jelen az osztály diagramban. 
 
-\subsection{Modell}
+Általánosan a membránrendszerek régiókból állnak, ezért a \verb|MembraneSystem| osztály az egy régiót reprezentáló \verb|Region| osztályból álló gyűjteményt komponál.  A két osztály közötti kapcsolat aggregáció, mivel egy membránrendszer nem létezne régiók nélkül, illetve absztrakt tekintetben egy régió sem létezhet önállóan, hanem egy csak egy komplexebb entitás (eukarióta sejt) részeként. Ezen régiók pedig valamilyen struktúrába szerveződve helyezkednek el a rendszerben, ennek eltárolására és karbantartására elhivatott a \verb|MembraneStructure| osztály, amely a \verb|Node| osztály segítségével egy \textit{n-áris} fát tárol el és a fa bejárásával begyűjti a membránrendszer által igényelt információkat. A régiók jelentős szerepet játszanak a membránrendszer szimulációjában, hiszen a bennük lévő objektumok és szabályok együttesen határozzák meg a generált nyelvet. Az osztály diagram ennek megfelelően a \verb|Region| osztályhoz  az objektumok multihalmazát reprezentáló \verb|MultiSet| osztályt és a szabályokat jelölő absztrakt \verb|Rule| osztályból álló gyűjteményt tartalmazza.
+A szabályokat összefoglaló ősosztályból a konkrét típusokhoz tartozó szabályok származnak le, így az alapmodell esetén \verb|BaseModelRule| osztály képviseli a létrehozható szabályokat, míg a szimport-antiport rendszer esetében a \verb|SymportRule| látja el ezt a feladatot. Az alapmodellben tovább lehet specializálni a szabályokat, hiszen megadhatóak olyan szabályok, amelyek hatására a hozzá tartozó régió felbomlik, ezen funkciót a \verb|DissolvingRule| tölti be, amely a \verb|BaseModelRule|-ból származik le. A másik ilyen kiegészítése az alapmodellnek a szabályok közötti prioritási sorrend lehetősége, amely a \verb|PriorityRule| osztályban aggregált két \verb|BaseModelRule| típusú objektum segítségével éri el a kívánt viselkedést. A szabályok konstruáláskor valahogyan jelezni kell, hogy a kijelölt objektumokat reprezentáló multihalmaz milyen irányultsággal rendelkezik, azaz a szabály alkalmazása után melyik régióba fog kerülni vagy esetleg kijut a környezetbe. Ezt az információt az alapmodellbeli szabályok esetén a \verb|Direction|, szimport-antiport rendszerek esetében pedig a TransportationRuleType  (enum) osztály hordozza
+Jegyezzük meg, hogy nem csak egy régió hordozhat objektumokat, hanem a membránrendszer környezete is, amely tartalmazhat korlátlan mennyiségben is objektumokat. Ezért a membránrendszer a régiókon felül a \verb|Environment| osztályt is komponálja, amely számomtartja a környezetben korlátlan számban rendelkezésre álló objektumok és a kijutó objektumok multihalmazát.
+
+\section{Modell}
 
 \begin{figure}[H]
-	\centering
-	\includegraphics{model_uml.png}
-	\caption{A főablak az alkalmazás megnyitásakor}
-	\label{fig:main_window}
+\advance\leftskip-3cm
+	\scalebox{0.75}[0.75]{\includegraphics{model_uml_no_methods.png}}
+	\caption{A modell osztály diagramja}
+	\label{fig:model_no_methods}
+\end{figure}
+
+A \ref{fig:model_no_methods} ábra mutatja az osztály diagramot, amelyben még nem szerepelnek az osztályszintű-és példánymetódusok. Az eddig említett osztályokon felül megjelenik két, a modell és a nézet közötti üzenetváltásért felelős, \verb|QObject|-ből leszármazó osztály, a \verb|MembraneSignal| és a \verb|RegionSignal| . Az előbbi a teljes membránrendszerben előforduló jelzéseket küldi tovább majd a megjelenítésért felelős osztályoknak, míg az utóbbi az egyes régiók tartalmának megváltozását hivatott jelezni. A szoftver működéséhez szükséges objektumok meghatározása még nem elegendő céljának megvalósításához, ugyanis szükség van ezen osztályok metódusain keresztül a szimulálás folyamatának megtervezésére is.
+
+\subsection{Objektumok}
+
+Az objektumokat reprezentáló multihalmazokat a \verb|MultiSet| osztály segítségével hozhatjuk létre. Ezen osztály példányai felett értelmezve van az unió, kivonás művelete, a részhalmaz reláció, illetve lekérdezhető egy tetszőleges objektum multiplicitása. A \verb|MultiSet| osztály kiemelt fontosságú a számítás során, hiszen egy szabály alkalmazhatóságának eldöntéséhez két multihalmaz (nevezetesen a régió objektumait tartalmazó és a szabály bal oldala) közötti részhalmaz reláció eldöntésére van szükség. Ha valóban alkalmazható egy szabály, akkor a szabály bal oldala felhasználásra kerül, tehát egy kivonás műveletet kell végezni, a létrejövő objektumok pedig a megfelelő régióhoz az unió műveletével tudnak hozzákerülni. Tehát az osztályt nem csak a régiók, hanem a szabályok is felhasználják működésük során.
+
+A környezet reprezentálására hivatott \verb|Environment| osztály a korlátlanul rendelkezésre álló objektumokat tartalmazó \verb|infinite_obj| listával egészíti ki a \verb|MultiSet| osztályt, illetve az ősosztályban használt műveletek is felüldefiniálja a helyes viselkedés érdekében. Mivel a környezet is \verb|MultiSet| típusú, ezért a dinamikus típusosság következtében az unió műveletet meghívhatnánk rá \verb|MultiSet| típusú paraméterrel, ennek eredménye szintén \verb|MultiSet| típusú lenne (ami a környezet aktualizálásakor egy evolúciós lépésben nem lenne szerencsés). Ennek elkerülése érdekében ezen műveleteket implementáció nélkül felüldefiniálja az osztályt és csak olyan műveletet biztosít, amely a metódushoz tartozó (\verb|this|)  példányhoz unió művelet segítségével hozzáad egy multihalmazt. A hozzáadás során az \verb|infinite_obj|-ban megtalálható objektumok figyelmen kívül hagyhatók. A kivonás esetén is hasonlóan járunk el, illetve ha speciálisan olyan objektumot kell levonni, amely korlátlan számban áll rendelkezésre, olyankor az mellékhatás nélkül végrehajtódhat.
+
+\subsection{Membránstruktúra}
+
+Mivel a membránrendszer struktúrája egyes típusok esetében módosulhat, ezért fontos, hogy a rendszer szerkezetét ne statikusan legyen tárolva, hanem a membránrendszer megkonstruálása után is dinamikusan tudjon változni.  Ezeket az elvárásoknak megfelelő \textit{n}-áris fát láncolt lista adatszerkezettel valósítom meg, amelynek fejelemét (fák esetén inkább gyökerét)  a \verb|MembraneStructure| osztály adattagként tárolja el. Minden csúcs egyedi azonosítóval rendelkezik, amely megegyezik a hozzátartozó régió címkéjével. Emellett minden csúcs számontartja a saját szülőjét, illetve gyermekeiből álló \verb|children| listát, amelyhez az \verb|add_child| metódussal lehet új elemet fűzni. Az osztály többi művelete \textit{getter} vagy \textit{setter} metódusként funkcionál.
+
+\begin{figure}[H]
+\centering
+	\scalebox{0.75}[0.75]{\includegraphics{node_and_structure_class.png}}
+	\caption{A membránrendszer struktúrájáért felelős osztályok}
+	\label{fig:node_and_structure}
 \end{figure}
 
 
+A \verb|MembraneStructure| osztály a fa struktúra karbantartásáért és a struktúrával kapcsolatos ,,lekérdezésekért'' felelős. Ezen feladatok ellátásához kulcsszerepet kap a \verb|preorder(root, fn, cond)| metódus, amely a bejárja a fát és ha egy \textit{n} csúcsra teljesül a \verb|cond| függvény feltétele, akkor az  \verb|fn(n)| függvény kerül meghívásra.
 
+\lstset{caption={Membránstruktúra preorder bejárása}, label=src:py}
+\begin{lstlisting}[language={Python}]
+def preorder(self, root, fn, cond):
+        if root is None:
+            return
+        if cond(root):
+            self.result = fn(root)
+        else:
+            iter_count = root.num_of_children()
+            for i in range(iter_count):
+                self.preorder(root.children[i], fn, cond)
+\end{lstlisting}
 
+A \verb|MembraneStructure| kialakítása igazodik ehhez a szemantikához, mivel mind a négy osztályszintű metódus és a \verb|remove_node()| metódus is egy \textit{Node} típusú paramétert vár, amelyen végrehajtják a kívánt műveletet. Tehát ezen metódusok nem járják be a fát és keresik meg a megfelelő címkéjű csúcsot, hanem a \verb|preorder| függvény paramétereként kerülnek felhasználásra, amelyben a feltétel a csúcs egyedi azonosítójára szűr. Mivel a rekurzív függvénynek tetszőleges típusú visszatérési értéke lehetne, ezért a visszaadandó érték a struktúra \verb|result| adattagjába kerül. Az osztály felépítése garantálja, hogy a result lekérdezései nem keresztezhetik egymást, ezáltal elkerülve az inkonzisztens és helytelen értékeket.
 
 \section{Forráskódok}
 
