@@ -419,10 +419,3 @@ class SymportAntiport(MembraneSystem):
                                exported_obj=exp_obj)
         else:
             raise InvalidArgumentException
-
-    # Version without removing spaces before checking regex
-    #    @classmethod
-    #    def is_valid_rule(cls, rule_str):
-    #        return re.match(
-    #            r'^(IN:\s*[a-z]+\s*$|OUT:\s*[a-z]+\s*$|(\s*IN:\s*\w+\s*OUT:\s*\w+\s*|\s*OUT:\s*[a-z]+\s*IN:\s*\w+\s*))',
-    #            rule_str)

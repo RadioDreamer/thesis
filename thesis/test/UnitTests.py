@@ -1,5 +1,6 @@
 import sys
 import pytest
+import math
 
 sys.path.append("../model")
 sys.path.append("../view")
@@ -272,10 +273,10 @@ def test_parent_child_dissolve():
     n[0].add_child(Node())
     ms = MembraneStructure(n)
 
-    dis_rule = DissolvingRule(left_side={}, right_side={})
+    dis_rule = DissolvingRule(left_side={'a': 1}, right_side={})
     region_0 = Region(n.id)
     region_1 = Region(n.children[0].id, rules=[dis_rule],
-                      objects={'z': 2})
+                      objects={'z': 2, 'a': 1})
     region_2 = Region(n.children[0].children[0].id,
                       objects={'a': 2, 'b': 3}, rules=[dis_rule])
     regions = {n.id: region_0, n[0].id: region_1, n[0][0].id: region_2}
@@ -283,7 +284,7 @@ def test_parent_child_dissolve():
     # model.dissolve_region(region_1)
     # model.dissolve_region(region_2)
     model.simulate_step()
-    assert region_0.objects.objects == {'z': 2, 'a': 2, 'b': 3}
+    assert region_0.objects.objects == {'z': 2, 'b': 3}
     assert len(regions) == 1
 
 
@@ -400,7 +401,9 @@ def test_base_model_with_example():
                inner_id: region_inner}
 
     model = BaseModel(tree=ms1, regions=regions)
-    print(model.simulate_membrane_system(10))
+    results = [d['e'] for d in model.simulate_membrane_system(10)]
+    conds = [math.sqrt(n).is_integer() for n in results]
+    assert all(conds)
 
 
 def test_create_from_str():
@@ -535,10 +538,10 @@ def test_append_rules():
     n[0].add_child(Node())
     ms = MembraneStructure(n)
 
-    dis_rule = DissolvingRule(left_side={}, right_side={})
+    dis_rule = DissolvingRule(left_side={'a': 1}, right_side={})
     region_0 = Region(n.id)
     region_1 = Region(n.children[0].id, rules=[dis_rule],
-                      objects={'z': 2})
+                      objects={'z': 2, 'a': 1})
     region_2 = Region(n.children[0].children[0].id,
                       objects={'a': 2, 'b': 3}, rules=[dis_rule])
     regions = {n.id: region_0, n[0].id: region_1, n[0][0].id: region_2}

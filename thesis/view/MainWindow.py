@@ -199,7 +199,7 @@ class MainWindow(QMainWindow):
             try:
                 self.membranes.set_model(ModelType.SYMPORT, dialog.get_text())
                 self.statusBar().show()
-            except InvalidStructureException:
+            except (InvalidStructureException, AssertionError):
                 msg_box = QMessageBox()
                 msg_box.setText(
                     "A megadott szöveg formátuma helytelen!\nA súgó gombra "

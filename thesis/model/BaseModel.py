@@ -230,8 +230,8 @@ class BaseModel(MembraneSystem):
         while indices:
             idx = random.choice(indices)
             if self.is_applicable(region.rules[idx], region):
-                if isinstance(region.rules[idx], DissolvingRule):
-                    indices.remove(idx)
+                # if isinstance(region.rules[idx], DissolvingRule):
+                #     indices.remove(idx)
                 self.apply(region.rules[idx], region)
             else:
                 indices.remove(idx)
