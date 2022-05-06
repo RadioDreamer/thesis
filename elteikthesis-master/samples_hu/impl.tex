@@ -127,6 +127,13 @@ A \ref{fig:model_no_methods} ábra mutatja az osztály diagramot, amelyben még 
 
 Az objektumokat reprezentáló multihalmazokat a \verb|MultiSet| osztály segítségével hozhatjuk létre. Ezen osztály példányai felett értelmezve van az unió, kivonás művelete, a részhalmaz reláció, illetve lekérdezhető egy tetszőleges objektum multiplicitása. A \verb|MultiSet| osztály kiemelt fontosságú a számítás során, hiszen egy szabály alkalmazhatóságának eldöntéséhez két multihalmaz (nevezetesen a régió objektumait tartalmazó és a szabály bal oldala) közötti részhalmaz reláció eldöntésére van szükség. Ha valóban alkalmazható egy szabály, akkor a szabály bal oldala felhasználásra kerül, tehát egy kivonás műveletet kell végezni, a létrejövő objektumok pedig a megfelelő régióhoz az unió műveletével tudnak hozzákerülni. Tehát az osztályt nem csak a régiók, hanem a szabályok is felhasználják működésük során.
 
+\begin{figure}[H]
+\centering
+	\scalebox{0.75}[0.75]{\includegraphics{multiset_class.png}}
+	\caption{Az objektumokat reprezentáló multihalmaz és a környezet}
+	\label{fig:multiset_uml}
+\end{figure}
+
 A környezet reprezentálására hivatott \verb|Environment| osztály a korlátlanul rendelkezésre álló objektumokat tartalmazó \verb|infinite_obj| listával egészíti ki a \verb|MultiSet| osztályt, illetve az ősosztályban használt műveletek is felüldefiniálja a helyes viselkedés érdekében. Mivel a környezet is \verb|MultiSet| típusú, ezért a dinamikus típusosság következtében az unió műveletet meghívhatnánk rá \verb|MultiSet| típusú paraméterrel, ennek eredménye szintén \verb|MultiSet| típusú lenne (ami a környezet aktualizálásakor egy evolúciós lépésben nem lenne szerencsés). Ennek elkerülése érdekében ezen műveleteket implementáció nélkül felüldefiniálja az osztályt és csak olyan műveletet biztosít, amely a metódushoz tartozó (\verb|this|)  példányhoz unió művelet segítségével hozzáad egy multihalmazt. A hozzáadás során az \verb|infinite_obj|-ban megtalálható objektumok figyelmen kívül hagyhatók. A kivonás esetén is hasonlóan járunk el, illetve ha speciálisan olyan objektumot kell levonni, amely korlátlan számban áll rendelkezésre, olyankor az mellékhatás nélkül végrehajtódhat.
 
 \subsection{Membránstruktúra}
@@ -137,11 +144,11 @@ Mivel a membránrendszer struktúrája egyes típusok esetében módosulhat, ez�
 \centering
 	\scalebox{0.75}[0.75]{\includegraphics{node_and_structure_class.png}}
 	\caption{A membránrendszer struktúrájáért felelős osztályok}
-	\label{fig:node_and_structure}
+	\label{fig:node_and_structure_uml}
 \end{figure}
 
 
-A \verb|MembraneStructure| osztály a fa struktúra karbantartásáért és a struktúrával kapcsolatos ,,lekérdezésekért'' felelős. Ezen feladatok ellátásához kulcsszerepet kap a \verb|preorder(root, fn, cond)| metódus, amely a bejárja a fát és ha egy \textit{n} csúcsra teljesül a \verb|cond| függvény feltétele, akkor az  \verb|fn(n)| függvény kerül meghívásra.
+A \verb|MembraneStructure| osztály a fa struktúra karbantartásáért és a struktúrával kapcsolatos ,,lekérdezésekért'' felelős. Ezen feladatok ellátásához kulcsszerepet kap a \verb|preorder(root, fn, cond)| metódus, amely a bejárja a fát és ha egy \textit{n} csúcsra teljesül a \verb|cond| függvény feltétele, akkor az  \verb|fn| függvény kerül meghívásra.
 
 \lstset{caption={Membránstruktúra preorder bejárása}, label=src:py}
 \begin{lstlisting}[language={Python}]
@@ -157,6 +164,40 @@ def preorder(self, root, fn, cond):
 \end{lstlisting}
 
 A \verb|MembraneStructure| kialakítása igazodik ehhez a szemantikához, mivel mind a négy osztályszintű metódus és a \verb|remove_node()| metódus is egy \textit{Node} típusú paramétert vár, amelyen végrehajtják a kívánt műveletet. Tehát ezen metódusok nem járják be a fát és keresik meg a megfelelő címkéjű csúcsot, hanem a \verb|preorder| függvény paramétereként kerülnek felhasználásra, amelyben a feltétel a csúcs egyedi azonosítójára szűr. Mivel a rekurzív függvénynek tetszőleges típusú visszatérési értéke lehetne, ezért a visszaadandó érték a struktúra \verb|result| adattagjába kerül. Az osztály felépítése garantálja, hogy a result lekérdezései nem keresztezhetik egymást, ezáltal elkerülve az inkonzisztens és helytelen értékeket.
+
+\subsection{Szabályok}
+
+A szabályok a membránrendszer számításaiban központi szerepet kapnak, ám kevés olyan tulajdonságuk van, amely minden típusban közös vonásként jelenik meg. Ezért az absztrakt \verb|Rule| ősosztály kevés implementálandó metódust határoz meg, csak a szabályhoz tartozó szöveges reprezentáció, illetve a szabály súlyát meghatározó műveletek meglétét követeli. 
+
+
+\begin{figure}[H]
+\centering
+	\scalebox{0.6}[0.6]{\includegraphics{uml_rule_class.png}}
+	\caption{A membránrendszer szabályait modellező osztályok}
+	\label{fig:rule_uml}
+\end{figure}
+
+Az alapmodellhez tartozó \verb|BaseModelRule| osztály a leszármazás mellett rögzíti a modellezéséhez szükséges két adattagot. Az egyik a \verb|left_side|, amely a szabály végbemeneteléhez szükséges objektumokból álló multihalmazt tárolja ( objektum-multiplicitás párok formájában), a másik pedig a \verb|right_side|, amely a szabály alkalmazásának következtében létrejövő objektumokat és azok mozgásának irányát adja meg. Ezen irányok jelzésére a \verb|Direction| osztályban rögzített \verb|HERE|, \verb|IN| és \verb|OUT| felsorolási típus értékei hivatottak. Tehát a \verb|right_side| olyan multihalmazban a megfelelő multiplicitással \verb|(objektum, irány)| párok szerepelnek.
+Tehát egy evolúciós lépésben az alapmodellbeli szabály alkalmazhatóságának eldöntése a szabály bal oldala és a régióhoz tartozó objektumokból álló multihalmaz közötti tartalmazási reláció vizsgálatával ellenőrizhető. 
+Az alapmodell kiegészítéseként beszélhetünk a feloldódás fogalmáról, amely a modellezés során a \verb|BaseModelRule|-ból leszármaztatott \verb|DissolvingRule| osztály segítségével kerül megvalósításra. Ez az osztály semmilyen új metódust vagy adattagot nem vesz fel, az információtartalom a példányosítása mögött rejlik, hiszen ilyen típusú szabály alkalmazása az adott régió \verb|is_dissolving| adattagjának igaz értékre billentését idézi elő. 
+Az alapmodell másik ilyen kiterjesztése a szabályok közötti részbenrendezés lehetőségét nyújtja, amelyet az alkalmazás két szabály közötti prioritás rögzítésével támogatja. Az ilyen szabályok közötti relációk leírására a \verb|PriorityRule| szolgál, amely létrehozásakor két alapmodelli szabályt vár paraméterül.
+Egy \verb|PriorityRule| típusú szabály alkalmazhatóságának vizsgálata során először a nagyobb prioritással rendelkezdő szabály alkalmazhatóságát kell vizsgálni, majd annak esetleges  sikertelensége esetén lehet a kisebb prioritással rendelkező szabály alkalmazhatóságát elemezni.
+
+
+\subsection{Régiók}
+
+\begin{figure}[H]
+\centering
+	\scalebox{0.6}[0.6]{\includegraphics{uml_region_class.png}}
+	\caption{A membránrendszer régióit reprezentáló osztály}
+	\label{fig:region_uml}
+\end{figure}
+
+Egy régió azonosítására a saját egyedi azonosítóját (\verb|id|) használja az alkalmazás, amely megegyezik a membránstruktúrában a hozzá tartozó \verb|Node| objektum \verb|uid| adattagjában tárolt értékkel. Ez az érték a rendszer számítása során nem változik, egyedül egy régió szülőjének címkéje változhat meg (alapmodell esetén feloldódás következtében), ezért ezt az értéket nem lehet statikusan letárolni. A feloldódás jelzésére az \verb|is_dissolving| adattag hivatott, amelynek igaz értékre billenése esetén az evolúciós lépés végén a régió felbomlik. A régió emellett felveszi a \verb|new_objects| adattagot is, amely azon objektumok eltárolására szolgál, amelyek az éppen zajló evolúciós lépésben kerültek a régióba. Ez azért fontos, mert a maximális párhuzamosság elve szerinti szabályok kiválasztása egyidejűleg történik meg az ütem elején, tehát az egyik szabály alkalmazásának mellékhatása nem befolyásolhatja a kiválasztott szabályokat. Ezért amikor alkalmazásra kerül egy szabály, a jobb oldalán található objektumok elrejtésre kerülnek a további szabályok elől, majd az evolúciós lépésben a maximális szabálymultihalmaz után kerülnek a régió \verb|objects| multihalmazába. 
+
+\subsection{Absztrakt membránrendszer és leszármazottai}
+
+\subsection{Számítás algoritmusa}
 
 \section{Forráskódok}
 
