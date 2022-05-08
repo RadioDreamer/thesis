@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d1ecb737-82c8-486d-8dcf-6091f4f32bcd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../elteikthesis-master/elteikthesis.cls" beforeDir="false" afterPath="$PROJECT_DIR$/../elteikthesis-master/elteikthesis.cls" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../elteikthesis-master/images/num_of_simulation.png" beforeDir="false" afterPath="$PROJECT_DIR$/../elteikthesis-master/images/num_of_simulation.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../elteikthesis-master/samples_hu/impl.tex" beforeDir="false" afterPath="$PROJECT_DIR$/../elteikthesis-master/samples_hu/impl.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../elteikthesis-master/samples_hu/user.tex" beforeDir="false" afterPath="$PROJECT_DIR$/../elteikthesis-master/samples_hu/user.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../elteikthesis-master/thesis_hu.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../elteikthesis-master/thesis_hu.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../elteikthesis-master/thesis_hu.tex" beforeDir="false" afterPath="$PROJECT_DIR$/../elteikthesis-master/thesis_hu.tex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,7 +34,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/examples/antiport_even.json" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/examples/base_square.json" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
   </component>
   <component name="RunManager" selected="Python.help_script">
@@ -152,6 +152,7 @@
       <workItem from="1651046596553" duration="2524000" />
       <workItem from="1651323239310" duration="751000" />
       <workItem from="1651348383202" duration="169000" />
+      <workItem from="1651916471287" duration="858000" />
     </task>
     <servers />
   </component>
