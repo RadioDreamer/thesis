@@ -573,6 +573,7 @@ Az alkalmazás számos dialógusablakot biztosít a felhasználó számára, ame
 \subsubsection{Membránstruktúra}
 
 \begin{figure}[H]
+\centering
 	\scalebox{0.8}[0.8]{\includegraphics{uml_structure_dialog.png}}
 	\caption{Membránstruktúra megadásához használt dialógusablak diagramja}
 	\label{fig:uml_structure}
@@ -590,6 +591,9 @@ A párhuzamos számítások számát beállító dialógusablak a korábbiakban 
 
 \subsubsection{Egy régió szerkesztéséért felelős dialógusablak} 
 
+Mivel ez a dialógusablak mindig egy adott régió tartalmához kötődik, ezért megjelenítése és valamilyen formában egyhez kell kapcsolódjon. Így az ilyen dialógusablakok megjelenítését a szerkeszteni kívánt régió által lefedett területre való dupla kattintással lehet kezdményezni. Ezen dialógusablak két szövegdobozt nyújt a felhasználó bemenetének fogadására, az egyik az objektumok, a másik pedig a szabályok rögzítéséért felelős. Miután a felhasználó a \verb|QDialogButtonBox| típusó dobozban az \verb|OK| gombot választja, a megadott bemenet ellenőrzésre kerül. Az objektumok esetén elegendő egy reguláris kifejezéssel szűrni, hogy a megadott sztring kizárólag csak szóközt és/vagy az angol ábécé kisbetűit tartalmazza. A szabályok esetében viszont a bemenetet soronként kell ellenőrizni. Ilyenkor az üres sorokat figyelmen kívül hagyva a dialógusablak paraméterként megkapott \verb|is_valid_rule()| metódus segítségével ellenőrzi a szabályok helyességét. Ha legalább egy szabály vagy az objektumok formátuma nem megfelelő, akkor egy \verb|QMessageBox| típusú ablak jelenik meg a felhasználó értesítésére. 
+
+\newpage
 \section{Tesztelési terv és eredmények}
 
 A program egyes komponensei egységtesztek segítségével kerülnek ellenőrzésre. Ezen egységtesztek az egyes metódusok esetében a teljes lefedettségre törekednek, ahol különös figyelmet kapnak a szélsőséges esetek és a hibás viselkedés lekezelése.
@@ -638,8 +642,6 @@ A program egyes komponensei egységtesztek segítségével kerülnek ellenőrzé
 		Egy multihalmazra meghívott \verb|multiplicity()| metódus visszatérési értéke megegyezik a paraméterként kapott objektum multihalmazbeli számosságával &  Sikeres \\
 		\hline
 		
-				Egy multihalmazra meghívott \verb|multiplicity()| metódus a paraméterként kapott multihalmazban nem szereplő objektum esetén \verb|ObjectNotFoundException| kiváltását eredményezi  &  Sikeres \\
-		\hline
 	\end{tabular}
 	\caption{A tesztesetek leírása}
 	\label{tab:test_cases_multiset}
@@ -720,6 +722,29 @@ A program egyes komponensei egységtesztek segítségével kerülnek ellenőrzé
 	\label{tab:test_cases_dissolve}
 \end{table}
 
+
+\subsection{Mentés és betöltés tesztelése}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{ | m{0.75\textwidth} | m{0.15\textwidth} | }
+		\hline
+		\textbf{Tesztesetek leírása} & \textbf{Teszteset eredménye} \\
+		\hline \hline
+		Egy \verb|save_model()| metódus segítségével lementett membránrendszerhez tartozó \textit{JSON} fájl régiónként a megfelelő objektumok és szabályok szöveges reprezentációját tartalmazza & Sikeres \\
+		\hline
+		Egy \verb|save_model()| metódus segítségével lementett membránrendszerhez tartozó \textit{JSON} fájl a membránrendszer struktúráját helyesen reprezentáló sztringet tartalmazza  & Sikeres \\
+		\hline
+		Egy \verb|save_model()| metódus segítségével lementett membránrendszerhez tartozó \textit{JSON} fájl a membránrendszer típusának nevét tartalmazza & Sikeres \\
+		\hline
+			Egy \verb|save_model()| metódus segítségével lementett membránrendszer \verb|load_model()| metódussal történő betöltése esetén visszakapjuk az eredeti membránrendszer konfigurációját & Sikeres \\
+		\hline
+		Egy \verb|save_model()| metódus segítségével lementett membránrendszer \verb|load_model()| metódussal történő betöltése után történő módosítások mentése esetén a lementett \textit{JSON} fájl is megfelelő módon változik meg & Sikeres \\
+		\hline
+	\end{tabular}
+	\caption{A tesztesetek leírása}
+	\label{tab:test_cases_save_and_load}
+\end{table}
+
 \subsection{Felhasználói bemenetet feldolgozó komponensek tesztelése}
 \begin{table}[H]
 	\centering
@@ -757,24 +782,3 @@ A program egyes komponensei egységtesztek segítségével kerülnek ellenőrzé
 	\label{tab:test_cases_parse}
 \end{table}
 
-\subsection{Mentés és betöltés tesztelése}
-\begin{table}[H]
-	\centering
-	\begin{tabular}{ | m{0.75\textwidth} | m{0.15\textwidth} | }
-		\hline
-		\textbf{Tesztesetek leírása} & \textbf{Teszteset eredménye} \\
-		\hline \hline
-		Egy \verb|save_model()| metódus segítségével lementett membránrendszerhez tartozó \textit{JSON} fájl régiónként a megfelelő objektumok és szabályok szöveges reprezentációját tartalmazza & Sikeres \\
-		\hline
-		Egy \verb|save_model()| metódus segítségével lementett membránrendszerhez tartozó \textit{JSON} fájl a membránrendszer struktúráját helyesen reprezentáló sztringet tartalmazza  & Sikeres \\
-		\hline
-		Egy \verb|save_model()| metódus segítségével lementett membránrendszerhez tartozó \textit{JSON} fájl a membránrendszer típusának nevét tartalmazza & Sikeres \\
-		\hline
-			Egy \verb|save_model()| metódus segítségével lementett membránrendszer \verb|load_model()| metódussal történő betöltése esetén visszakapjuk az eredeti membránrendszer konfigurációját & Sikeres \\
-		\hline
-		Egy \verb|save_model()| metódus segítségével lementett membránrendszer \verb|load_model()| metódussal történő betöltése után történő módosítások mentése esetén a lementett \textit{JSON} fájl is megfelelő módon változik meg & Sikeres \\
-		\hline
-	\end{tabular}
-	\caption{A tesztesetek leírása}
-	\label{tab:test_cases_save_and_load}
-\end{table}
