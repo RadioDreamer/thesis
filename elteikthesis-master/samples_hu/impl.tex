@@ -59,7 +59,7 @@ A rendszer egy számítása alatt tehát a kezdőkonfigurációból egy megáll�
 Ilyenkor a számítás eredményét többféleképpen definiálhatjuk. Alapértelmezetten a kimeneti régióban lévő objektumok számát jelenti. Az alkalmazás az alapmodell esetén ettől eltér és a környezetbe kijutó objektumok számát tekinti a számítás eredményének.
 \end{note}
 
-Létezik olyan kiterjesztése az \ref{def:mem_sysm} definíciónak, amelyben megengedünk olyan $u \rightarrow v \delta$ alakú szabályokat, ahol az $u \rightarrow v$ az eddigiekhez hasonló evolúciós szabály, a $\delta$ pedig egy speciális szimbólum, amely a membrán feloldódását jelzi a szabály alkalmazásának hatására. Tehát ha egy evolúciós lépésben alkalmazásra kerül egy ilyen speciális szabály, akkor az ütem végén a szabályhoz tartozó régió felbomlik, ilyenkor a benne lévő objektumok és membránok ( a szabályok nem) a membránt közvetlenül tartalmazó szülő régióba kerülnek. A legkülső régió sosem oldódhat fel. 
+Létezik olyan kiterjesztése a(z) \ref{def:mem_sysm}. definíciónak, amelyben megengedünk olyan $u \rightarrow v \delta$ alakú szabályokat, ahol az $u \rightarrow v$ az eddigiekhez hasonló evolúciós szabály, a $\delta$ pedig egy speciális szimbólum, amely a membrán feloldódását jelzi a szabály alkalmazásának hatására. Tehát ha egy evolúciós lépésben alkalmazásra kerül egy ilyen speciális szabály, akkor az ütem végén a szabályhoz tartozó régió felbomlik, ilyenkor a benne lévő objektumok és membránok ( a szabályok nem) a membránt közvetlenül tartalmazó szülő régióba kerülnek. A legkülső régió sosem oldódhat fel. 
 
 A másik kiterjesztés a szabályok feletti részberendezés lehetőségét adja meg, mely szerint ha $r_1$ és $r_2$ relációban állnak (amelyet jelölhetünk $r_1 < r_2$-vel), akkor csak abban az esetben alkalmazható az $r_1$ szabály, ha $r_2$ már nem alkalmazható az evolúciós lépésben.
 
@@ -492,7 +492,103 @@ A helyes formátummal megadott szabályok feldolgozásáért a \verb|MembraneSys
 
 \section{Nézet}
 
+A membránrendszerek vizuális megjelenítését a grafikus felület biztosítja, amely a felhasználóval való kommunikáció 
+során bekövetkezett eseményekről tájékoztatja a modellt.
 
+A tervezés során fontos szempont a \textit{Qt} keretrendszer grafikus eszközei által nyújtott lehetőségek feltárása, hiszen a membránrendszer vizualizálásának megvalósításához egy olyan vászonra van szükség, amely egy tetszőleges membránstruktúrához tartozó sejtszerű ábrát tud megjeleníteni, amelyben az egyes régiók mozgathatóak. Maga a felület a \verb|QGraphicsScene| és a \verb|QGraphicsView| osztályok közös felhasználásával valósítható meg, ahol az előbbi törődik a "vásznon" található objektumok eltárolásával és manipulálásával, az utóbbi pedig mindezek megjelenítésével. 
+A membránrendszer egyes régióinak kirajzolásához és a bennük található objektumok és szabályok vizuális megjelenítéséért a \verb|QGraphicsRectItem| osztályból leszármaztatott \verb|RegionView| osztály felelős. Mindezen funkciók és megjelenített régiók összefogására a \verb|MembraneSimulator| osztály hivatott, amely a modell felől érkező szignálokra eseménykezelő metódusokkal feliratkozik. Ez az osztály az egyes régiókhoz tartozó \verb|RegionView| példányokat a modellben látottakhoz hasonlóan egy szótárban tárolja, ahol az egyes objektumokhoz tartozó kulcsot a modell adott régiójának egyedi azonosítója jelenti. Így biztosítható az, hogy a nézet oldalán egyértelműen beazonosítható egy régió és a hozzá tartozó megjelenítés. 
+
+A szofver főablakát tartalmazó \verb|MainWindow| osztály a \verb|QMainWindow| osztályból származik le, így megörökli az alkalmazás számára hasznos menüsor és státuszsor felhelyezésének lehetőségét. A felhasználóbarát és könnyen átlátható felület elérésének érdekében az adatok bekérése dialógusablakok segítségével történik, amelyekben a megadott bemenet ellenőrzésre kerül. Hiba esetén a felhasználó figyelmeztetésére egy üzenetablak jelenik minden esetben.
+
+\begin{figure}[H]
+\advance\leftskip-3cm
+	\scalebox{0.6}[0.6]{\includegraphics{uml_view_no_methods.png}}
+	\caption{A szoftver nézetének osztály diagramja}
+	\label{fig:save_model_base}
+\end{figure}
+
+\subsection{Főablak}
+
+Az alkalmazás főablaka tartalmazza a felhasználóval való interakció megteremtéséért felelős \verb|QAction| típusú objektumokat, amelyek a menüsorban találhatóak. Ezen funkciók almenükre vannak osztva, a megfelelő gombra való kattintással vagy a funkcióhoz tartozó billentyűzetkombináció lenyomásával kezdeményezhető a dialógusablak megnyitása. Ezen dialógus ablakok közé tartoznak a két típusú membránrendszer struktúrájának megadását, illetve a mentés-betöltés funkciókat ellátó ablakok. Emellett ha már egy membránrendszer betöltésre került, akkor a főablak alján egy \verb|QStatusBar| is megjelenik, amely két gombot tartalmaz a szimuláció két futtatási módjához, illetve a lépések számát megjelenítő \verb|QLabel| objektumot.
+A menüsor helyet ad a súgó megjelenítését előidéző \verb|QAction| objektumnak is.
+
+\begin{figure}[H]
+\centering
+	\scalebox{0.6}[0.6]{\includegraphics{uml_main_window.png}}
+	\caption{Az alkalmazás főablakának osztály diagramja}
+	\label{fig:uml_mainwindow}
+\end{figure}
+
+A főablak legfontosabb komponense a központi \textit{widget}-ként funkcionáló (a membránrendszer szimulálásáért felelős)  \verb|MembraneSimulator| osztály \verb|QGraphicsView| típusú adattagja, amely a modellben található membránrendszer vizualizációját jeleníti meg.
+
+\subsection{Membránrendszer szimulátor osztály}
+
+A  \verb|MembraneSimulator| osztály az üzleti logikát magába foglaló \verb|MembraneSystem| osztályt és annak vizualizálásához szükséges objektumokat aggregálja. Ez az osztály felelős a modell által kommunikált szignálok feldolgozásáért, illetve a felhasználó által megadott utasítások továbbításáért. A dialógusablakok biztosítják azt, hogy a felhasználó csak a megfelelő formátumú input leírásával tud a modell számára szánt változtatásokat kezdeményezni. A \verb|MembraneSimulator| osztály letárolja a jelenleg szimulálás alatt álló membránrendszer típusát, a legkülső régiójának egyedi azonosítóját (erre az alakzat kirajzolása miatt van szükség), illetve a megrajzolt sejtszerkezet által elfoglalható maximális méretet.
+
+\begin{figure}[H]
+	\scalebox{0.5}[0.5]{\includegraphics{uml_simulator.png}}
+	\caption{Membránrendszer szimulátor osztály diagramja}
+	\label{fig:uml_simulator}
+\end{figure}
+
+A \verb|MembraneSimulator| osztály az általa aggregált \verb|QGraphicsScene| és \verb|QGraphicsView| objektumok segítségével jeleníti meg a membránrendszert, amelyben minden régió a hozzá tartozó \verb|RegionView| osztálybeli objektum megrajzolásával kerül megjelenítésre. 
+
+Az osztály feliratkozik a \verb|MembraneSystem| által kibocsájtott szignálokra, ezáltal képes az egyes régión az objektumok és szabályok új állapotát befrissíteni. Fontos ilyen szignál még a \verb|region_dissolved()|, amely fellépésekor paraméterként hordozza a felbomlás alatt lévő régió sorszámát. Ilyenkor a hozzá tartozó alakzatot törölnie kell a  grafikus felületről, illetve a gyerek régiók szülő referenciáját is frissítenie kell. 
+
+A felhasználó által megadott, illetve a szűrő által validnak vélt sztringeket az \verb|update_region_objects()| és \verb|update_region_rules()| metódusok továbbítják a modell felé, amely feldolgozza a sztringeket és a megfelelő módosításokat hajtja végre saját állapotában.
+
+Ezen osztály feladata még a párhuzamos számítások indítása esetén az eredmények összegzése, azaz gyakoriságok alapján rendezni a különböző eredményeket, majd egy szignál segítségével ezt továbbítani a főablaknak.
+
+\subsubsection{Régiók vizualizálása}
+
+A teljes membránstruktúra megrajzolásáért a \verb|MembraneSimulator| osztály \verb|draw_model()| metódusa felelős. Az osztály rendelkezik a teljes rendszer számára biztosítható maximális szélességet és maximális magasságot meghatározó adattagokkal, amelyek a megrajzolt alakzat teljes láthatóságát garantálják. Ezek után kezdődhet a régiók legenerálása, amely a következő algoritmust követi:
+
+\begin{algorithm}[H]
+\caption{A régiók megrajzolására használt algoritmus}
+\label{alg:draw_model}
+\begin{algorithmic}[1] % sorszámok megjelenítése minden n. sor előtt, most n = 1
+\State Legyen $genChildList := []$
+\State Generáljuk le a legkülső régióhoz tartozó alakzatot, majd helyezzük a  $genChildList$ végére
+\While{( $genChildList \neq []$ )}
+	\State $currentNode := genChildList.pop()$
+	\State Generáljuk le a $currentNode$ régiót
+	\State $numOfChildren := currentNode.get_num_of_children()$
+	\If{$numOfChildre \neq 0$}
+		\For{$i=1,\ldots,numOfChildren$}
+		\State Az $i$-edik gyerek régiót a $genChildList$ végére helyezzük
+		\EndFor
+	\EndIf
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+Az algoritmus garantálja, hogy egy gyerek régió csakis a szülő régió legenerálása után kerül feldolgozásra, illetve, hogy minden régió pontosan egyszer kerül kiterjesztésre. Ez az információ fontos ugyanis akkor, amikor a régióhoz megrajzolt lekerekített oldalú téglalap mérete kerül meghatározásra.  Egy régió méretét az határozza meg, hogy hány testvére van, illetve, hogy a membránstruktúra fa szerkezetében milyen mélységben helyezkedik el.
+
+Egy adott régió kirajzolása pedig az általa határolt membrán, illetve a benne található objektumok és szabályok megjelenítésével történik. Miután a \verb|draw_model()| metódus kiszámolta a kialakuló régió méretét, ezt átadja a \verb|RegionView| típusú objektum konstruktorának paraméterként. Ekkor a \verb|RegionView| \verb|draw()| metódusának feladata magát a lekerekített oldalú téglalapot megrajzolni, illetve vízszintesen középre zárva a benne található objektumok és szabályok megjelenítését szolgáló \verb|QGraphicsTextItem| típusú objektumokat létrehoznia. Ezek automatikusan megjelenítik a bennük található szöveget.
+
+\subsection{Dialógusablakok}
+
+Az alkalmazás számos dialógusablakot biztosít a felhasználó számára, amelyen keresztül manipulálni tudja a szimulált membránrendszer belső állapotát. Ezen dialógusablakok nagyrészt egy funkció ellátásra szolgálnak.
+
+\subsubsection{Membránstruktúra}
+
+\begin{figure}[H]
+	\scalebox{0.8}[0.8]{\includegraphics{uml_structure_dialog.png}}
+	\caption{Membránstruktúra megadásához használt dialógusablak diagramja}
+	\label{fig:uml_structure}
+\end{figure}
+
+A dialógusablakon egy szövegdoboz rögzíti a felhasználó által megadott struktúrát, amely a \verb|MembraneSystem| ősosztályban definiált \verb|is_valid_parentheses()| metódus segítségével kerül validálásra. A szövegdoboz mellett még egy \verb|QDialogButtonBox| típusú osztály biztosítja az ablak elfogadására és bezárása használt gombokat. Ha a felhasználó a \verb|Cancel| gombra kattint, akkor a dialógusablakba írt tartalom nem kerül feldolgozásra. A dialógusablak elrendezése a \verb|QVBoxLayout| osztály segítségével kerül beállításra. A dialógusablak bezárása után a begépelt szöveg a \verb|text| adattag getter metódusán keresztül érhető el.
+
+\subsubsection{Használati útmutatót megjelenítő dialógusablak}
+
+A dialógusablak elrendezését hasonlóan az előző dialógusablakhoz a \verb|QVBoxLayout| osztály alakítja ki, illetve a dialógusablak elrejtéséhez a \verb|QDialogButtonBox| osztályt használja. Ezen kívül az egyetlen szöveg a \verb|help_md| \verb|QTextEdit| típusú változó segítségével \textit{Markdown} formázással jelenik meg.
+
+\subsubsection{A párhuzamos számítások számát beállító dialógusablak}
+
+A párhuzamos számítások számát beállító dialógusablak a korábbiakban ismertett technikákat használja az elrendezésre és a dialógusablak elfogadására, illetve elutasítására. A számítások számának beállítására a \verb|QSpinBox| típusú \verb|spin_box| változót aggregálja, amelynek értékét a felhasználó \verb|OK| gombra kattintása után a \verb|get_number()| metódus segítségével lehet lekérdezni.
+
+\subsubsection{Egy régió szerkesztéséért felelős dialógusablak} 
 
 \section{Tesztelési terv és eredmények}
 
