@@ -4,7 +4,7 @@
 
 \section{Az alkalmazás célja}
 
-Az alkalmazás célja, hogy segítségével a felhasználó membránrendszereket hozzon létre majd szimulálja számításaikat. A membránrendszer egy olyan biológiailag inspirált számítási modell, amely az eukarióta sejtek működését és felépítését követve evolúciós lépéseken keresztül történő információáramlást ír le membránok között. Minden membrán által körbezárt \textit{ún.} régió tartalmaz evolúciós szabályokat, amelyek nem változnak a membránrendszer működése közben. Az információt a rendszerben a régiókban található molekulák, \textit{ún.} objektumok hordozzák. Egy szabály csak akkor tud végbemenni, ha rendelkezésre állnak a szükséges objektumok kellő számban. Ilyen helyzetekben a szabályoknak végre is kell hajtódnia, tehát nem fordulhat elő, hogy minden objektum hozzáférhető, de nem kerül a szabály alkalmazásra. Egy evolúciós lépésben a maximális párhuzamosság elve érvényesül, azaz a szabályok véletszerűen kerülnek kiválasztása, egészen addig, amíg van alkalmazható szabály. Az egyik szimulálható típusú rendszerben megadhatóak olyan speciális szabályok, amelyek alkalmazásának hatására egy membrán feloldódhat, ilyenkor teljes tartalma (benne levő objektumok és régiók) az őt körbevevő régióba kerül. A szabályok között prioritási sorrend is felállítható. A számítás legfontosabb tulajdonsága annak kimenete, amely általában a legkülső régión kívülre (azaz a környezetbe) kijutó objektumok számát jelenti.
+Az alkalmazás célja, hogy segítségével a felhasználó membránrendszereket hozzon létre majd szimulálja számításaikat. A membránrendszer egy olyan biológiailag inspirált számítási modell, amely az eukarióta sejtek működését és felépítését követve evolúciós lépéseken keresztül történő információáramlást ír le membránok között. Minden membrán által körbezárt \textit{ún.} régió tartalmaz evolúciós szabályokat, amelyek nem változnak a membránrendszer működése közben. Az információt a rendszerben a régiókban található molekulák, \textit{ún.} objektumok hordozzák. Egy szabály csak akkor tud végbemenni, ha kellő számban rendelkezésre állnak a szükséges objektumok. Ilyen helyzetekben a szabályoknak végre is kell hajtódnia, tehát nem fordulhat elő, hogy minden objektum hozzáférhető, de nem kerül a szabály alkalmazásra. Egy evolúciós lépésben a maximális párhuzamosság elve érvényesül, azaz a szabályok véletszerűen kerülnek kiválasztása, egészen addig, amíg van alkalmazható szabály. Az alapmodellhez tartozó rendszerekben megadhatóak olyan speciális szabályok, amelyek alkalmazásának hatására egy membrán feloldódhat, ilyenkor teljes tartalma (benne levő objektumok és régiók) az őt körbevevő régióba kerülnek. A szabályok között prioritási sorrend is felállítható. A számítás legfontosabb tulajdonsága annak kimenete, amely általában a legkülső régión kívülre (azaz a membránrendszer környezetébe) kijutó objektumok számát jelenti.
 
 
 \section{Hardver és szoftver követelmények}
@@ -30,7 +30,7 @@ A felhasználó az alkalmazással a grafikus felhasználói felületen keresztü
 	\label{fig:main_window}
 \end{figure}
 
-A főablak az alkalmazás megnyitásakor még tartalmaz egyetlen grafikus elemet sem, viszont a menüsorban található menüpontok segítségével könnyedén változtatni lehet ezen. Ha a felhasználónak nincs korábbi tapasztala a program használatával, akkor érdemes a \textit{Súgó} menüpont kiválasztásával kezdenie, amelyről részletesen szó esik a \ref{help} fejezetben.
+A főablak az alkalmazás megnyitásakor még nem tartalmaz egyetlen grafikus elemet sem, viszont a menüsorban található menüpontok segítségével könnyedén változtatni lehet ezen. Ha a felhasználónak nincs korábbi tapasztala a program használatával, akkor érdemes a \textit{Súgó} menüpont kiválasztásával kezdenie, amelyről részletesen szó esik a \ref{help}. fejezetben.
 
 \subsection{Dialógusablakok}
 
@@ -40,8 +40,8 @@ A legfontosabb interakció a felhasználó és a szoftver között a dialógisab
 
 Egy membránrendszer megalkotásának kezdeti módja a struktúrájának megadásával kezdődik. Mivel egy membránrendszerben a membránok hierarchikusan helyezkednek el, ezért a teljes rétegződést nagyon jól lehet ábrázolni fa alakban, ahol mindenkinek a szülő csúcsa az őt legszűkebben tartalmazó régió. 
 
-Ezzel egyenértékű az a felírás, amikor egyetlen karakterláncban fejezzük ki ugyanezt, azáltal, hogy egy régiót megfeleltetünk egy nyitó-csukó zárójelpárral. Ilyenkor a két zárójel között elhelyezett objektumok jelentik a régió tartalmát. Azonban nem csak objektumok, de más régiók is helyet kaphatnak, ezzel kifejezve azt, hogy a már említett régió közvetlen gyerekét szeretnénk megadni. 
-Az alkalmazásban a struktúra megadása a menüsorban található \textit{Membránstruktúra megadása} gombbal kezdeményezhető.
+Ezzel egyenértékű az a felírás, amikor egyetlen karakterláncban fejezzük ki ugyanezt, azáltal, hogy egy régiót megfeleltetünk egy nyitó-csukó zárójelpárnak. Ilyenkor a két zárójel között elhelyezett objektumok jelentik a régió tartalmát. Azonban nem csak objektumok, de más régiók is helyet kaphatnak egy ilyen zárójelpár között, ezzel kifejezve azt, hogy a már említett régió közvetlen gyereke kerül rögzítésre. 
+Az alkalmazásban a struktúra megadása a menüsorban található \textit{Membránstruktúra megadása} menüpont alatt a megfelelő rendszerhez tartozó gomb megnyomásával kezdeményezhető.
 
 \begin{figure}[H]
 	\centering
@@ -54,7 +54,7 @@ Az alkalmazásban a struktúra megadása a menüsorban található \textit{Membr
 	\label{fig:create_system}
 \end{figure}
 
-A \ref{fig:create_system} ábra a különböző típusú membránrendszerek struktúrájának megadásához használt dialógusablakot mutatja. A megadott karakterláncban a régiók kezdetét és végét jelző zárójelpárok, illetve a bennük előforduló objektumok szerepelhetnek.
+A \ref{fig:create_system}. ábra a különböző típusú membránrendszerek struktúrájának megadásához használt dialógusablakot mutatja. A megadott karakterláncban a régiók kezdetét és végét jelző zárójelpárok, illetve a bennük előforduló objektumok szerepelhetnek.
 A helyes formátum feltétele, hogy a zárójelpárok karakterein és az szimport-antiport rendszereknél a kimeneti régió jelzésére használt speciális \textit{\#} karakteren kívül csak az angol ábécé kisbetűi szerepelhetnek a bemenetben, illetve annak meg kell felelnie a helyes zárójelezés szabályainak. Ezt azt jelenti, hogy nem lehetnek átfedések régiók között, azaz olyan karakterláncok, amikor egy külső régió hamarabb kerül lezárásra, mint bármelyik benne lévő régió. Ha ezen feltételeknek megfelel a felhasználó által megadott karakterlánc, akkor a főablak teljes területét lefedő vásznon megjelenik a létrehozott membránrendszer.
 
 Ha a megadott karakterlánc nem a megfelelő formátumú, akkor a felhasználó figyelmeztetésére egy hibaüzenet jelenik meg a képernyőn. 
@@ -92,7 +92,7 @@ A régió objektumai közé tetszőleges számban írható a szóköz, mint elv�
 
 \subsubsection{Szabályok módosítása}
 
-A \ref{fig:create_system} segítségével alkotott membránrendszerek még nem fognak szabályokat tartalmazni, ám ezek nélkül nem beszélhetünk még szimulációról.  A szabályok fontos szerepet kapnak az információáramlás vezérlésében, hiszen a hatásukra tudnak objektumok átalakulni, be- és kivándorolni a régiók között. 
+A \ref{fig:create_system}. ábrán mutatott dialógusablak segítségével alkotott membránrendszerek még nem fognak szabályokat tartalmazni, ám ezek nélkül nem beszélhetünk még szimulációról.  A szabályok fontos szerepet kapnak az információáramlás vezérlésében, hiszen a hatásukra tudnak objektumok átalakulni, be- és kivándorolni a régiók között. 
 
 \begin{figure}[H]
 	\centering
@@ -105,7 +105,7 @@ A \ref{fig:create_system} segítségével alkotott membránrendszerek még nem f
 	\label{fig:rule_edits}
 \end{figure}
 
- A szabályok felépítése függ a membránrendszer típusától. Minden szabály megadása során először fel kell tüntetni, hogy mik azok az objektumok (olyankor ugyanolyan objektumból akár több is egyszerre), amelyek szükségesek a szabály alkalmazásához. 
+ A szabályok felépítése függ a membránrendszer típusától. Minden szabály megadása során először fel kell tüntetni, hogy mik azok az objektumok (olykor ugyanolyan objektumból akár több is egyszerre), amelyek szükségesek a szabály alkalmazásához. 
 
 Szimport-antiport rendszereknél ez a feltétel teljes mértékben elegendő ahhoz, hogy a szabály létrejöjjön, hiszen abban a modellben nincs lehetőség új objektumok létrehozására; a hangsúly inkább az objektumok régiók közötti mozgatására helyeződik. Ahogyan a \ref{fig:rule_edit_symport} alsó szövegdobozában is látható, szimport-antiport rendszerek esetében két különböző típusú szabály hozható létre. Az első a szimport szabály, amelynek két formája van. Az \textit{IN:} kezdetű szabály alkalmazása esetén a kijelölt objektumok a membránt körülvevő tartományból a jelenleg szerkesztés alatt álló tartományba vándorolnak; az \textit{OUT:} kezdetű szabálynál pedig a szerkesztés alatt álló régióból a membránt körülvevő tartományba kerülnek az objektumok. A másik típushoz az ún. \textit{antiport szabályokat}  soroljuk, amelynél egyszerre történik meg az előbbiekkel analóg módon be- és kivándorlás. A bevándorló objektumok előtt az \textit{IN:} prefix szerepel, a kivándorló objektumok pedig az \textit{OUT:} után találhatóak. Ezen két rész a karakterláncon belül felcserélhető, illetve köztük és az objektumok között tetszőleges számú szóköz karakter szerepelhet, amelyek a szabály megalkotásakor nem játszanak szerepet.
 
@@ -124,11 +124,11 @@ Az alapmodell szabályai kiegészülhetnek többletjelentéssel is. Ebben a mode
 
 \subsubsection{Szimulációk számának megadása}
 
-A korábbi dialógusablakok segítségével a felhasználó lehetőséget szerzett arra, hogy a teljes mértékben a saját elképzeléseinek megfelelő membránrendszer hozza létre és konfigurálja fel objektumokkal és szabályokkal. Ezek után már csak a rendszer számításának szimulálása van hátra. A szimulálás végrehajtására két módot biztosít az alkalmazás:
+A korábbi dialógusablakok segítségével a felhasználó lehetőséget szerzett arra, hogy teljes mértékben a saját elképzeléseinek megfelelő membránrendszer hozza létre és konfigurálja fel objektumokkal és szabályokkal. Ezek után már csak a rendszer számításának szimulálása van hátra. A szimulálás végrehajtására két módot biztosít az alkalmazás:
 
 \begin{compactenum}
 \item Teljes szimuláció futtatása párhuzamosan tetszőleges számú másolattal 
-\item Egy szimulációs lépés az aktuális membránrendszeren
+\item Egy szimulációs lépés futtatása az aktuális membránrendszeren
 \end{compactenum}
 
 Fontos megjegyezni, hogy a teljes szimuláció futtatásának kiválasztása esetén a képernyőn látható membránrendszer nem kerül szimulálásra, annak érdekében, hogy a szimulálni kívánt állapot megőrződjön, így utána változtatások nélkül kezdeményezhető a funkció megismétlése.
@@ -152,7 +152,7 @@ Miután a felhasználó kialakított egy olyan membránrendszert, amelyet szeret
 	\label{fig:save_system}
 \end{figure}
 
-A mentés folyamata a \textit{Mentés} gombra történő kattintással vagy a \verb| Ctrl+S| billentyűkombináció lenyomásával kezdeményezhető. A funkció kiválasztása után egy dialógusablak jelenik meg, amelyben a mentés helyére kell navigálnia a fájlrendszerben, majd a fájlnév megadása után az \textit{OK} gomb lenyomására létrejön a \textit{JSON} formátumú fájl a megadott útvonallal.
+A mentés folyamata a \textit{Mentés} gombra történő kattintással vagy a \verb|Ctrl+S| billentyűkombináció lenyomásával kezdeményezhető. A funkció kiválasztása után egy dialógusablak jelenik meg, amelyben a felhasználónak a mentés helyére kell navigálnia a fájlrendszerben, majd a fájlnév megadása után az \textit{OK} gomb lenyomására létrejön a \textit{JSON} formátumú fájl a megadott útvonallal.
 
 Mivel a \textit{JSON} formátum könnyen értelmezhető és szerkeszthető, ezért egy jártasabb felhasználója a programnak képes egy lementett membránrendszeren módosításokat végezni a megfelelő szerkesztésekkel. 
 
@@ -169,7 +169,7 @@ Mivel a \textit{JSON} formátum könnyen értelmezhető és szerkeszthető, ezé
 \subsubsection{Betöltés}
 
 Az alkalmazás biztosítja lementett membránrendszerek betöltését, amelynek hatására betöltődik a kiválasztott fájlhoz tartozó állapot a grafikus felületre.
-A betöltés nagyon hasonlóan működik a mentéshez, kezdeményezni a \textit{Betöltés} gombra történő kattintással vagy a \verb| Ctrl+O| billentyűkombináció lenyomásával lehetséges, mely után egy dialógusablak segítségével a felhasználó elnavigálhat a megnyitni kívánt fájlt tartalmazó mappához.
+A betöltés nagyon hasonlóan működik a mentéshez, kezdeményezni a \textit{Betöltés} gombra történő kattintással vagy a \verb|Ctrl+O| billentyűkombináció lenyomásával lehetséges, mely után egy dialógusablak segítségével a felhasználó elnavigálhat a megnyitni kívánt fájlt tartalmazó mappához.
 
 \begin{figure}[H]
 	\centering
@@ -191,7 +191,7 @@ Miután a felhasználó létrehozott egy membránrendszert és szimulálta azt, 
 
 \section{Használati útmutató}\label{help}
 
-A szoftver használata a membránrendszerek előzetes ismerete nélkül kriptikus tud lenni, ezért a felhasználó útbaigazítására és a szükséges jellemzőkkel kapcsolatos tudnivalók ismertetésére egy súgó funkció is megtalálható a menüsorban.
+A szoftver használata a membránrendszerek előzetes ismerete nélkül kihívás tud lenni, ezért a felhasználó útbaigazítására és a szükséges jellemzőkkel kapcsolatos tudnivalók ismertetésére egy súgó funkció is megtalálható a menüsorban.
 
 A \textit{Súgó} gombra való kattintás után jelenik meg az ablak, amelyben a korábbi fejezetekhez hasonló felbontásban találhatóak meg az alkalmazás használatával kapcsolatos információk.
 
