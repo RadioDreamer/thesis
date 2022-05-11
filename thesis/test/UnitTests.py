@@ -401,7 +401,7 @@ def test_base_model_with_example():
                inner_id: region_inner}
 
     model = BaseModel(tree=ms1, regions=regions)
-    results = [d['e'] for d in model.simulate_membrane_system(10)]
+    results = [d['e'] for d in model.simulate_parallel(10)]
     conds = [math.sqrt(n).is_integer() for n in results]
     assert all(conds)
 

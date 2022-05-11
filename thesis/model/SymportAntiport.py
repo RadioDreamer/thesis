@@ -251,7 +251,8 @@ class SymportAntiport(MembraneSystem):
         A function responsible for non-deterministically selecting rules in
         the whole membrane system and then applying them
 
-        The randomness is guaranteed by `random.choice`'s uniform distribution
+        The randomness is guaranteed by `random.choice` method's uniform
+        distribution 
         """
 
         rule_indices = {}
@@ -296,7 +297,7 @@ class SymportAntiport(MembraneSystem):
         closing_brackets = [']', '}', ')']
         opening_brackets = ['[', '{', '(']
 
-        infite_obj = []
+        infinite_obj = []
         regions = {}
         for c in m_str:
             if c == ' ':
@@ -315,7 +316,7 @@ class SymportAntiport(MembraneSystem):
                 current_node = current_node.parent
             elif re.match('[a-z]', c):
                 if root_node is None:
-                    infite_obj.append(c)
+                    infinite_obj.append(c)
                 else:
                     regions[current_node.id].objects.add_object(c)
             elif c == '#':
@@ -325,7 +326,7 @@ class SymportAntiport(MembraneSystem):
 
         structure = MembraneStructure(root_node)
         return SymportAntiport(tree=structure, regions=regions,
-                               out_id=output_id, infinite_obj=infite_obj,
+                               out_id=output_id, infinite_obj=infinite_obj,
                                structure_str=m_str)
 
     @classmethod

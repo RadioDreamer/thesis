@@ -32,9 +32,6 @@ class ResultDialog(QDialog):
         self.setWindowTitle("Szimulációs eredmények")
         self.layout = QVBoxLayout()
 
-
-        print(results)
-
         self.inner_header_layout = QHBoxLayout()
         self.inner_header_layout.addWidget(QLabel("Számítási eredmények"))
         self.inner_header_layout.addWidget(QLabel("Gyakoriságok"))
@@ -51,9 +48,6 @@ class ResultDialog(QDialog):
 
         # list containing all the frequencies (corresponding indices are
         # connected with `result_list`)
-
-
-
         self.freq_list = QListWidget()
         freq_list = list(map(lambda x: str(x), sorted_by_freq.values()))
         self.freq_list.addItems(freq_list)

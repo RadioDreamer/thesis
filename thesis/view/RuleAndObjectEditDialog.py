@@ -35,6 +35,22 @@ class RuleAndObjectEditDialog(QDialog):
 
     def __init__(self, region_objects, rules_string, type, valid_fn=None,
                  parent=None):
+        """
+        The initializing method for the dialog
+
+        Parameters
+        ----------
+        region_objects : str
+            the string representation of the rules in the region
+        rules_string : str
+            the string representation of the rules in the region
+        type : ModelType
+            the type of the membrane system being edited
+        valid_fn : function, optional
+            the function used to validate the rules (default is None)
+        parent : QWidget, optional
+            the parent widget of the dialog (default is None)
+        """
         super().__init__(parent)
         self.setWindowTitle("Régió szerkesztése")
         self.valid_fn = valid_fn
@@ -48,7 +64,6 @@ class RuleAndObjectEditDialog(QDialog):
         self.layout = QVBoxLayout()
         obj_msg = QLabel("Add meg a régió új objektumait!")
         self.object_edit = QLineEdit()
-        # self.object_edit.setPlaceholderText(region_objects)
         self.object_edit.setText(region_objects)
 
         rule_msg = QLabel("A régió jelenlegi szabályai!")

@@ -199,7 +199,7 @@ class MembraneStructure:
         """
         A static function used to return the number of children of a node
 
-        It is designed to be passed in to `preorder` function as `fn`
+        It is designed to be passed in to `preorder` function as `fn` parameter
 
         Parameters
         ----------
@@ -219,7 +219,7 @@ class MembraneStructure:
         """
         A static function used to return the parent of the given node
 
-        It is designed to be passed in to `preorder` function as `fn`
+        It is designed to be passed in to `preorder` function as `fn` parameter
 
         Parameters
         ----------

@@ -26,7 +26,7 @@ class BaseModel(MembraneSystem):
     environment : Environment
         the environment of the membrane system
     step_counter : int
-        the number of simulation steps that have occured
+        the number of simulation steps that have occurred since generation
     regions : dict
         the dictionary containing the region objects keyed by their identifier
     signal : MembraneSignal
@@ -164,7 +164,7 @@ class BaseModel(MembraneSystem):
         A class method to deep copy a base model object
 
         Since a QObject subclass cannot be serialized, we can copy the object
-        by deepcopying everything that is needed to construct the new object
+        by deep copying everything that is needed to construct the new object
 
         Parameters
         ----------
@@ -230,8 +230,6 @@ class BaseModel(MembraneSystem):
         while indices:
             idx = random.choice(indices)
             if self.is_applicable(region.rules[idx], region):
-                # if isinstance(region.rules[idx], DissolvingRule):
-                #     indices.remove(idx)
                 self.apply(region.rules[idx], region)
             else:
                 indices.remove(idx)
@@ -285,15 +283,6 @@ class BaseModel(MembraneSystem):
 
         result = BaseModel(tree=structure, regions=regions, structure_str=m_str)
         return result
-
-    #    @staticmethod
-    #    def load_from_json_dict(cls, json_dict):
-    #        structure = json_dict["structure"]
-    #        model = cls.create_model_from_str(structure)
-    #        for id, rule in json_dict["rules"].items():
-    #            parsed_rule = cls.parse_rule(rule)
-    #            model[id].add_rule(parsed_rule)
-    #        return model
 
     @classmethod
     def is_valid_rule(cls, rule_str):
@@ -399,14 +388,10 @@ class BaseModel(MembraneSystem):
         list
             the list containing the parsed rules
         """
+
         result_rules = []
         split_str = rules_str.split("\n")
         for rule in split_str:
             result_rules.append(BaseModel.parse_rule(rule))
         return result_rules
 
-    #    @classmethod
-    #    def is_valid_rule(cls, rule_str):
-    #        return re.match(
-    #            r'[a-z]+\s+->(|#)\s+(IN|in):\s*\w*\s*(OUT|out):\s*\w*\s*(HERE|here):\w*\s*(|>\s*\w*\s*(|#)->\s*(IN|in):\s*\w*\s*(OUT|out):\s*\w*\s*(HERE|here):)',
-    #            rule_str)

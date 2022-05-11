@@ -1,7 +1,9 @@
+import concurrent
 import multiprocessing
 import random
 import json
-from typing import Dict, List
+import time
+from typing import Dict
 from concurrent.futures import ThreadPoolExecutor
 
 from MultiSet import MultiSet
@@ -26,7 +28,7 @@ class Environment(MultiSet):
 
     Attributes
     ----------
-    infite_obj : list
+    infini  te_obj : list
         the list containing the objects with infinite multiplicity
     objects : dict
         a dict containing the objects as keys and their multiplicity as values
@@ -189,6 +191,18 @@ class Environment(MultiSet):
             raise InvalidOperationException
 
     def add_to_new_objects(self, multiset):
+        """
+        Method used to add the newly generated objects to the environment
+
+        At the end of the evolution step, these objects will be added to
+        `objects`
+
+        Parameters
+        ----------
+        multiset : MultiSet
+            the multiset that is being adde
+        """
+
         for obj, mul in multiset:
             if self.infinite_obj and obj in self.infinite_obj:
                 pass
@@ -214,7 +228,6 @@ class MembraneSignal(QObject):
          the signal that communicates that a region's rules have changed
     """
 
-    # sim_over = Signal(dict)
     sim_over = Signal(list)
     sim_step_over = Signal(int)
     region_dissolved = Signal(int)
@@ -357,7 +370,7 @@ class MembraneSystem(QObject):
 
         pass
 
-    def simulate_membrane_system(self, num_of_sim=100):
+    def simulate_parallel(self, num_of_sim=100):
         """
         A function that is used to showcase the nondeterministic behaviour of
         the membrane system by making a given number of copies of the current
@@ -397,6 +410,9 @@ class MembraneSystem(QObject):
 
             for i in range(num_of_sim):
                 results.append(futures[i].result())
+        self.signal.sim_over.emit(results)
+        return results
+
         self.signal.sim_over.emit(results)
         return results
 
@@ -678,7 +694,8 @@ class MembraneSystem(QObject):
         region
         """
 
-        while self.any_rule_applicable():
+        starting_time = time.time()
+        while self.any_rule_applicable() and time.time() - starting_time < 10:
             self.simulate_step()
         return self.get_result()
 

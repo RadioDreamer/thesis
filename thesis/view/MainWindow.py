@@ -24,6 +24,7 @@ from MembraneSimulator import MembraneSimulator, InvalidStructureException
 from HelpMenu import HelpMenu
 from SimulationStepDialog import SimulationStepDialog
 from ResultDialog import ResultDialog
+import resources
 
 
 class MainWindow(QMainWindow):
@@ -102,6 +103,13 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.membranes.view)
 
     def run_simulation(self):
+        """
+        The function connected to the `clicked` signal of `run_sim` button
+
+        SimulationStepDialog is enabled to help the user choose the number of
+        simulation steps
+        """
+
         dialog = SimulationStepDialog()
         result = dialog.exec()
         if result == dialog.Accepted:
@@ -118,7 +126,7 @@ class MainWindow(QMainWindow):
             the new number of steps for the model
         """
 
-        self.counter_label.setText(f"Lépések száma:{str(event)}")
+        self.counter_label.setText(f"Lépések száma: {str(event)}")
 
     def simulation_over(self, result):
         """
@@ -163,8 +171,8 @@ class MainWindow(QMainWindow):
             size = self.membranes.view.maximumViewportSize()
             max_w = size.width()
             max_h = size.height()
-            self.membranes.max_height = (3*max_h) / 4
-            self.membranes.max_width = (3*max_w) / 4
+            self.membranes.max_height = (3 * max_h) / 4
+            self.membranes.max_width = (3 * max_w) / 4
             self.membranes.view.scene().setSceneRect(0, 0, max_w, max_h)
             self.membranes.draw_model()
 
@@ -174,7 +182,8 @@ class MainWindow(QMainWindow):
         base model
         """
 
-        dialog = StructureDialog(parent=self, type=ModelType.BASE, valid_fn=MembraneSimulator.is_valid_structure)
+        dialog = StructureDialog(parent=self, type=ModelType.BASE,
+                                 valid_fn=MembraneSimulator.is_valid_structure)
         result = dialog.exec()
         if result == QDialog.Accepted:
             try:
@@ -193,7 +202,8 @@ class MainWindow(QMainWindow):
         symport-antiport model
         """
 
-        dialog = StructureDialog(parent=self,  type=ModelType.SYMPORT, valid_fn=MembraneSimulator.is_valid_structure)
+        dialog = StructureDialog(parent=self, type=ModelType.SYMPORT,
+                                 valid_fn=MembraneSimulator.is_valid_structure)
         result = dialog.exec()
         if result == QDialog.Accepted:
             try:
@@ -214,7 +224,8 @@ class MainWindow(QMainWindow):
         called with the selected file path (if it is valid)
         """
 
-        name = QFileDialog.getSaveFileName(self, 'Membránrendszer mentése fájlként')
+        name = QFileDialog.getSaveFileName(self,
+                                           'Membránrendszer mentése fájlként')
         if name[0] != '':
             self.membranes.save_model(name[0])
 
@@ -227,7 +238,8 @@ class MainWindow(QMainWindow):
         called with the selected file path (if the file truly exists)
         """
 
-        name = QFileDialog.getOpenFileName(self, 'Membránrendszer betöltése', filter="JSON files (*.json)")
+        name = QFileDialog.getOpenFileName(self, 'Membránrendszer betöltése',
+                                           filter="JSON files (*.json)")
         if QFile.exists(name[0]):
             self.membranes.load_model(name[0])
             self.statusBar().show()

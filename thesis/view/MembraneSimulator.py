@@ -141,6 +141,7 @@ class MembraneSimulator(QWidget):
             the string containing information on how to construct the membrane
             system
         """
+
         try:
             if type == ModelType.BASE:
                 self.model = BaseModel.create_model_from_str(string)
@@ -148,7 +149,7 @@ class MembraneSimulator(QWidget):
             elif type == ModelType.SYMPORT:
                 self.type = ModelType.SYMPORT
                 self.model = SymportAntiport.create_model_from_str(string)
-            self.model.signal.sim_over.connect(self.signal.simulation_over.emit)
+            self.model.signal.sim_over.connect(self.summarize_results)
             self.model.signal.sim_step_over.connect(
                 self.signal.counter_increment.emit)
             self.model.signal.obj_changed.connect(self.update_obj_view)
@@ -196,7 +197,6 @@ class MembraneSimulator(QWidget):
             the string containing the new objects string representation
         """
 
-        # self.view_regions[id].obj_text.setText(string)
         self.view_regions[id].obj_text.setPlainText(string)
         self.view_regions[id].adjust_text()
         self.view_regions[id].center_text()
@@ -214,7 +214,6 @@ class MembraneSimulator(QWidget):
             the string containing the new list of rules in a string format
         """
 
-        # self.view_regions[id].rule_text.setText(string)
         self.view_regions[id].rule_text.setPlainText(string)
         self.view_regions[id].adjust_text()
         self.view_regions[id].center_text()
@@ -355,7 +354,7 @@ class MembraneSimulator(QWidget):
         function
         """
 
-        self.model.simulate_membrane_system(num_of_sim)
+        self.model.simulate_parallel(num_of_sim)
 
     def summarize_results(self, list):
         """

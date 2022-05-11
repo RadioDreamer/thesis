@@ -63,7 +63,7 @@ class Rule(metaclass=abc.ABCMeta):
 class BaseModelRule(Rule):
     """
     A class derived from `Rule` used to describe rules that can be constructed
-    in the base model of the membranesystems
+    in the base model of the membrane systems
 
     Attributes
     ----------
@@ -147,6 +147,7 @@ class BaseModelRule(Rule):
         right_side = in_objects + out_objects + here_objects
         result += right_side
         return result
+
 
 class DissolvingRule(BaseModelRule):
     """

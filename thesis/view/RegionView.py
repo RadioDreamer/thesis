@@ -48,11 +48,6 @@ class RegionView(QGraphicsRectItem):
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setPen(QPen(QBrush(QColor('grey')), 3))
 
-        # New stuff
-        self.selected_edge = None
-        self.click_pos = None
-        self.click_rect = None
-
     def paint(self, painter, option, widget):
         """
         Overridden method of base class's `paint()`
