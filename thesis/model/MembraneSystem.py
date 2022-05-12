@@ -398,7 +398,7 @@ class MembraneSystem(QObject):
 
         def compute(model):
             model_copy = model.__class__.copy_system(model)
-            model_copy.simulate_computation()
+            model_copy.simulate_timed_computation()
             return model_copy.get_result()
 
         cpu_count = multiprocessing.cpu_count()
@@ -694,8 +694,23 @@ class MembraneSystem(QObject):
         region
         """
 
+        while self.any_rule_applicable():
+            self.simulate_step()
+        return self.get_result()
+
+    def simulate_timed_computation(self, wait_time=10):
+        """
+        A function to run the whole simulation of a membrane system
+
+        Emits `sim_over` signal when there are no possible rules to apply to any
+        region
+
+        The time for the comptutaion has an upper limit stored in `wait_time`
+        """
+
         starting_time = time.time()
-        while self.any_rule_applicable() and time.time() - starting_time < 10:
+        while self.any_rule_applicable() and \
+                time.time() - starting_time < wait_time:
             self.simulate_step()
         return self.get_result()
 

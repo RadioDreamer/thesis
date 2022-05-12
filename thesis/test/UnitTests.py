@@ -266,6 +266,15 @@ def test_valid_parentheses():
     assert not MembraneSystem.is_valid_parentheses(s2)
     assert MembraneSystem.is_valid_parentheses(s3)
 
+    s4 = "[[#]]"
+    assert MembraneSystem.is_valid_parentheses(s4)
+    s5 = "[[#]]}"
+    assert not MembraneSystem.is_valid_parentheses(s5)
+    s6 = "[{]}"
+    assert not MembraneSystem.is_valid_parentheses(s6)
+    s7 = "[{#]}"
+    assert not MembraneSystem.is_valid_parentheses(s7)
+
 
 def test_parent_child_dissolve():
     n = Node()
@@ -705,3 +714,23 @@ def test_copy_model():
 
     sa_model.output_id = sa_root_id
     assert sa_copy.output_id == sa_root_id + 1
+
+
+def test_looping_calculation():
+    model = BaseModel.create_model_from_str("[a]")
+    rule = BaseModelRule({'a': 1}, {('a', Direction.HERE): 1})
+    model.regions[model.get_root_id()].add_rule(rule)
+    model.simulate_timed_computation(wait_time=1)
+    assert model.regions[model.get_root_id()].objects == {'a': 1}
+
+    model2 = SymportAntiport.create_model_from_str("[a[#]]")
+    a_in = SymportRule(TransportationRuleType.SYMPORT_IN, imported_obj={'a': 1})
+    a_out = SymportRule(TransportationRuleType.SYMPORT_OUT,
+                        exported_obj={'a': 1})
+    model2.regions[model2.get_root_id()].add_rule(a_in)
+    model2.regions[model2.get_root_id() + 1].add_rule(a_out)
+    model2.simulate_timed_computation(wait_time=1)
+
+    out_obj = len(model2.regions[model2.get_root_id()].objects)
+    in_obj = len(model2.regions[model2.get_root_id()+1].objects)
+    assert out_obj + in_obj == 1

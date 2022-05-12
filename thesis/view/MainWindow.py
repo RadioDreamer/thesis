@@ -110,6 +110,8 @@ class MainWindow(QMainWindow):
         simulation steps
         """
 
+        if self.membranes.model is None:
+            return
         dialog = SimulationStepDialog()
         result = dialog.exec()
         if result == dialog.Accepted:
@@ -191,6 +193,7 @@ class MainWindow(QMainWindow):
                 self.statusBar().show()
             except InvalidStructureException:
                 msg_box = QMessageBox()
+                msg_box.setWindowTitle("Figyelmeztetés")
                 msg_box.setText(
                     "A megadott szöveg formátuma helytelen!\nA súgó gombra "
                     "kattintva olvashatsz az elvárt formátumról.")
@@ -211,6 +214,7 @@ class MainWindow(QMainWindow):
                 self.statusBar().show()
             except (InvalidStructureException, AssertionError):
                 msg_box = QMessageBox()
+                msg_box.setWindowTitle("Figyelmeztetés")
                 msg_box.setText(
                     "A megadott szöveg formátuma helytelen!\nA súgó gombra "
                     "kattintva olvashatsz az elvárt formátumról.")

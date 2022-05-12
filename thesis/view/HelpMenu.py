@@ -34,7 +34,7 @@ class HelpMenu(QDialog):
         """
 
         super().__init__(parent)
-        self.setMinimumSize(750, 400)
+        self.setMinimumSize(850, 400)
         self.setWindowTitle("Használati útmutató")
 
         QBtn = QDialogButtonBox.StandardButton.Ok
@@ -45,7 +45,7 @@ class HelpMenu(QDialog):
         # Original Markdown Layout
         self.help_md = QTextEdit(self)
         self.help_md.setReadOnly(True)
-        self.help_md.resize(800, 800)
+        self.help_md.resize(1000, 1000)
         self.help_md.setMarkdown('\n'.join(HELP_TEXT))
 
         # Scale the space between the lines

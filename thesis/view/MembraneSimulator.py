@@ -156,7 +156,7 @@ class MembraneSimulator(QWidget):
             self.model.signal.rules_changed.connect(self.update_rule_view)
             self.model.signal.region_dissolved.connect(self.update_dissolve)
             self.draw_model()
-        except InvalidArgumentException:
+        except (InvalidArgumentException, AttributeError):
             raise InvalidStructureException
 
     def update_dissolve(self, id):
@@ -344,16 +344,20 @@ class MembraneSimulator(QWidget):
         Essentially calls the model's `simulate_step()` function
         """
 
+        if self.model is None:
+            return
         self.model.simulate_step()
 
     def simulate_computation(self, num_of_sim=10):
         """
         A function to simulate the whole computation the membrane system
 
-        Essentially a wrapper around the model's `simulate_computation()`
+        Essentially a wrapper around the model's `simulate_timed_computation()`
         function
         """
 
+        if self.model is None:
+            return
         self.model.simulate_parallel(num_of_sim)
 
     def summarize_results(self, list):

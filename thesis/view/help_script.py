@@ -94,5 +94,5 @@ HELP_TEXT = ['# Membránrendszer szimulációs szoftver kézikönyv\n', '\n',
              '          mindegyik másolat befejezte a számítást, az eredményeket tartalmazó összesító egy felugró dialógusablakban\n',
              '          jelenik meg.\n', '\n']
 
-with open("./software_guide.md", 'r') as file:
-    print(file.readlines())
+#with open("./software_guide.md", 'r') as file:
+#    print(file.readlines())

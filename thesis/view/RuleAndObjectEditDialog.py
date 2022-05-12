@@ -55,6 +55,7 @@ class RuleAndObjectEditDialog(QDialog):
         self.setWindowTitle("Régió szerkesztése")
         self.valid_fn = valid_fn
         self.rules = rules_string
+        self.objects = region_objects
 
         QBtn = QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         self.button_box = QDialogButtonBox(QBtn)
@@ -94,6 +95,18 @@ class RuleAndObjectEditDialog(QDialog):
 
         return self.rules
 
+    def reject(self):
+        """
+        Slot method for handling the user clicking the cancel button
+
+        This means that the dialog's text fields have to be set back to the
+        original state
+        """
+
+        self.object_edit.setText(self.objects)
+        self.rule_edit_list.setPlainText(self.rules)
+        super().reject()
+
     def accept(self):
         """
         Slot method for handling the user clicking the accept button
@@ -115,9 +128,10 @@ class RuleAndObjectEditDialog(QDialog):
 
         if not all_rule_cond or obj_cond:
             msg_box = QMessageBox(self)
-            msg_box.setText("Nem helyes szabály!")
+            msg_box.setWindowTitle("Figyelmeztetés")
+            msg_box.setText(
+                "A megadott szabályok és objektumok közül (legalább az egyik) nem a helyes formátumú!")
             msg_box.exec()
         else:
-            # self.rules = self.rule_edit_list.toPlainText()
             self.rules = '\n'.join(rule_list)
             super().accept()
