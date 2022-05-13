@@ -152,10 +152,9 @@ class BaseModel(MembraneSystem):
 
         Returns
         -------
-        MultiSet
+        dict
             the objects in the environment
         """
-
         return self.environment.objects
 
     @classmethod
@@ -184,7 +183,7 @@ class BaseModel(MembraneSystem):
 
         regions_dict = {k: [None, None] for k in ms.regions.keys()}
         for r_id, rule in ms.regions.items():
-            regions_dict[r_id][0] = copy.deepcopy(ms.regions[r_id].objects)
+            regions_dict[r_id][0] = copy.deepcopy(ms.regions[r_id].objects.objects)
             regions_dict[r_id][1] = copy.deepcopy(ms.regions[r_id].rules)
 
         regions = {r_id: Region(r_id, l[0], l[1]) for r_id, l in
@@ -348,7 +347,7 @@ class BaseModel(MembraneSystem):
                 right_side[(obj, Direction.OUT)] = mul
             for obj, mul in here_obj:
                 right_side[(obj, Direction.HERE)] = mul
-            return DissolvingRule(left_side, right_side)
+            return DissolvingRule(left_side.objects, right_side)
         else:
             left_side_end = rule_str.index('-')
             left_side = MultiSet.string_to_multiset(rule_str[:left_side_end])
@@ -369,7 +368,7 @@ class BaseModel(MembraneSystem):
             for obj, mul in here_obj:
                 right_side[(obj, Direction.HERE)] = mul
 
-            return BaseModelRule(left_side, right_side)
+            return BaseModelRule(left_side.objects, right_side)
 
     @classmethod
     def string_to_rules(cls, rules_str):

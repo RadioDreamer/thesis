@@ -39,6 +39,8 @@ class MultiSet:
             the initial state of the multiset
         """
 
+        if isinstance(init_objects, MultiSet):
+            init_objects = init_objects.objects
         if init_objects:
             assert all(item > 0 for item in init_objects.values())
             self.objects = init_objects

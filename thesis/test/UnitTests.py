@@ -734,3 +734,17 @@ def test_looping_calculation():
     out_obj = len(model2.regions[model2.get_root_id()].objects)
     in_obj = len(model2.regions[model2.get_root_id()+1].objects)
     assert out_obj + in_obj == 1
+
+
+def test_symport_regions():
+    model = SymportAntiport.create_model_from_str("[[[#]]]")
+    assert isinstance(model.regions[model.get_root_id()+2]._objects, MultiSet)
+    assert isinstance(model.regions[model.get_root_id()+2]._objects.objects, dict)
+
+    model.regions[model.get_root_id()+1].add_rule(SymportAntiport.parse_rule("IN: a OUT: b"))
+    model.regions[model.get_root_id()+2].add_rule(SymportAntiport.parse_rule("IN: b OUT: c"))
+
+    assert isinstance(model.get_result(), dict)
+
+    results = model.simulate_parallel(num_of_sim=10)
+    assert isinstance(results[0], dict)

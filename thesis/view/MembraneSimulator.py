@@ -377,17 +377,17 @@ class MembraneSimulator(QWidget):
         dict
             the dictionary containing {result : multiplicity} key-value pairs
         """
+
         summary = {}
-        res_pairs = [(k, v) for e in list for k, v in e.items()]
-        empty_count = list.count({})
-        for result in res_pairs:
-            result
-            if result not in summary.keys():
-                summary[result] = 1
+        seen_str = []
+        for result in list:
+            tmp = MultiSet(dict(sorted(result.items(), key=lambda x: x[0])))
+            sorted_chars = tmp.__str__()
+            if sorted_chars in seen_str:
+                summary[str(result)] += 1
             else:
-                summary[result] += 1
-        if empty_count != 0:
-            summary['NO OBJECTS'] = empty_count
+                summary[str(result)] = 1
+                seen_str.append(sorted_chars)
         self.signal.simulation_over.emit(summary)
 
     def save_model(self, name):

@@ -398,8 +398,7 @@ class MembraneSystem(QObject):
 
         def compute(model):
             model_copy = model.__class__.copy_system(model)
-            model_copy.simulate_timed_computation()
-            return model_copy.get_result()
+            return model_copy.simulate_timed_computation()
 
         cpu_count = multiprocessing.cpu_count()
         futures = []
@@ -410,9 +409,6 @@ class MembraneSystem(QObject):
 
             for i in range(num_of_sim):
                 results.append(futures[i].result())
-        self.signal.sim_over.emit(results)
-        return results
-
         self.signal.sim_over.emit(results)
         return results
 
@@ -705,7 +701,11 @@ class MembraneSystem(QObject):
         Emits `sim_over` signal when there are no possible rules to apply to any
         region
 
-        The time for the comptutaion has an upper limit stored in `wait_time`
+        Parameters
+        ----------
+        wait_time : int, optional
+            the upper limit on the time of the computation in seconds
+            (default is 10)
         """
 
         starting_time = time.time()

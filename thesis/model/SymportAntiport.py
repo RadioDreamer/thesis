@@ -210,7 +210,7 @@ class SymportAntiport(MembraneSystem):
             the objects in the region with identifier `out_id`
         """
 
-        return self.regions[self.output_id].objects
+        return self.regions[self.output_id].objects.objects
 
     @classmethod
     def copy_system(cls, ms):
@@ -236,7 +236,7 @@ class SymportAntiport(MembraneSystem):
 
         regions_dict = {k: [None, None] for k in ms.regions.keys()}
         for r_id, rule in ms.regions.items():
-            regions_dict[r_id][0] = copy.deepcopy(ms.regions[r_id].objects)
+            regions_dict[r_id][0] = copy.deepcopy(ms.regions[r_id].objects.objects)
             regions_dict[r_id][1] = copy.deepcopy(ms.regions[r_id].rules)
 
         regions = {r_id: Region(r_id, l[0], l[1]) for r_id, l in
