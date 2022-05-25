@@ -1,6 +1,6 @@
 # Simulation and Visualization of P-systems
 
-This repository contains my Computer Science BSc thesis. The goal of the software is to construct a membrane system and simulate it's computation. After construction, the membrane system is visualized on a graphical surface. 
+This repository contains my Computer Science BSc thesis. The goal of the software is to construct a membrane system and simulate it's computation. After construction, the membrane system is visualized on a graphical surface. A general definition of membrane systems can be found at [Wikipedia](https://en.wikipedia.org/wiki/P_system).
 
 ### Prerequisites
 
